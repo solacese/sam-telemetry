@@ -1,0 +1,427 @@
+# Remote A2A Proxy for Solasland micro-A2A service
+
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG
+  log_file: a2a_remote_proxy.log
+
+!include ../shared_config.yaml
+
+apps:
+  - name: solasland_remote_proxy_app
+    app_base_path: .
+    app_module: solace_agent_mesh.agent.proxies.a2a.app
+    broker:
+      <<: *broker_connection
+    app_config:
+      namespace: ${NAMESPACE}
+      artifact_service:
+        type: filesystem
+        base_path: /tmp/samv2
+        artifact_scope: namespace
+      artifact_handling_mode: reference
+      discovery_interval_seconds: 10
+      tools:
+        - group_name: artifact_management
+          tool_type: builtin-group
+      proxied_agents:
+        - name: solasland_manager_001
+          url: http://127.0.0.1:9100/agents/solasland_manager_001
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_002
+          url: http://127.0.0.1:9100/agents/solasland_manager_002
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_003
+          url: http://127.0.0.1:9100/agents/solasland_manager_003
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_004
+          url: http://127.0.0.1:9100/agents/solasland_manager_004
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_005
+          url: http://127.0.0.1:9100/agents/solasland_manager_005
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_006
+          url: http://127.0.0.1:9100/agents/solasland_manager_006
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_007
+          url: http://127.0.0.1:9100/agents/solasland_manager_007
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_008
+          url: http://127.0.0.1:9100/agents/solasland_manager_008
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_009
+          url: http://127.0.0.1:9100/agents/solasland_manager_009
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_010
+          url: http://127.0.0.1:9100/agents/solasland_manager_010
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_011
+          url: http://127.0.0.1:9100/agents/solasland_manager_011
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_012
+          url: http://127.0.0.1:9100/agents/solasland_manager_012
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_013
+          url: http://127.0.0.1:9100/agents/solasland_manager_013
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_014
+          url: http://127.0.0.1:9100/agents/solasland_manager_014
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_015
+          url: http://127.0.0.1:9100/agents/solasland_manager_015
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_016
+          url: http://127.0.0.1:9100/agents/solasland_manager_016
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_017
+          url: http://127.0.0.1:9100/agents/solasland_manager_017
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_018
+          url: http://127.0.0.1:9100/agents/solasland_manager_018
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_019
+          url: http://127.0.0.1:9100/agents/solasland_manager_019
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_020
+          url: http://127.0.0.1:9100/agents/solasland_manager_020
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_021
+          url: http://127.0.0.1:9100/agents/solasland_manager_021
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_022
+          url: http://127.0.0.1:9100/agents/solasland_manager_022
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_023
+          url: http://127.0.0.1:9100/agents/solasland_manager_023
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_024
+          url: http://127.0.0.1:9100/agents/solasland_manager_024
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_025
+          url: http://127.0.0.1:9100/agents/solasland_manager_025
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_026
+          url: http://127.0.0.1:9100/agents/solasland_manager_026
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_027
+          url: http://127.0.0.1:9100/agents/solasland_manager_027
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_028
+          url: http://127.0.0.1:9100/agents/solasland_manager_028
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_029
+          url: http://127.0.0.1:9100/agents/solasland_manager_029
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_030
+          url: http://127.0.0.1:9100/agents/solasland_manager_030
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_031
+          url: http://127.0.0.1:9100/agents/solasland_manager_031
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_032
+          url: http://127.0.0.1:9100/agents/solasland_manager_032
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_033
+          url: http://127.0.0.1:9100/agents/solasland_manager_033
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_034
+          url: http://127.0.0.1:9100/agents/solasland_manager_034
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_035
+          url: http://127.0.0.1:9100/agents/solasland_manager_035
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_036
+          url: http://127.0.0.1:9100/agents/solasland_manager_036
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_037
+          url: http://127.0.0.1:9100/agents/solasland_manager_037
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_038
+          url: http://127.0.0.1:9100/agents/solasland_manager_038
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_039
+          url: http://127.0.0.1:9100/agents/solasland_manager_039
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_040
+          url: http://127.0.0.1:9100/agents/solasland_manager_040
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_041
+          url: http://127.0.0.1:9100/agents/solasland_manager_041
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_042
+          url: http://127.0.0.1:9100/agents/solasland_manager_042
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_043
+          url: http://127.0.0.1:9100/agents/solasland_manager_043
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_044
+          url: http://127.0.0.1:9100/agents/solasland_manager_044
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_045
+          url: http://127.0.0.1:9100/agents/solasland_manager_045
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_046
+          url: http://127.0.0.1:9100/agents/solasland_manager_046
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_047
+          url: http://127.0.0.1:9100/agents/solasland_manager_047
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_048
+          url: http://127.0.0.1:9100/agents/solasland_manager_048
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_049
+          url: http://127.0.0.1:9100/agents/solasland_manager_049
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_050
+          url: http://127.0.0.1:9100/agents/solasland_manager_050
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_051
+          url: http://127.0.0.1:9100/agents/solasland_manager_051
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_052
+          url: http://127.0.0.1:9100/agents/solasland_manager_052
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_053
+          url: http://127.0.0.1:9100/agents/solasland_manager_053
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_054
+          url: http://127.0.0.1:9100/agents/solasland_manager_054
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_055
+          url: http://127.0.0.1:9100/agents/solasland_manager_055
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_056
+          url: http://127.0.0.1:9100/agents/solasland_manager_056
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_057
+          url: http://127.0.0.1:9100/agents/solasland_manager_057
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_058
+          url: http://127.0.0.1:9100/agents/solasland_manager_058
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_059
+          url: http://127.0.0.1:9100/agents/solasland_manager_059
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_060
+          url: http://127.0.0.1:9100/agents/solasland_manager_060
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_061
+          url: http://127.0.0.1:9100/agents/solasland_manager_061
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_062
+          url: http://127.0.0.1:9100/agents/solasland_manager_062
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_063
+          url: http://127.0.0.1:9100/agents/solasland_manager_063
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_064
+          url: http://127.0.0.1:9100/agents/solasland_manager_064
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_065
+          url: http://127.0.0.1:9100/agents/solasland_manager_065
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_066
+          url: http://127.0.0.1:9100/agents/solasland_manager_066
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_067
+          url: http://127.0.0.1:9100/agents/solasland_manager_067
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_068
+          url: http://127.0.0.1:9100/agents/solasland_manager_068
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_069
+          url: http://127.0.0.1:9100/agents/solasland_manager_069
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_070
+          url: http://127.0.0.1:9100/agents/solasland_manager_070
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_071
+          url: http://127.0.0.1:9100/agents/solasland_manager_071
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_072
+          url: http://127.0.0.1:9100/agents/solasland_manager_072
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_073
+          url: http://127.0.0.1:9100/agents/solasland_manager_073
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_074
+          url: http://127.0.0.1:9100/agents/solasland_manager_074
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_075
+          url: http://127.0.0.1:9100/agents/solasland_manager_075
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_076
+          url: http://127.0.0.1:9100/agents/solasland_manager_076
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_077
+          url: http://127.0.0.1:9100/agents/solasland_manager_077
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_078
+          url: http://127.0.0.1:9100/agents/solasland_manager_078
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_079
+          url: http://127.0.0.1:9100/agents/solasland_manager_079
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_080
+          url: http://127.0.0.1:9100/agents/solasland_manager_080
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_081
+          url: http://127.0.0.1:9100/agents/solasland_manager_081
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_082
+          url: http://127.0.0.1:9100/agents/solasland_manager_082
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_083
+          url: http://127.0.0.1:9100/agents/solasland_manager_083
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_084
+          url: http://127.0.0.1:9100/agents/solasland_manager_084
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_085
+          url: http://127.0.0.1:9100/agents/solasland_manager_085
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_086
+          url: http://127.0.0.1:9100/agents/solasland_manager_086
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_087
+          url: http://127.0.0.1:9100/agents/solasland_manager_087
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_088
+          url: http://127.0.0.1:9100/agents/solasland_manager_088
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_089
+          url: http://127.0.0.1:9100/agents/solasland_manager_089
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_090
+          url: http://127.0.0.1:9100/agents/solasland_manager_090
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_091
+          url: http://127.0.0.1:9100/agents/solasland_manager_091
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_092
+          url: http://127.0.0.1:9100/agents/solasland_manager_092
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_093
+          url: http://127.0.0.1:9100/agents/solasland_manager_093
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_094
+          url: http://127.0.0.1:9100/agents/solasland_manager_094
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_095
+          url: http://127.0.0.1:9100/agents/solasland_manager_095
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_096
+          url: http://127.0.0.1:9100/agents/solasland_manager_096
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_097
+          url: http://127.0.0.1:9100/agents/solasland_manager_097
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_098
+          url: http://127.0.0.1:9100/agents/solasland_manager_098
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_099
+          url: http://127.0.0.1:9100/agents/solasland_manager_099
+          agent_card_path: /v1/card
+          use_agent_card_url: true
+        - name: solasland_manager_100
+          url: http://127.0.0.1:9100/agents/solasland_manager_100
+          agent_card_path: /v1/card
+          use_agent_card_url: true

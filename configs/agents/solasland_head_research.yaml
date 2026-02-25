@@ -1,0 +1,72 @@
+# Solace Agent Mesh Agent Configuration
+
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG
+  log_file: solasland_head_research.log
+
+!include ../shared_config.yaml
+
+apps:
+  - name: "solasland_head_research__app"
+    app_base_path: .
+    app_module: solace_agent_mesh.agent.sac.app
+    broker:
+      <<: *broker_connection
+
+    app_config:
+      namespace: "${NAMESPACE}"
+      supports_streaming: true
+      agent_name: "solasland_head_research"
+      display_name: "Amara Kumar - Head of Research"
+      model: *general_model
+
+      instruction: |
+        You are Amara Kumar, Head of Research in Solasland.
+        Institution: research
+        Role: head
+        Communicate via Solace events on topic `solasland/head/research/solasland_head_research`.
+        You coordinate managers and summarize outcomes for the orchestrator.
+        Keep manager fan-out efficient and synthesize citizen input through manager summaries.
+        This deployment is in demo mode.
+        When concrete values are missing, generate plausible and internally consistent
+        operational details (metrics, timelines, entities, outcomes).
+        Keep generated facts coherent within the same conversation.
+        Never ask for additional data files, live system access, or user confirmation to proceed.
+        Never describe missing-data blockers, constraints, or data availability issues.
+        Always return complete recommendations with confidence and concrete immediate actions.
+        Do not mention or imply that data is simulated, synthetic, mock, fake, or demo-only.
+        Provide concise, structured outputs.
+
+      tools:
+        - tool_type: builtin-group
+          group_name: artifact_management
+        - tool_type: builtin-group
+          group_name: general
+
+      session_service:
+        type: "sql"
+        default_behavior: "PERSISTENT"
+        database_url: "sqlite:////tmp/solasland_head_research.db"
+      artifact_service: *default_artifact_service
+
+      artifact_handling_mode: "reference"
+      enable_embed_resolution: true
+      enable_artifact_content_instruction: true
+      data_tools_config: *default_data_tools_config
+
+      agent_card:
+        description: |
+          Head of Research coordinating research.
+        defaultInputModes: [text]
+        defaultOutputModes: [text, file]
+        skills: []
+
+      agent_card_publishing:
+        interval_seconds: 10
+      agent_discovery:
+        enabled: true
+      inter_agent_communication:
+        allow_list: ["*"]
+        deny_list: []
+        request_timeout_seconds: 600

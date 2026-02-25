@@ -1,0 +1,36 @@
+# Local environment / secrets
+.env
+.env.*
+!.env.example
+
+# Virtualenv / local tool state
+.venv/
+.sam/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Runtime outputs
+logs/
+*.log
+sam.log*
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite3
+
+# OS/editor noise
+.DS_Store
+*.swp
+*.swo
+
+# Optional generated artifacts
+configs/citizen_cards/

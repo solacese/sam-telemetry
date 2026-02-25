@@ -1,0 +1,5 @@
+solace-agent-mesh~=1.17.4
+pyyaml~=6.0.2
+fastapi==0.120.1
+uvicorn==0.37.0
+httpx==0.28.1

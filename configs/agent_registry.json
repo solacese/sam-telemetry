@@ -1,0 +1,75 @@
+{
+  "namespace": "default_namespace/",
+  "agents": [
+    {
+      "id": "solasland_head_companies",
+      "institution": "companies",
+      "role": "head",
+      "topic": "solasland/head/companies/solasland_head_companies",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_companies.yaml"
+    },
+    {
+      "id": "solasland_head_education",
+      "institution": "education",
+      "role": "head",
+      "topic": "solasland/head/education/solasland_head_education",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_education.yaml"
+    },
+    {
+      "id": "solasland_head_government",
+      "institution": "government",
+      "role": "head",
+      "topic": "solasland/head/government/solasland_head_government",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_government.yaml"
+    },
+    {
+      "id": "solasland_head_healthcare",
+      "institution": "healthcare",
+      "role": "head",
+      "topic": "solasland/head/healthcare/solasland_head_healthcare",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_healthcare.yaml"
+    },
+    {
+      "id": "solasland_head_infrastructure",
+      "institution": "infrastructure",
+      "role": "head",
+      "topic": "solasland/head/infrastructure/solasland_head_infrastructure",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_infrastructure.yaml"
+    },
+    {
+      "id": "solasland_head_legal_ethics",
+      "institution": "legal_ethics",
+      "role": "head",
+      "topic": "solasland/head/legal_ethics/solasland_head_legal_ethics",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_legal_ethics.yaml"
+    },
+    {
+      "id": "solasland_head_math",
+      "institution": "math",
+      "role": "head",
+      "topic": "solasland/head/math/solasland_head_math",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_math.yaml"
+    },
+    {
+      "id": "solasland_head_media",
+      "institution": "media",
+      "role": "head",
+      "topic": "solasland/head/media/solasland_head_media",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_media.yaml"
+    },
+    {
+      "id": "solasland_head_operations",
+      "institution": "operations",
+      "role": "head",
+      "topic": "solasland/head/operations/solasland_head_operations",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_operations.yaml"
+    },
+    {
+      "id": "solasland_head_research",
+      "institution": "research",
+      "role": "head",
+      "topic": "solasland/head/research/solasland_head_research",
+      "yaml_path": "/Users/raphaelcaillon/Documents/github/country-of-geniuses/configs/agents/solasland_head_research.yaml"
+    }
+  ]
+}

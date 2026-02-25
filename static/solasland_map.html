@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solasland Society Map</title>
+  <style>
+    :root {
+      --bg: #061b2e;
+      --panel: #0b2236;
+      --text: #e8edf2;
+      --muted: #93a6b6;
+      --center: #0f5b78;
+      --head: #0f5b78;
+      --manager: #0f5b78;
+      --citizen: #0f5b78;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+    }
+
+    #root {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      height: 100%;
+    }
+
+    #canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #panel {
+      background: var(--panel);
+      border-left: 1px solid #1e3042;
+      padding: 16px;
+      overflow: auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .row {
+      margin: 8px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .legend {
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    .legend div {
+      margin: 6px 0;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    #search {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #284155;
+      background: #081a2b;
+      color: var(--text);
+      box-sizing: border-box;
+    }
+
+    #back-btn {
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid #2a4256;
+      background: #0b2a42;
+      color: var(--text);
+      cursor: pointer;
+      margin-right: 8px;
+    }
+
+    #back-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #info {
+      margin-top: 12px;
+      padding: 10px;
+      border: 1px solid #2a4256;
+      border-radius: 8px;
+      background: #081a2b;
+    }
+
+    #roster-wrap {
+      margin-top: 12px;
+      padding: 10px;
+      border: 1px solid #2a4256;
+      border-radius: 8px;
+      background: #081a2b;
+    }
+
+    #roster-title {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    #roster {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 36vh;
+      overflow: auto;
+    }
+
+    .roster-item {
+      width: 100%;
+      border: 1px solid #254258;
+      border-radius: 7px;
+      background: #0a2135;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      padding: 7px 8px;
+      box-sizing: border-box;
+    }
+
+    .roster-item:hover {
+      border-color: #3c617d;
+      background: #0d2b45;
+    }
+
+    .roster-main {
+      display: block;
+      font-size: 12px;
+      line-height: 1.3;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .roster-meta {
+      display: block;
+      font-size: 11px;
+      line-height: 1.25;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+<div id="root">
+  <canvas id="canvas"></canvas>
+  <div id="panel">
+    <h1>Solasland Society Map</h1>
+    <div class="row">Center: 1 Orchestrator</div>
+    <div class="row">Heads: 10</div>
+    <div class="row">Managers: 100 (named)</div>
+    <div class="row">Citizens: 889 (named + model tagged)</div>
+
+    <div class="row">
+      <button id="back-btn" type="button" disabled>Back</button>
+      <span id="view-state" class="small">View: Global network</span>
+    </div>
+
+    <input id="search" placeholder="Search by id or full name" />
+
+    <div id="info">
+      <div><strong>Selected:</strong> <span id="sel-id">None</span></div>
+      <div class="small" id="sel-meta"></div>
+    </div>
+
+    <div id="roster-wrap">
+      <div id="roster-title">Heads</div>
+      <div id="roster"></div>
+    </div>
+
+    <div class="legend">
+      <div><span class="dot" style="background:var(--center)"></span>Orchestrator</div>
+      <div><span class="dot" style="background:var(--head)"></span>Heads</div>
+      <div><span class="dot" style="background:var(--manager)"></span>Managers</div>
+      <div><span class="dot" style="background:var(--citizen)"></span>Citizens</div>
+    </div>
+
+    <div class="row small">Controls: Scroll to zoom, drag to pan, click nodes to inspect. Heads and managers remain visible while drilling into citizens.</div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const selId = document.getElementById('sel-id');
+const selMeta = document.getElementById('sel-meta');
+const search = document.getElementById('search');
+const backBtn = document.getElementById('back-btn');
+const viewState = document.getElementById('view-state');
+const rosterTitle = document.getElementById('roster-title');
+const roster = document.getElementById('roster');
+
+let w;
+let h;
+let cx;
+let cy;
+
+let scale = 1;
+let panX = 0;
+let panY = 0;
+let dragging = false;
+let lastX = 0;
+let lastY = 0;
+
+let renderedNodes = [];
+let selectedNode = null;
+let framePulse = 0;
+let zoomAnimStart = 0;
+let zoomAnimFrame = null;
+let zoomAnimActive = false;
+const ZOOM_ANIM_MS = 280;
+
+const TWO_PI = Math.PI * 2;
+const HEAD_RADIUS = 250;
+const MANAGER_RADIUS = 520;
+const CITIZEN_RADIUS = 126;
+
+const HEAD_TITLES = [
+  'Head of Research',
+  'Head of Government',
+  'Head of Education',
+  'Head of Healthcare',
+  'Head of Infrastructure',
+  'Head of Media',
+  'Head of Legal & Ethics',
+  'Head of Companies',
+  'Head of Mathematics',
+  'Head of Operations'
+];
+
+const MODEL_POOL = [
+  'GPT5',
+  'Claude46',
+  'Gemini31',
+  'Llama4',
+  'MistralNext',
+  'Qwen3',
+  'DeepSeekR2',
+  'CommandR+'
+];
+
+const MANAGERS_PER_HEAD = 10;
+const CITIZEN_COUNT_TOTAL = 889;
+const TOTAL_MANAGERS = HEAD_TITLES.length * MANAGERS_PER_HEAD;
+const BASE_CITIZENS_PER_MANAGER = Math.floor(CITIZEN_COUNT_TOTAL / TOTAL_MANAGERS);
+const MANAGERS_WITH_EXTRA_CITIZEN = CITIZEN_COUNT_TOTAL % TOTAL_MANAGERS;
+
+const MANAGER_GIVEN_NAMES = [
+  'Ava', 'Liam', 'Noah', 'Emma', 'Mason', 'Sophia', 'Lucas', 'Mia', 'Ethan', 'Amelia',
+  'James', 'Isabella', 'Henry', 'Charlotte', 'Logan', 'Evelyn', 'Elijah', 'Harper', 'Leo', 'Ella',
+  'Benjamin', 'Nora', 'Jack', 'Avery', 'Owen', 'Sofia', 'Samuel', 'Camila', 'Daniel', 'Aria',
+  'Julian', 'Scarlett'
+];
+
+const MANAGER_FAMILY_NAMES = [
+  'Anderson', 'Bennett', 'Campbell', 'Delgado', 'Ellis', 'Foster', 'Garcia', 'Hayes', 'Ibrahim', 'Jensen',
+  'Khan', 'Lopez', 'Mitchell', 'Nguyen', 'Owens', 'Patel', 'Quinn', 'Ramirez', 'Silva', 'Turner',
+  'Usman', 'Vargas', 'Walker', 'Xu', 'Young', 'Zimmerman', 'Brooks', 'Carter', 'Diaz', 'Evans',
+  'Flores', 'Gomez', 'Howard', 'Ivanov', 'Jordan', 'Kim', 'Larson'
+];
+
+const CITIZEN_GIVEN_NAMES = [
+  'Ari', 'Bea', 'Cai', 'Dara', 'Elio', 'Faye', 'Gio', 'Hana', 'Ivo', 'Juna',
+  'Kai', 'Lena', 'Milo', 'Nia', 'Oren', 'Pia', 'Quin', 'Rhea', 'Soren', 'Tala',
+  'Uma', 'Vin', 'Wren', 'Xavi', 'Yara', 'Zane', 'Aiden', 'Bianca', 'Colin', 'Daphne',
+  'Elias', 'Freya', 'Gavin', 'Hazel', 'Ivan', 'Jade', 'Keira', 'Levi', 'Mina', 'Nolan', 'Opal'
+];
+
+const CITIZEN_MIDDLE_NAMES = [
+  'Alex', 'Blair', 'Casey', 'Dev', 'Emerson', 'Finley', 'Gray', 'Hayden', 'Indra', 'Jules',
+  'Kai', 'Lane', 'Marin', 'Noel', 'Oak', 'Parker', 'Quill', 'Reese', 'Shay', 'Tobin',
+  'Urban', 'Vale', 'Winter', 'Xen', 'Yael', 'Zev', 'Arden', 'Bryn', 'Cove', 'Drew',
+  'Ever', 'Flynn', 'Glenn', 'Hollis', 'Ira', 'Joss', 'Kade'
+];
+
+const CITIZEN_FAMILY_NAMES = [
+  'Aster', 'Brook', 'Cinder', 'Dawn', 'Ember', 'Frost', 'Gale', 'Hollow', 'Iris', 'Juniper',
+  'Kestrel', 'Lark', 'Meadow', 'Nova', 'Orchid', 'Prism', 'Quartz', 'River', 'Stone', 'Thorne',
+  'Umbra', 'Vale', 'Wilder', 'Yarrow', 'Zephyr', 'Briar', 'Cloud', 'Drift', 'Evergreen', 'Fern',
+  'Grove', 'Harbor', 'Ivory', 'Jet', 'Knight', 'Lake', 'Morrow', 'North', 'Oakley', 'Pine',
+  'Reed', 'Skye', 'Tide'
+];
+
+const CITIZEN_NAME_SPACE = CITIZEN_GIVEN_NAMES.length * CITIZEN_MIDDLE_NAMES.length * CITIZEN_FAMILY_NAMES.length;
+
+const orchestrator = {
+  type: 'orchestrator',
+  id: 'solasland_orchestrator_001',
+  label: 'Orchestrator',
+  model: 'GPT5'
+};
+
+function pad(n, size) {
+  return String(n).padStart(size, '0');
+}
+
+function modelFor(seed) {
+  return MODEL_POOL[(seed * 7 + Math.floor(seed / 3) + 2) % MODEL_POOL.length];
+}
+
+function managerName(index) {
+  const given = MANAGER_GIVEN_NAMES[(index * 7 + 3) % MANAGER_GIVEN_NAMES.length];
+  const family = MANAGER_FAMILY_NAMES[(index * 11 + 5) % MANAGER_FAMILY_NAMES.length];
+  return `${given} ${family}`;
+}
+
+function citizenName(index) {
+  const permuted = (((index - 1) * 8191) + 12345) % CITIZEN_NAME_SPACE;
+
+  const givenIndex = permuted % CITIZEN_GIVEN_NAMES.length;
+  const middleIndex = Math.floor(permuted / CITIZEN_GIVEN_NAMES.length) % CITIZEN_MIDDLE_NAMES.length;
+  const familyIndex = Math.floor(permuted / (CITIZEN_GIVEN_NAMES.length * CITIZEN_MIDDLE_NAMES.length)) % CITIZEN_FAMILY_NAMES.length;
+
+  const given = CITIZEN_GIVEN_NAMES[givenIndex];
+  const middle = CITIZEN_MIDDLE_NAMES[middleIndex];
+  const family = CITIZEN_FAMILY_NAMES[familyIndex];
+  const altFamily = CITIZEN_FAMILY_NAMES[(familyIndex + ((index * 5) % CITIZEN_FAMILY_NAMES.length)) % CITIZEN_FAMILY_NAMES.length];
+  const fullFamily = index % 6 === 0 ? `${family}-${altFamily}` : family;
+
+  return `${given} ${middle} ${fullFamily}`;
+}
+
+let globalCitizenNumber = 0;
+
+const heads = HEAD_TITLES.map((label, headIndex) => {
+  const headId = `solasland_head_${pad(headIndex + 1, 2)}`;
+
+  const managers = Array.from({ length: MANAGERS_PER_HEAD }, (_, managerOffset) => {
+    const managerNumber = headIndex * MANAGERS_PER_HEAD + managerOffset + 1;
+    const managerId = `solasland_manager_${pad(managerNumber, 3)}`;
+    const managerCitizenCount = BASE_CITIZENS_PER_MANAGER + (managerNumber <= MANAGERS_WITH_EXTRA_CITIZEN ? 1 : 0);
+
+    const citizens = Array.from({ length: managerCitizenCount }, () => {
+      globalCitizenNumber += 1;
+      const citizenNumber = globalCitizenNumber;
+      return {
+        type: 'citizen',
+        id: `solasland_citizen_${pad(citizenNumber, 5)}`,
+        label: citizenName(citizenNumber),
+        citizenNumber,
+        model: modelFor(1000 + citizenNumber),
+        headId,
+        managerId
+      };
+    });
+
+    return {
+      type: 'manager',
+      id: managerId,
+      label: managerName(managerNumber),
+      model: modelFor(100 + managerNumber),
+      managerNumber,
+      managerOffset,
+      headId,
+      citizens
+    };
+  });
+
+  return {
+    type: 'head',
+    id: headId,
+    label,
+    model: modelFor(10 + headIndex),
+    headIndex,
+    managers
+  };
+});
+
+if (globalCitizenNumber !== CITIZEN_COUNT_TOTAL) {
+  console.warn(`Citizen generation mismatch: expected ${CITIZEN_COUNT_TOTAL}, got ${globalCitizenNumber}`);
+}
+
+const nodeById = new Map();
+const nodeByName = new Map();
+const searchableNodes = [];
+
+function registerNode(node) {
+  nodeById.set(node.id.toLowerCase(), node);
+  searchableNodes.push(node);
+  const lower = node.label.toLowerCase();
+  if (!nodeByName.has(lower)) {
+    nodeByName.set(lower, node);
+  }
+}
+
+registerNode(orchestrator);
+nodeByName.set('orchestrator', orchestrator);
+
+heads.forEach((head) => {
+  registerNode(head);
+  head.managers.forEach((manager) => {
+    manager.head = head;
+    registerNode(manager);
+
+    manager.citizens.forEach((citizen) => {
+      citizen.head = head;
+      citizen.manager = manager;
+      registerNode(citizen);
+    });
+  });
+});
+
+const focus = {
+  head: null,
+  manager: null
+};
+
+function resize() {
+  w = canvas.clientWidth;
+  h = canvas.clientHeight;
+
+  canvas.width = w * devicePixelRatio;
+  canvas.height = h * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+  cx = w / 2;
+  cy = h / 2;
+  draw();
+}
+
+window.addEventListener('resize', resize);
+
+function toScreen(x, y) {
+  return {
+    x: cx + panX + x * scale,
+    y: cy + panY + y * scale
+  };
+}
+
+function toWorld(x, y) {
+  return {
+    x: (x - cx - panX) / scale,
+    y: (y - cy - panY) / scale
+  };
+}
+
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function escapeHtml(value) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function roundedRectPath(x, y, width, height, radius) {
+  const rr = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + width, y, x + width, y + height, rr);
+  ctx.arcTo(x + width, y + height, x, y + height, rr);
+  ctx.arcTo(x, y + height, x, y, rr);
+  ctx.arcTo(x, y, x + width, y, rr);
+  ctx.closePath();
+}
+
+function headAngle(headIndex) {
+  return (headIndex / heads.length) * TWO_PI - Math.PI / 2;
+}
+
+function getHeadPosition(head) {
+  const angle = headAngle(head.headIndex);
+  const r = HEAD_RADIUS;
+  return {
+    x: Math.cos(angle) * r,
+    y: Math.sin(angle) * r,
+    angle
+  };
+}
+
+function getManagerPosition(manager) {
+  const sector = TWO_PI / heads.length;
+  const local = ((manager.managerOffset + 0.5) / MANAGERS_PER_HEAD - 0.5) * sector * 0.78;
+  const angle = headAngle(manager.head.headIndex) + local;
+  const r = MANAGER_RADIUS;
+
+  return {
+    x: Math.cos(angle) * r,
+    y: Math.sin(angle) * r,
+    angle
+  };
+}
+
+function getCitizenPosition(managerPos, index, total, seed = 0) {
+  const angle = (((index + seed) % total) / total) * TWO_PI - Math.PI / 2;
+  const radius = CITIZEN_RADIUS;
+
+  return {
+    x: managerPos.x + Math.cos(angle) * radius,
+    y: managerPos.y + Math.sin(angle) * radius,
+    angle
+  };
+}
+
+function drawOrbitRing(centerX, centerY, radius, alpha = 0.16, phase = 0) {
+  const p = toScreen(centerX, centerY);
+  const pixelRadius = radius * scale * (1 + framePulse * 0.035);
+
+  ctx.save();
+  ctx.strokeStyle = `rgba(210,220,230,${alpha + framePulse * 0.2})`;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([8, 10]);
+  ctx.lineDashOffset = framePulse > 0 ? -(phase * 25 + framePulse * 38) : -phase * 25;
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, pixelRadius, 0, TWO_PI);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawFlowLine(fromX, fromY, toX, toY, phase = 0, alpha = 0.26) {
+  const p0 = toScreen(fromX, fromY);
+  const p1 = toScreen(toX, toY);
+
+  ctx.save();
+  ctx.strokeStyle = `rgba(210,220,230,${alpha + framePulse * 0.2})`;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(p0.x, p0.y);
+  ctx.lineTo(p1.x, p1.y);
+  ctx.stroke();
+
+  if (framePulse > 0) {
+    ctx.strokeStyle = 'rgba(124, 201, 240, 0.58)';
+    ctx.lineWidth = 1.3;
+    ctx.setLineDash([6, 10]);
+    ctx.lineDashOffset = -(phase * 17 + framePulse * 64);
+    ctx.beginPath();
+    ctx.moveTo(p0.x, p0.y);
+    ctx.lineTo(p1.x, p1.y);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawFlowCurve(fromX, fromY, toX, toY, bend = 0.6, phase = 0, alpha = 0.28) {
+  const p0 = toScreen(fromX, fromY);
+  const p1 = toScreen(toX, toY);
+
+  const mx = fromX + (toX - fromX) * bend;
+  const my = fromY + (toY - fromY) * bend;
+  const pm = toScreen(mx, my);
+
+  ctx.save();
+  ctx.strokeStyle = `rgba(210,220,230,${alpha + framePulse * 0.2})`;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(p0.x, p0.y);
+  ctx.quadraticCurveTo(pm.x, pm.y, p1.x, p1.y);
+  ctx.stroke();
+
+  if (framePulse > 0) {
+    ctx.strokeStyle = 'rgba(124, 201, 240, 0.58)';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([6, 11]);
+    ctx.lineDashOffset = -(phase * 19 + framePulse * 58);
+    ctx.beginPath();
+    ctx.moveTo(p0.x, p0.y);
+    ctx.quadraticCurveTo(pm.x, pm.y, p1.x, p1.y);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawCard(node, worldX, worldY, title, subtitle, color, width = 210, height = 56) {
+  const p = toScreen(worldX, worldY);
+  const pulse = 1 + framePulse * 0.03;
+  const sw = width * scale * pulse;
+  const sh = height * scale * pulse;
+  const x = p.x - sw / 2;
+  const y = p.y - sh / 2;
+
+  roundedRectPath(x, y, sw, sh, 9 * scale);
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  const selected = selectedNode === node;
+  roundedRectPath(x, y, sw, sh, 9 * scale);
+  ctx.strokeStyle = selected ? '#f6b84e' : 'rgba(0,0,0,0.24)';
+  ctx.lineWidth = selected ? 2 : 1;
+  ctx.stroke();
+
+  const titleSize = Math.max(8, (title.length > 22 ? 9.5 : 10.5) * scale);
+  const subSize = Math.max(7, 8.8 * scale);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  ctx.fillStyle = '#e9f2f8';
+  ctx.font = `600 ${titleSize}px "IBM Plex Sans", system-ui, sans-serif`;
+  ctx.fillText(title, p.x, p.y - 6 * scale);
+
+  ctx.fillStyle = 'rgba(232,237,242,0.86)';
+  ctx.font = `${subSize}px "IBM Plex Sans", system-ui, sans-serif`;
+  ctx.fillText(subtitle, p.x, p.y + 8 * scale);
+
+  renderedNodes.push({
+    shape: 'rect',
+    node,
+    x,
+    y,
+    width: sw,
+    height: sh
+  });
+}
+
+function drawDot(node, worldX, worldY, color, radius, seed = 0, emphasis = false) {
+  const p = toScreen(worldX, worldY);
+  const pulse = framePulse * (0.8 + ((seed % 4) * 0.1));
+  const drawRadius = Math.max(1.3, radius * scale + pulse);
+  const selected = selectedNode === node;
+
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, drawRadius, 0, TWO_PI);
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  if (emphasis || selected) {
+    ctx.strokeStyle = selected ? '#f6b84e' : 'rgba(255,255,255,0.42)';
+    ctx.lineWidth = selected ? 2 : 1;
+    ctx.stroke();
+  }
+
+  renderedNodes.push({
+    shape: 'circle',
+    node,
+    x: p.x,
+    y: p.y,
+    radius: Math.max(6, drawRadius + 4)
+  });
+}
+
+function drawRadialLabel(worldX, worldY, angle, primary, secondary, alpha = 0.82) {
+  const p = toScreen(worldX, worldY);
+  const offset = Math.max(10, 12 * scale);
+  const lx = p.x + Math.cos(angle) * offset;
+  const ly = p.y + Math.sin(angle) * offset;
+
+  ctx.textAlign = Math.cos(angle) >= 0 ? 'left' : 'right';
+  ctx.textBaseline = 'middle';
+
+  const primarySize = Math.max(6, 8.1 * scale);
+  const secondarySize = Math.max(5, 7 * scale);
+
+  ctx.fillStyle = `rgba(219,233,243,${alpha})`;
+  ctx.font = `${primarySize}px "IBM Plex Sans", system-ui, sans-serif`;
+  ctx.fillText(primary, lx, ly - Math.max(1, 2 * scale));
+
+  if (secondary) {
+    ctx.fillStyle = 'rgba(216,228,240,0.72)';
+    ctx.font = `${secondarySize}px "IBM Plex Sans", system-ui, sans-serif`;
+    ctx.fillText(secondary, lx, ly + Math.max(6, 7 * scale));
+  }
+}
+
+function drawBackgroundPulse() {
+  const p = toScreen(0, 0);
+  const aura = (130 + 18 * framePulse) * scale;
+
+  const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, Math.max(40, aura));
+  gradient.addColorStop(0, 'rgba(66, 142, 177, 0.16)');
+  gradient.addColorStop(1, 'rgba(66, 142, 177, 0)');
+
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, Math.max(40, aura), 0, TWO_PI);
+  ctx.fill();
+}
+
+function draw(now = performance.now()) {
+  if (!w || !h) return;
+
+  if (zoomAnimActive) {
+    const t = (now - zoomAnimStart) / ZOOM_ANIM_MS;
+    if (t >= 1) {
+      zoomAnimActive = false;
+      framePulse = 0;
+    } else {
+      framePulse = Math.sin(t * Math.PI);
+    }
+  } else {
+    framePulse = 0;
+  }
+
+  renderedNodes = [];
+  ctx.clearRect(0, 0, w, h);
+
+  drawBackgroundPulse();
+
+  drawOrbitRing(0, 0, HEAD_RADIUS, 0.17, 0);
+  drawOrbitRing(0, 0, MANAGER_RADIUS, 0.12, 1);
+
+  const headPositions = new Map();
+  const managerPositions = new Map();
+
+  heads.forEach((head) => {
+    const hp = getHeadPosition(head);
+    headPositions.set(head.id, hp);
+    drawFlowCurve(0, 0, hp.x, hp.y, 0.56, head.headIndex, 0.24);
+  });
+
+  heads.forEach((head) => {
+    const hp = headPositions.get(head.id);
+
+    head.managers.forEach((manager) => {
+      const mp = getManagerPosition(manager);
+      managerPositions.set(manager.id, mp);
+      drawFlowLine(hp.x, hp.y, mp.x, mp.y, manager.managerNumber, 0.18);
+    });
+  });
+
+  drawCard(orchestrator, 0, 0, orchestrator.label, orchestrator.model, cssVar('--center'), 220, 58);
+
+  heads.forEach((head) => {
+    const hp = headPositions.get(head.id);
+    drawCard(head, hp.x, hp.y, head.label, head.model, cssVar('--head'), 224, 58);
+  });
+
+  heads.forEach((head) => {
+    head.managers.forEach((manager) => {
+      const mp = managerPositions.get(manager.id);
+      const deemphasize = focus.head && focus.head !== head;
+      const managerColor = deemphasize ? 'rgba(64, 117, 141, 0.58)' : cssVar('--manager');
+      drawDot(manager, mp.x, mp.y, managerColor, 3.4, manager.managerNumber, focus.manager === manager);
+
+      if (focus.head === head && scale > 0.78) {
+        drawRadialLabel(mp.x, mp.y, mp.angle, manager.label, manager.model, 0.88);
+      }
+    });
+  });
+
+  if (focus.manager) {
+    const managerPos = managerPositions.get(focus.manager.id);
+    if (managerPos) {
+      drawOrbitRing(managerPos.x, managerPos.y, CITIZEN_RADIUS + 6, 0.22, 2);
+
+      focus.manager.citizens.forEach((citizen, index) => {
+        const cp = getCitizenPosition(managerPos, index, focus.manager.citizens.length, focus.manager.managerNumber);
+        drawFlowLine(managerPos.x, managerPos.y, cp.x, cp.y, index + 1, 0.2);
+        drawDot(citizen, cp.x, cp.y, cssVar('--citizen'), 2.3, citizen.citizenNumber, true);
+
+        const citizenLabel = `${citizen.label}`;
+        drawRadialLabel(cp.x, cp.y, cp.angle, citizenLabel, citizen.model, 0.84);
+      });
+    }
+  }
+
+  return zoomAnimActive;
+}
+
+function runZoomAnimation(ts) {
+  const keepAnimating = draw(ts);
+  if (keepAnimating) {
+    zoomAnimFrame = requestAnimationFrame(runZoomAnimation);
+    return;
+  }
+  zoomAnimFrame = null;
+}
+
+function startZoomAnimation() {
+  zoomAnimStart = performance.now();
+  zoomAnimActive = true;
+  draw();
+  if (!zoomAnimFrame) {
+    zoomAnimFrame = requestAnimationFrame(runZoomAnimation);
+  }
+}
+
+function setSelected(node) {
+  selectedNode = node;
+
+  if (!node) {
+    selId.textContent = 'None';
+    selMeta.textContent = '';
+    return;
+  }
+
+  if (node.type === 'orchestrator') {
+    selId.textContent = `${node.label} (${node.id})`;
+    selMeta.textContent = `Center node • Model: ${node.model}`;
+    return;
+  }
+
+  if (node.type === 'head') {
+    selId.textContent = `${node.label} (${node.id})`;
+    selMeta.textContent = `${node.managers.length} managers • Model: ${node.model}`;
+    return;
+  }
+
+  if (node.type === 'manager') {
+    selId.textContent = `${node.label} (${node.id})`;
+    selMeta.textContent = `${node.citizens.length} citizens • Model: ${node.model}`;
+    return;
+  }
+
+  selId.textContent = `${node.label} (${node.id})`;
+  selMeta.textContent = `Model: ${node.model} • ${node.manager.label} / ${node.head.label}`;
+}
+
+function rosterButton(node, meta) {
+  return `\n    <button class="roster-item" type="button" data-node-id="${escapeHtml(node.id)}">\n      <span class="roster-main">${escapeHtml(node.label)}</span>\n      <span class="roster-meta">${escapeHtml(meta)}</span>\n    </button>\n  `;
+}
+
+function renderRoster() {
+  if (focus.manager) {
+    rosterTitle.textContent = `Citizens under ${focus.manager.label}`;
+    roster.innerHTML = focus.manager.citizens
+      .map((citizen) => rosterButton(citizen, `${citizen.model} • ${citizen.id}`))
+      .join('');
+    return;
+  }
+
+  if (focus.head) {
+    rosterTitle.textContent = `Managers under ${focus.head.label}`;
+    roster.innerHTML = focus.head.managers
+      .map((manager) => rosterButton(manager, `${manager.model} • ${manager.id}`))
+      .join('');
+    return;
+  }
+
+  rosterTitle.textContent = 'Heads';
+  roster.innerHTML = heads
+    .map((head) => rosterButton(head, `${head.model} • ${head.managers.length} managers`))
+    .join('');
+}
+
+function updateViewUI() {
+  if (focus.manager) {
+    viewState.textContent = `View: ${focus.manager.label} -> Citizens`;
+    backBtn.disabled = false;
+  } else if (focus.head) {
+    viewState.textContent = `View: ${focus.head.label} -> Managers`;
+    backBtn.disabled = false;
+  } else {
+    viewState.textContent = 'View: Global network';
+    backBtn.disabled = true;
+  }
+
+  renderRoster();
+}
+
+function focusNode(node) {
+  if (!node) return;
+
+  if (node.type === 'orchestrator') {
+    focus.head = null;
+    focus.manager = null;
+    setSelected(node);
+    updateViewUI();
+    draw();
+    return;
+  }
+
+  if (node.type === 'head') {
+    focus.head = node;
+    focus.manager = null;
+    setSelected(node);
+    updateViewUI();
+    draw();
+    return;
+  }
+
+  if (node.type === 'manager') {
+    focus.head = node.head;
+    focus.manager = node;
+    setSelected(node);
+    updateViewUI();
+    draw();
+    return;
+  }
+
+  focus.head = node.head;
+  focus.manager = node.manager;
+  setSelected(node);
+  updateViewUI();
+  draw();
+}
+
+function goBack() {
+  if (focus.manager) {
+    focus.manager = null;
+    setSelected(focus.head);
+  } else if (focus.head) {
+    focus.head = null;
+    setSelected(orchestrator);
+  }
+  updateViewUI();
+  draw();
+}
+
+function hitTest(screenX, screenY) {
+  for (let i = renderedNodes.length - 1; i >= 0; i -= 1) {
+    const entry = renderedNodes[i];
+
+    if (entry.shape === 'rect') {
+      if (
+        screenX >= entry.x &&
+        screenX <= entry.x + entry.width &&
+        screenY >= entry.y &&
+        screenY <= entry.y + entry.height
+      ) {
+        return entry.node;
+      }
+      continue;
+    }
+
+    const dx = screenX - entry.x;
+    const dy = screenY - entry.y;
+    if (dx * dx + dy * dy <= entry.radius * entry.radius) {
+      return entry.node;
+    }
+  }
+  return null;
+}
+
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const worldBefore = toWorld(mx, my);
+  const delta = e.deltaY < 0 ? 1.1 : 0.9;
+
+  scale = Math.max(0.2, Math.min(3.8, scale * delta));
+  panX = mx - cx - worldBefore.x * scale;
+  panY = my - cy - worldBefore.y * scale;
+  if (delta > 1) {
+    startZoomAnimation();
+  } else {
+    draw();
+  }
+}, { passive: false });
+
+canvas.addEventListener('mousedown', (e) => {
+  dragging = true;
+  lastX = e.clientX;
+  lastY = e.clientY;
+});
+
+window.addEventListener('mouseup', () => {
+  dragging = false;
+});
+
+window.addEventListener('mousemove', (e) => {
+  if (!dragging) return;
+  panX += (e.clientX - lastX);
+  panY += (e.clientY - lastY);
+  lastX = e.clientX;
+  lastY = e.clientY;
+  draw();
+});
+
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const node = hitTest(x, y);
+  if (node) {
+    focusNode(node);
+  }
+});
+
+roster.addEventListener('click', (e) => {
+  const item = e.target.closest('.roster-item');
+  if (!item) return;
+
+  const node = nodeById.get(item.dataset.nodeId.toLowerCase());
+  if (node) {
+    focusNode(node);
+  }
+});
+
+function searchAndFocus() {
+  const term = search.value.trim().toLowerCase();
+  if (!term) {
+    setSelected(null);
+    draw();
+    return;
+  }
+
+  const byId = nodeById.get(term);
+  if (byId) {
+    focusNode(byId);
+    return;
+  }
+
+  const byName = nodeByName.get(term);
+  if (byName) {
+    focusNode(byName);
+    return;
+  }
+
+  const partial = searchableNodes.find((node) => node.label.toLowerCase().includes(term));
+  if (partial) {
+    focusNode(partial);
+    return;
+  }
+
+  selId.textContent = search.value;
+  selMeta.textContent = 'No matching id or name';
+}
+
+search.addEventListener('change', searchAndFocus);
+search.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    searchAndFocus();
+  }
+});
+
+backBtn.addEventListener('click', goBack);
+
+resize();
+updateViewUI();
+setSelected(orchestrator);
+draw();
+</script>
+</body>
+</html>
