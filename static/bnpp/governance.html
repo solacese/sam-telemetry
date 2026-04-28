@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BNP Paribas &mdash; Gouvernance &amp; Conformit&eacute;</title>
+  <title>BNP Paribas &mdash; Governance &amp; Compliance</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -346,16 +346,16 @@
     <div class="logo-block"><span class="logo-text">solace.</span></div>
     <div class="logo-sep"></div>
     <div class="title-block">
-      <h1>BNP Paribas &mdash; Gouvernance &amp; Conformit&eacute;</h1>
-      <span class="sub">Politiques, Audit et R&eacute;sidence des Donn&eacute;es</span>
+      <h1>BNP Paribas &mdash; Governance &amp; Compliance</h1>
+      <span class="sub">Policies, Audit Trail and Data Residency</span>
     </div>
     <div class="topbar-right">
-      <span class="live-badge"><span class="dot"></span> <span id="live-count">4</span> agents actifs</span>
+      <span class="live-badge"><span class="dot"></span> 200 agents live</span>
       <a href="agents.html">Agents</a>
-      <a href="mesh.html">Mesh Map</a>
-      <a href="governance.html" class="active">Gouvernance</a>
-      <a href="observability.html">Observabilit&eacute;</a>
-      <a href="cost.html">Co&ucirc;ts</a>
+      <a href="governance.html" class="active">Governance</a>
+      <a href="workflows.html">Workflows</a>
+      <a href="cost.html">Cost</a>
+      <a href="observability.html">Observability</a>
     </div>
   </div>
 
@@ -363,10 +363,10 @@
 
     <!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
     <div class="sidebar">
-      <div class="sb-hdr"><h3>Filtres Gouvernance</h3></div>
+      <div class="sb-hdr"><h3>Governance Filters</h3></div>
       <div class="sb-body">
 
-        <div class="sb-sec">S&eacute;v&eacute;rit&eacute;</div>
+        <div class="sb-sec">Severity</div>
         <button class="sb-btn" data-sev="critical">
           <span class="sb-dot" style="background:var(--roi-red);"></span> Critical
           <span class="sb-count" id="sev-critical">1</span>
@@ -384,9 +384,9 @@
           <span class="sb-count" id="sev-low">1</span>
         </button>
 
-        <div class="sb-sec">Domaine</div>
+        <div class="sb-sec">Domain</div>
         <button class="sb-btn active" data-domain="all">
-          <span class="sb-dot" style="background:var(--sol-green);"></span> Tous les domaines
+          <span class="sb-dot" style="background:var(--sol-green);"></span> All Domains
         </button>
         <button class="sb-btn" data-domain="cib">
           <span class="sb-dot" style="background:var(--databricks);"></span> CIB
@@ -401,9 +401,9 @@
           <span class="sb-dot" style="background:var(--claude);"></span> IT &amp; Operations
         </button>
 
-        <div class="sb-sec">R&eacute;glementation</div>
+        <div class="sb-sec">Regulation</div>
         <button class="sb-btn active" data-reg="all">
-          <span class="sb-dot" style="background:var(--sol-green);"></span> Toutes
+          <span class="sb-dot" style="background:var(--sol-green);"></span> All
         </button>
         <button class="sb-btn" data-reg="acpr">
           <span class="sb-dot" style="background:var(--roi-blue);"></span> ACPR
@@ -411,18 +411,18 @@
         <button class="sb-btn" data-reg="dora">
           <span class="sb-dot" style="background:var(--roi-blue);"></span> DORA
         </button>
-        <button class="sb-btn" data-reg="rgpd">
-          <span class="sb-dot" style="background:var(--roi-blue);"></span> RGPD
+        <button class="sb-btn" data-reg="gdpr">
+          <span class="sb-dot" style="background:var(--roi-blue);"></span> GDPR
         </button>
         <button class="sb-btn" data-reg="mifid">
           <span class="sb-dot" style="background:var(--roi-blue);"></span> MiFID II
         </button>
 
-        <div class="sb-sec">Conformit&eacute;</div>
+        <div class="sb-sec">Compliance</div>
         <div class="sb-mini-panel">
-          <div class="sb-mini-title">R&eacute;sum&eacute; Conformit&eacute;</div>
+          <div class="sb-mini-title">Compliance Summary</div>
           <div class="sb-mini-row">
-            <span class="sb-mini-label">RGPD</span>
+            <span class="sb-mini-label">GDPR</span>
             <span class="sb-mini-val ok">99.8%</span>
           </div>
           <div class="sb-mini-row">
@@ -438,7 +438,7 @@
             <span class="sb-mini-val warn">94.2%</span>
           </div>
           <div class="sb-mini-row">
-            <span class="sb-mini-label">Violations (30j)</span>
+            <span class="sb-mini-label">Violations (30d)</span>
             <span class="sb-mini-val crit">3</span>
           </div>
         </div>
@@ -453,32 +453,32 @@
       <div class="hero-stats">
         <div class="stat-card c-red">
           <div class="stat-val" style="color:var(--roi-red);">3</div>
-          <div class="stat-lbl">Violations de Politique</div>
-          <div class="stat-sub">Derni&egrave;res 24h</div>
+          <div class="stat-lbl">Policy Violations</div>
+          <div class="stat-sub">Last 24h</div>
         </div>
         <div class="stat-card c-green">
           <div class="stat-val" style="color:var(--sol-green);">28</div>
-          <div class="stat-lbl">Politiques Actives</div>
-          <div class="stat-sub">Appliqu&eacute;es en temps r&eacute;el</div>
+          <div class="stat-lbl">Active Policies</div>
+          <div class="stat-sub">Enforced in real time</div>
         </div>
         <div class="stat-card c-green">
           <div class="stat-val" style="color:var(--sol-green);">99.8%</div>
-          <div class="stat-lbl">Score RGPD</div>
-          <div class="stat-sub">R&egrave;glement G&eacute;n&eacute;ral sur la Protection des Donn&eacute;es</div>
+          <div class="stat-lbl">GDPR Score</div>
+          <div class="stat-sub">General Data Protection Regulation</div>
         </div>
         <div class="stat-card c-green">
           <div class="stat-val" style="color:var(--sol-green);">100%</div>
-          <div class="stat-lbl">Conformit&eacute; DORA</div>
+          <div class="stat-lbl">DORA Compliance</div>
           <div class="stat-sub">Digital Operational Resilience Act</div>
         </div>
         <div class="stat-card c-blue">
           <div class="stat-val" style="color:var(--roi-blue);">1,247</div>
-          <div class="stat-lbl">Acc&egrave;s Cross-Domain</div>
-          <div class="stat-sub">Derni&egrave;res 24h</div>
+          <div class="stat-lbl">Cross-Domain Access</div>
+          <div class="stat-sub">Last 24h</div>
         </div>
         <div class="stat-card c-amber">
           <div class="stat-val" style="color:var(--roi-amber);">0.8s</div>
-          <div class="stat-lbl">D&eacute;lai Moyen de D&eacute;tection</div>
+          <div class="stat-lbl">Mean Detection Time</div>
           <div class="stat-sub">Mean Time to Flag</div>
         </div>
       </div>
@@ -489,9 +489,9 @@
         <!-- LEFT: VIOLATION FEED -->
         <div>
           <div class="sec-hdr">
-            <h2>Fil des Violations</h2>
+            <h2>Violation Feed</h2>
             <div class="sec-line"></div>
-            <span class="sec-badge" id="feed-count">7 alertes</span>
+            <span class="sec-badge" id="feed-count">7 alerts</span>
           </div>
           <div class="feed" id="violation-feed"></div>
         </div>
@@ -499,21 +499,21 @@
         <!-- RIGHT: MATRIX + TIMELINE -->
         <div>
           <div class="sec-hdr">
-            <h2>Matrice d'Acc&egrave;s Inter-Domaines</h2>
+            <h2>Cross-Domain Access Matrix</h2>
             <div class="sec-line"></div>
-            <span class="sec-badge">4 domaines</span>
+            <span class="sec-badge">4 domains</span>
           </div>
           <div class="matrix-wrap">
             <table class="matrix-table" id="access-matrix"></table>
           </div>
 
           <div class="sec-hdr" style="margin-top:16px;">
-            <h2>Timeline Violations</h2>
+            <h2>Violations Timeline</h2>
             <div class="sec-line"></div>
             <span class="sec-badge">24h</span>
           </div>
           <div class="timeline-panel">
-            <div class="timeline-title">Violations par Heure (Derni&egrave;res 24h)</div>
+            <div class="timeline-title">Violations per Hour (Last 24h)</div>
             <div class="chart-area" id="timeline-chart"></div>
             <div class="chart-legend">
               <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--roi-red);"></span> Critical</span>
@@ -529,9 +529,9 @@
       <!-- REGULATORY COMPLIANCE PANEL -->
       <div>
         <div class="sec-hdr">
-          <h2>Conformit&eacute; R&eacute;glementaire</h2>
+          <h2>Regulatory Compliance</h2>
           <div class="sec-line"></div>
-          <span class="sec-badge">7 r&eacute;glementations</span>
+          <span class="sec-badge">7 regulations</span>
         </div>
         <div class="reg-grid" id="reg-grid"></div>
       </div>
@@ -539,7 +539,7 @@
       <!-- DATA RESIDENCY -->
       <div>
         <div class="sec-hdr">
-          <h2>R&eacute;sidence des Donn&eacute;es</h2>
+          <h2>Data Residency</h2>
           <div class="sec-line"></div>
           <span class="sec-badge">EU Compliant</span>
         </div>
@@ -549,9 +549,9 @@
       <!-- POLICY RULES TABLE -->
       <div class="policy-table-wrap">
         <div class="sec-hdr">
-          <h2>R&egrave;gles de Politique</h2>
+          <h2>Policy Rules</h2>
           <div class="sec-line"></div>
-          <span class="sec-badge">10 r&egrave;gles actives</span>
+          <span class="sec-badge">10 active rules</span>
         </div>
         <table class="policy-table" id="policy-table"></table>
       </div>
@@ -595,7 +595,7 @@
       agent: 'risk_kyc',
       domain: 'risk',
       type: 'Data Residency',
-      detail: 'Agent risk_kyc a transmis des données PII hors zone EU — transfert détecté vers us-east-1 (AWS Virginia). Blocage immédiat appliqué.',
+      detail: 'Agent risk_kyc transmitted PII data outside EU zone — transfer detected to us-east-1 (AWS Virginia). Immediate block applied.',
       time: '14:23:07'
     },
     {
@@ -603,7 +603,7 @@
       agent: 'retail_mortgage',
       domain: 'retail',
       type: 'Data Wall',
-      detail: 'Agent retail_mortgage a tenté d\'accéder aux données CIB sans habilitation — muraille de Chine CIB–Retail violée. Accès refusé.',
+      detail: 'Agent retail_mortgage attempted to access CIB data without clearance — Chinese Wall CIB-Retail breached. Access denied.',
       time: '13:47:52'
     },
     {
@@ -611,7 +611,7 @@
       agent: 'it_copilot',
       domain: 'it',
       type: 'Access Control',
-      detail: 'Agent it_copilot a accédé au référentiel RH sans accréditation — scope "hr_data_read" non autorisé pour ce principal.',
+      detail: 'Agent it_copilot accessed HR repository without authorisation — scope "hr_data_read" not granted to this principal.',
       time: '12:15:33'
     },
     {
@@ -619,7 +619,7 @@
       agent: 'cib_trade_exec',
       domain: 'cib',
       type: 'Cost Policy',
-      detail: 'Agent cib_trade_exec a dépassé le seuil de tokens autorisé (15k tokens sur un max de 20k) — requête de pricing structuré.',
+      detail: 'Agent cib_trade_exec exceeded authorised token threshold (15k tokens on a 20k max) — structured pricing request.',
       time: '11:58:14'
     },
     {
@@ -627,7 +627,7 @@
       agent: 'retail_sentiment',
       domain: 'retail',
       type: 'Data Retention',
-      detail: 'Agent retail_sentiment a stocké des données client en mémoire au-delà de la durée autorisée (72h) — cache local non purgé.',
+      detail: 'Agent retail_sentiment stored client data in memory beyond authorised duration (72h) — local cache not purged.',
       time: '10:34:29'
     },
     {
@@ -635,7 +635,7 @@
       agent: 'cib_research_analyst',
       domain: 'cib',
       type: 'Rate Limit',
-      detail: 'Agent cib_research_analyst a dépassé le rate limiting (142 req/min vs. 100 autorisées) — throttling activé.',
+      detail: 'Agent cib_research_analyst exceeded rate limit (142 req/min vs. 100 allowed) — throttling activated.',
       time: '09:22:01'
     },
     {
@@ -643,7 +643,7 @@
       agent: 'retail_onboarding',
       domain: 'retail',
       type: 'Audit',
-      detail: 'Agent retail_onboarding — enregistrement d\'audit incomplet pour la session #RB-20260428-1847. Complément demandé.',
+      detail: 'Agent retail_onboarding — incomplete audit record for session #RB-20260428-1847. Completion requested.',
       time: '08:45:16'
     }
   ];
@@ -699,7 +699,7 @@
       html += '<tr><th>' + DOMAIN_LABELS[DOMAINS[r]] + '</th>';
       for (let c = 0; c < 4; c++) {
         if (r === c) {
-          html += '<td class="diag">interne</td>';
+          html += '<td class="diag">internal</td>';
         } else {
           var v = data[r][c];
           var flag = isFlagged(r, c);
@@ -707,7 +707,7 @@
           var color = flag
             ? 'var(--roi-red)'
             : 'rgba(0,200,149,' + (0.3 + Math.min(v / 300, 1) * 0.7).toFixed(2) + ')';
-          var flagHtml = flag ? ' <span class="flag-icon" title="Muraille de Chine"></span>' : '';
+          var flagHtml = flag ? ' <span class="flag-icon" title="Chinese Wall"></span>' : '';
           html += '<td class="' + cls + '" style="color:' + color + '">' + v + flagHtml + '</td>';
         }
       }
@@ -749,13 +749,13 @@
 
   // ═══════════════════════ REGULATORY COMPLIANCE ═══════════════════════
   var REGULATIONS = [
-    { code: 'ACPR', full: 'Autorité de Contrôle Prudentiel et de Résolution', status: 'conforme', label: 'Conforme', lastAudit: '2026-03-15', nextReview: '2026-09-15', pct: 100 },
-    { code: 'AMF', full: 'Autorité des Marchés Financiers', status: 'conforme', label: 'Conforme', lastAudit: '2026-02-28', nextReview: '2026-08-28', pct: 99 },
-    { code: 'ECB', full: 'European Central Bank — SSM', status: 'conforme', label: 'Conforme', lastAudit: '2026-01-20', nextReview: '2026-07-20', pct: 100 },
-    { code: 'DORA', full: 'Digital Operational Resilience Act', status: 'conforme', label: 'Conforme', lastAudit: '2026-04-01', nextReview: '2026-10-01', pct: 100 },
-    { code: 'MiFID II', full: 'Markets in Financial Instruments Directive', status: 'conforme', label: 'Conforme', lastAudit: '2026-03-22', nextReview: '2026-09-22', pct: 98.5 },
-    { code: 'RGPD', full: 'Règlement Général sur la Protection des Données', status: 'conforme', label: 'Conforme', lastAudit: '2026-04-10', nextReview: '2026-10-10', pct: 99.8 },
-    { code: 'EU AI Act', full: 'Règlement européen sur l\'intelligence artificielle', status: 'encours', label: 'En cours', lastAudit: '2026-04-15', nextReview: '2026-07-01', pct: 94.2 }
+    { code: 'ACPR', full: 'French Prudential Supervision and Resolution Authority', status: 'conforme', label: 'Compliant', lastAudit: '2026-03-15', nextReview: '2026-09-15', pct: 100 },
+    { code: 'AMF', full: 'French Financial Markets Authority', status: 'conforme', label: 'Compliant', lastAudit: '2026-02-28', nextReview: '2026-08-28', pct: 99 },
+    { code: 'ECB', full: 'European Central Bank — SSM', status: 'conforme', label: 'Compliant', lastAudit: '2026-01-20', nextReview: '2026-07-20', pct: 100 },
+    { code: 'DORA', full: 'Digital Operational Resilience Act', status: 'conforme', label: 'Compliant', lastAudit: '2026-04-01', nextReview: '2026-10-01', pct: 100 },
+    { code: 'MiFID II', full: 'Markets in Financial Instruments Directive', status: 'conforme', label: 'Compliant', lastAudit: '2026-03-22', nextReview: '2026-09-22', pct: 98.5 },
+    { code: 'GDPR', full: 'General Data Protection Regulation', status: 'conforme', label: 'Compliant', lastAudit: '2026-04-10', nextReview: '2026-10-10', pct: 99.8 },
+    { code: 'EU AI Act', full: 'European Artificial Intelligence Act', status: 'encours', label: 'In Progress', lastAudit: '2026-04-15', nextReview: '2026-07-01', pct: 94.2 }
   ];
 
   function buildRegulatory() {
@@ -768,8 +768,8 @@
         + '<div class="reg-name">' + reg.code + '</div>'
         + '<div class="reg-full">' + reg.full + '</div>'
         + '<div><span class="reg-status ' + reg.status + '"><span class="s-dot"></span> ' + reg.label + '</span></div>'
-        + '<div class="reg-meta">Dernier audit : ' + reg.lastAudit + '</div>'
-        + '<div class="reg-meta">Prochaine revue : ' + reg.nextReview + '</div>'
+        + '<div class="reg-meta">Last audit: ' + reg.lastAudit + '</div>'
+        + '<div class="reg-meta">Next review: ' + reg.nextReview + '</div>'
         + '<div class="reg-bar-wrap"><div class="reg-bar-fill ' + barClass + '" style="width:' + reg.pct + '%"></div></div>'
         + '<div class="reg-pct" style="color:' + pctColor + '">' + reg.pct + '%</div>'
         + '</div>';
@@ -783,33 +783,33 @@
       name: 'Databricks',
       platform: 'databricks',
       region: 'EU (Frankfurt, eu-central-1)',
-      badges: ['RGPD'],
-      classification: 'Confidentiel C2',
-      retention: 'Rétention : 90 jours, purge automatique'
+      badges: ['GDPR'],
+      classification: 'Confidential C2',
+      retention: 'Retention: 90 days, auto-purge'
     },
     {
       name: 'Salesforce',
       platform: 'salesforce',
       region: 'EU (Paris, eu-west-3)',
-      badges: ['RGPD'],
-      classification: 'Interne C1',
-      retention: 'Rétention : 365 jours, archivage long terme'
+      badges: ['GDPR'],
+      classification: 'Internal C1',
+      retention: 'Retention: 365 days, long-term archive'
     },
     {
       name: 'Mistral',
       platform: 'mistral',
       region: 'France (Paris, sovereign cloud)',
-      badges: ['RGPD', 'Souveraineté'],
-      classification: 'Confidentiel C2',
-      retention: 'Rétention : 30 jours, cloud souverain'
+      badges: ['GDPR', 'Sovereignty'],
+      classification: 'Confidential C2',
+      retention: 'Retention: 30 days, sovereign cloud'
     },
     {
       name: 'Claude',
       platform: 'claude',
       region: 'EU (Frankfurt)',
-      badges: ['RGPD'],
-      classification: 'Confidentiel C2',
-      retention: 'Rétention : 72h, aucune persistance'
+      badges: ['GDPR'],
+      classification: 'Confidential C2',
+      retention: 'Retention: 72h, no persistence'
     }
   ];
 
@@ -819,7 +819,7 @@
     PLATFORMS.forEach(function(p) {
       var badgesHtml = '';
       p.badges.forEach(function(b) {
-        if (b === 'Souveraineté') {
+        if (b === 'Sovereignty') {
           badgesHtml += '<span class="rc-badge sovereign"><span class="badge-dot"></span> ' + b + '</span> ';
         } else {
           badgesHtml += '<span class="rc-badge ok"><span class="badge-dot"></span> ' + b + '</span> ';
@@ -839,26 +839,26 @@
 
   // ═══════════════════════ POLICY TABLE ═══════════════════════
   var POLICIES = [
-    { name: 'Muraille de Chine CIB–Retail', domains: ['CIB', 'Retail'], type: 'Data Wall', status: 'Actif', violations: 2 },
-    { name: 'Token Budget par Agent (max 20k/req)', domains: ['All'], type: 'Cost', status: 'Actif', violations: 5 },
-    { name: 'Résidence EU des données PII', domains: ['All'], type: 'Data Residency', status: 'Actif', violations: 1 },
-    { name: 'Habilitation multi-domaine', domains: ['All'], type: 'Access Control', status: 'Actif', violations: 3 },
-    { name: 'Rétention données client (max 72h)', domains: ['Retail'], type: 'Data Retention', status: 'Actif', violations: 1 },
-    { name: 'Audit trail obligatoire', domains: ['All'], type: 'Audit', status: 'Actif', violations: 0 },
-    { name: 'Human-in-the-loop > €50k', domains: ['CIB', 'Retail'], type: 'HITL', status: 'Actif', violations: 0 },
-    { name: 'Modèle souverain pour PII', domains: ['Risk', 'Retail'], type: 'Sovereignty', status: 'Actif', violations: 0 },
-    { name: 'Rate limiting (100 req/min)', domains: ['All'], type: 'Rate Limit', status: 'Actif', violations: 4 },
-    { name: 'Logging de toutes les décisions', domains: ['All'], type: 'Audit', status: 'Actif', violations: 0 }
+    { name: 'Chinese Wall CIB-Retail', domains: ['CIB', 'Retail'], type: 'Data Wall', status: 'Active', violations: 2 },
+    { name: 'Token Budget per Agent (max 20k/req)', domains: ['All'], type: 'Cost', status: 'Active', violations: 5 },
+    { name: 'EU Residency for PII Data', domains: ['All'], type: 'Data Residency', status: 'Active', violations: 1 },
+    { name: 'Cross-Domain Authorisation', domains: ['All'], type: 'Access Control', status: 'Active', violations: 3 },
+    { name: 'Client Data Retention (max 72h)', domains: ['Retail'], type: 'Data Retention', status: 'Active', violations: 1 },
+    { name: 'Mandatory Audit Trail', domains: ['All'], type: 'Audit', status: 'Active', violations: 0 },
+    { name: 'Human-in-the-loop > €50k', domains: ['CIB', 'Retail'], type: 'HITL', status: 'Active', violations: 0 },
+    { name: 'Sovereign Model for PII', domains: ['Risk', 'Retail'], type: 'Sovereignty', status: 'Active', violations: 0 },
+    { name: 'Rate Limiting (100 req/min)', domains: ['All'], type: 'Rate Limit', status: 'Active', violations: 4 },
+    { name: 'Decision Logging', domains: ['All'], type: 'Audit', status: 'Active', violations: 0 }
   ];
 
   function buildPolicyTable() {
     var el = document.getElementById('policy-table');
     var html = '<thead><tr>'
-      + '<th>Politique</th>'
-      + '<th>Domaine</th>'
+      + '<th>Policy</th>'
+      + '<th>Domain</th>'
       + '<th>Type</th>'
-      + '<th>Statut</th>'
-      + '<th>Violations (30j)</th>'
+      + '<th>Status</th>'
+      + '<th>Violations (30d)</th>'
       + '</tr></thead><tbody>';
     POLICIES.forEach(function(p) {
       var domainTags = p.domains.map(function(d) { return '<span class="domain-tag">' + d + '</span>'; }).join('');
@@ -916,7 +916,7 @@
 
   function updateFeedCount() {
     var visible = document.querySelectorAll('#violation-feed .v-card:not([style*="display: none"])').length;
-    document.getElementById('feed-count').textContent = visible + ' alerte' + (visible !== 1 ? 's' : '');
+    document.getElementById('feed-count').textContent = visible + ' alert' + (visible !== 1 ? 's' : '');
   }
 
   // ═══════════════════════ INIT ═══════════════════════

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -326,7 +326,7 @@
     <div class="logo-sep"></div>
     <div class="title-block">
       <h1>Your Bank &mdash; Agent Mesh</h1>
-      <span class="sub">Connecter, Gouverner et Superviser</span>
+      <span class="sub">Connect, Govern and Supervise</span>
     </div>
     <div class="topbar-right">
       <span class="live-badge"><span class="dot"></span> 200 agents live</span>
@@ -349,44 +349,44 @@
 // ================================================================
 const SPECIALIST_TEMPLATES = {
   cib: [
-    {suffix: 'structuring', name: 'Product Structuring Agent', platform: 'databricks', facing: 'internal', desc: 'Structure les produits dérivés et obligations structurées. Analyse de pricing en temps réel.'},
-    {suffix: 'market_data', name: 'Market Data Insights', platform: 'databricks', facing: 'internal', desc: 'Requêtes en langage naturel sur les données de marché. Portfolio analytics.'},
-    {suffix: 'trade_exec', name: 'Trade Execution Agent', platform: 'mistral', facing: 'internal', desc: 'Exécution optimale des ordres. Analyse pré/post-trade et best execution.'},
-    {suffix: 'research', name: 'Research Summariser', platform: 'claude', facing: 'internal', desc: 'Synthèse de la recherche sell-side/buy-side. Génération de notes d\'investissement.'},
-    {suffix: 'pricing', name: 'Pricing Engine Agent', platform: 'databricks', facing: 'internal', desc: 'Moteur de pricing temps réel pour dérivés et produits structurés.'},
-    {suffix: 'risk_calc', name: 'Risk Calculator', platform: 'databricks', facing: 'internal', desc: 'Calcul VaR, Greeks et sensibilités de portefeuille.'},
-    {suffix: 'settlement', name: 'Settlement Agent', platform: 'mistral', facing: 'internal', desc: 'Réconciliation et règlement-livraison post-trade automatisé.'},
-    {suffix: 'reporting', name: 'CIB Reporting Agent', platform: 'claude', facing: 'internal', desc: 'Rapports de performance et analytics CIB automatisés.'},
+    {suffix: 'structuring', name: 'Product Structuring Agent', platform: 'databricks', facing: 'internal', desc: 'Structures derivatives and structured notes with real-time pricing.'},
+    {suffix: 'market_data', name: 'Market Data Insights', platform: 'databricks', facing: 'internal', desc: 'Natural-language queries on market data and portfolio analytics.'},
+    {suffix: 'trade_exec', name: 'Trade Execution Agent', platform: 'mistral', facing: 'internal', desc: 'Optimal order execution with pre/post-trade best-execution analysis.'},
+    {suffix: 'research', name: 'Research Summariser', platform: 'claude', facing: 'internal', desc: 'Summarises sell-side/buy-side research into investment notes.'},
+    {suffix: 'pricing', name: 'Pricing Engine Agent', platform: 'databricks', facing: 'internal', desc: 'Real-time pricing engine for derivatives and structured products.'},
+    {suffix: 'risk_calc', name: 'Risk Calculator', platform: 'databricks', facing: 'internal', desc: 'Computes VaR, Greeks and portfolio sensitivities.'},
+    {suffix: 'settlement', name: 'Settlement Agent', platform: 'mistral', facing: 'internal', desc: 'Automated post-trade reconciliation and settlement.'},
+    {suffix: 'reporting', name: 'CIB Reporting Agent', platform: 'claude', facing: 'internal', desc: 'Generates automated CIB performance reports and analytics.'},
   ],
   retail: [
-    {suffix: 'onboarding', name: 'Customer Onboarding Agent', platform: 'salesforce', facing: 'customer', desc: 'Parcours d\'ouverture de compte digitalisé. Vérification documentaire automatisée.'},
-    {suffix: 'mortgage', name: 'Mortgage Pre-Approval Agent', platform: 'salesforce', facing: 'customer', desc: 'Pré-approbation hypothécaire en temps réel. Scoring et simulation de mensualités.'},
-    {suffix: 'sentiment', name: 'Customer Sentiment Agent', platform: 'mistral', facing: 'internal', desc: 'Analyse des enquêtes NPS et avis post-rendez-vous. Détection de l\'insatisfaction.'},
-    {suffix: 'advisor', name: 'Advisor Copilot', platform: 'claude', facing: 'internal', desc: 'Copilote pour les conseillers bancaires. Recommandations produit et aide à la vente.'},
-    {suffix: 'upsell', name: 'Upsell Recommender', platform: 'salesforce', facing: 'customer', desc: 'Recommandations de produits complémentaires basées sur le profil client.'},
-    {suffix: 'billing', name: 'Billing Query Agent', platform: 'salesforce', facing: 'customer', desc: 'Résolution automatisée des requêtes facturation et relevés.'},
-    {suffix: 'nps', name: 'NPS Analyser', platform: 'mistral', facing: 'internal', desc: 'Analyse NPS multi-canal et détection des signaux faibles.'},
-    {suffix: 'scheduler', name: 'Appointment Scheduler', platform: 'salesforce', facing: 'customer', desc: 'Planification intelligente de rendez-vous en agence et visio.'},
+    {suffix: 'onboarding', name: 'Customer Onboarding Agent', platform: 'salesforce', facing: 'customer', desc: 'Digital account opening with automated document verification.'},
+    {suffix: 'mortgage', name: 'Mortgage Pre-Approval Agent', platform: 'salesforce', facing: 'customer', desc: 'Real-time mortgage pre-approval with credit scoring.'},
+    {suffix: 'sentiment', name: 'Customer Sentiment Agent', platform: 'mistral', facing: 'internal', desc: 'Analyses NPS surveys and detects customer dissatisfaction.'},
+    {suffix: 'advisor', name: 'Advisor Copilot', platform: 'claude', facing: 'internal', desc: 'Assists branch advisors with product recommendations.'},
+    {suffix: 'upsell', name: 'Upsell Recommender', platform: 'salesforce', facing: 'customer', desc: 'Profile-based cross-sell and upsell recommendations.'},
+    {suffix: 'billing', name: 'Billing Query Agent', platform: 'salesforce', facing: 'customer', desc: 'Resolves billing inquiries and statement disputes.'},
+    {suffix: 'nps', name: 'NPS Analyser', platform: 'mistral', facing: 'internal', desc: 'Multi-channel NPS analysis and weak-signal detection.'},
+    {suffix: 'scheduler', name: 'Appointment Scheduler', platform: 'salesforce', facing: 'customer', desc: 'Smart scheduling for branch and video appointments.'},
   ],
   risk: [
-    {suffix: 'kyc', name: 'KYC/AML Agent', platform: 'mistral', facing: 'internal', desc: 'Vérification KYC automatisée. Screening sanctions et PEP. Alertes AML.'},
-    {suffix: 'credit', name: 'Credit Risk Scorer', platform: 'databricks', facing: 'internal', desc: 'Scoring de risque de crédit en temps réel. Modèles IRBA et stress tests.'},
-    {suffix: 'regulatory', name: 'Regulatory Reporting Agent', platform: 'mistral', facing: 'internal', desc: 'Génération automatique des rapports Financial Regulator, ECB, DORA. Conformité MiFID II.'},
-    {suffix: 'fraud', name: 'Fraud Detection Agent', platform: 'databricks', facing: 'internal', desc: 'Détection de fraude en temps réel. Analyse comportementale et alertes.'},
-    {suffix: 'stress', name: 'Stress Test Agent', platform: 'databricks', facing: 'internal', desc: 'Simulation de scénarios de stress réglementaires et ad-hoc.'},
-    {suffix: 'sanctions', name: 'Sanctions Screening Agent', platform: 'mistral', facing: 'internal', desc: 'Screening continu des listes de sanctions internationales.'},
-    {suffix: 'model_val', name: 'Model Validation Agent', platform: 'databricks', facing: 'internal', desc: 'Validation indépendante des modèles de risque et backtesting.'},
-    {suffix: 'alert', name: 'Alert Triage Agent', platform: 'claude', facing: 'internal', desc: 'Triage intelligent des alertes de risque et priorisation.'},
+    {suffix: 'kyc', name: 'KYC/AML Agent', platform: 'mistral', facing: 'internal', desc: 'Automated KYC checks, sanctions screening and AML alerts.'},
+    {suffix: 'credit', name: 'Credit Risk Scorer', platform: 'databricks', facing: 'internal', desc: 'Real-time credit risk scoring with IRBA models and stress tests.'},
+    {suffix: 'regulatory', name: 'Regulatory Reporting Agent', platform: 'mistral', facing: 'internal', desc: 'Auto-generates Financial Regulator, ECB, DORA and MiFID II reports.'},
+    {suffix: 'fraud', name: 'Fraud Detection Agent', platform: 'databricks', facing: 'internal', desc: 'Real-time fraud detection via behavioural analytics.'},
+    {suffix: 'stress', name: 'Stress Test Agent', platform: 'databricks', facing: 'internal', desc: 'Runs regulatory and ad-hoc stress test scenarios.'},
+    {suffix: 'sanctions', name: 'Sanctions Screening Agent', platform: 'mistral', facing: 'internal', desc: 'Continuous screening against international sanctions lists.'},
+    {suffix: 'model_val', name: 'Model Validation Agent', platform: 'databricks', facing: 'internal', desc: 'Independent risk-model validation and backtesting.'},
+    {suffix: 'alert', name: 'Alert Triage Agent', platform: 'claude', facing: 'internal', desc: 'Triages and prioritises risk alerts intelligently.'},
   ],
   it: [
-    {suffix: 'security', name: 'Security Incident Agent', platform: 'claude', facing: 'internal', desc: 'Réponse aux incidents de sécurité. Triage automatique et remédiation.'},
-    {suffix: 'infra', name: 'Infrastructure Monitor', platform: 'databricks', facing: 'internal', desc: 'Supervision des infrastructures cloud et on-prem. Alertes et auto-scaling.'},
-    {suffix: 'copilot', name: 'Internal Copilot', platform: 'claude', facing: 'internal', desc: 'Assistant IA pour les équipes internes. Recherche documentaire et Q&A.'},
-    {suffix: 'deployment', name: 'Deployment Agent', platform: 'mistral', facing: 'internal', desc: 'CI/CD des agents. Déploiement Kubernetes et rollback automatique.'},
-    {suffix: 'backup', name: 'Backup & Recovery Agent', platform: 'databricks', facing: 'internal', desc: 'Gestion des sauvegardes et reprise après incident automatisée.'},
-    {suffix: 'access', name: 'Access Management Agent', platform: 'claude', facing: 'internal', desc: 'Gestion des accès, provisioning et revue des droits.'},
-    {suffix: 'cost_opt', name: 'Cost Optimisation Agent', platform: 'databricks', facing: 'internal', desc: 'Optimisation des coûts cloud et recommandations FinOps.'},
-    {suffix: 'doc', name: 'Documentation Agent', platform: 'claude', facing: 'internal', desc: 'Génération et mise à jour automatique de la documentation technique.'},
+    {suffix: 'security', name: 'Security Incident Agent', platform: 'claude', facing: 'internal', desc: 'Triages security incidents and triggers remediation.'},
+    {suffix: 'infra', name: 'Infrastructure Monitor', platform: 'databricks', facing: 'internal', desc: 'Monitors cloud and on-prem infra with auto-scaling alerts.'},
+    {suffix: 'copilot', name: 'Internal Copilot', platform: 'claude', facing: 'internal', desc: 'AI assistant for internal teams with document Q&A.'},
+    {suffix: 'deployment', name: 'Deployment Agent', platform: 'mistral', facing: 'internal', desc: 'Manages agent CI/CD pipelines and Kubernetes rollbacks.'},
+    {suffix: 'backup', name: 'Backup & Recovery Agent', platform: 'databricks', facing: 'internal', desc: 'Automated backup management and disaster recovery.'},
+    {suffix: 'access', name: 'Access Management Agent', platform: 'claude', facing: 'internal', desc: 'Handles access provisioning and entitlement reviews.'},
+    {suffix: 'cost_opt', name: 'Cost Optimisation Agent', platform: 'databricks', facing: 'internal', desc: 'Cloud cost optimisation and FinOps recommendations.'},
+    {suffix: 'doc', name: 'Documentation Agent', platform: 'claude', facing: 'internal', desc: 'Auto-generates and maintains technical documentation.'},
   ],
 };
 
@@ -396,13 +396,13 @@ function buildTopology() {
   const agents = [];
 
   // 1) Orchestrator
-  agents.push({ id: 'orchestrator', name: 'Orchestrateur Multi-Agents', domain: 'group', platform: 'mistral', type: 'orchestrator', facing: 'internal', desc: 'Coordonne les workflows multi-domaines à travers CIB, Retail, Risk et IT.' });
+  agents.push({ id: 'orchestrator', name: 'Multi-Agent Orchestrator', domain: 'group', platform: 'mistral', type: 'orchestrator', facing: 'internal', desc: 'Coordinates cross-domain workflows across CIB, Retail, Risk and IT.' });
 
   // 2) Domain Heads
-  agents.push({ id: 'head_cib', name: 'Head of CIB Agents', domain: 'cib', platform: 'databricks', type: 'head', facing: 'internal', desc: 'Pilote les agents de banque d\'investissement — structuration, pricing, exécution.' });
-  agents.push({ id: 'head_retail', name: 'Head of Retail Banking', domain: 'retail', platform: 'salesforce', type: 'head', facing: 'customer', desc: 'Supervise les agents client — onboarding, prêts, satisfaction.' });
-  agents.push({ id: 'head_risk', name: 'Head of Risk & Compliance', domain: 'risk', platform: 'mistral', type: 'head', facing: 'internal', desc: 'Gouverne la conformité réglementaire, KYC/AML, et le risque de crédit.' });
-  agents.push({ id: 'head_it', name: 'Head of IT & Ops', domain: 'it', platform: 'claude', type: 'head', facing: 'internal', desc: 'Gère l\'infrastructure, la sécurité et les copilotes internes.' });
+  agents.push({ id: 'head_cib', name: 'Head of CIB Agents', domain: 'cib', platform: 'databricks', type: 'head', facing: 'internal', desc: 'Drives investment banking agents for structuring, pricing and execution.' });
+  agents.push({ id: 'head_retail', name: 'Head of Retail Banking', domain: 'retail', platform: 'salesforce', type: 'head', facing: 'customer', desc: 'Oversees customer-facing agents for onboarding, lending and satisfaction.' });
+  agents.push({ id: 'head_risk', name: 'Head of Risk & Compliance', domain: 'risk', platform: 'mistral', type: 'head', facing: 'internal', desc: 'Governs regulatory compliance, KYC/AML and credit risk.' });
+  agents.push({ id: 'head_it', name: 'Head of IT & Ops', domain: 'it', platform: 'claude', type: 'head', facing: 'internal', desc: 'Manages infrastructure, security and internal copilots.' });
 
   // 3) Generate 195 specialists (~49 per domain, last domain gets remainder)
   const domains = ['cib', 'retail', 'risk', 'it'];
@@ -434,11 +434,11 @@ function buildTopology() {
 const AGENTS = buildTopology();
 
 const DOMAIN_META = {
-  group:  { label: 'Orchestration Groupe', icon: 'GRP', desc: 'Coordination multi-domaines' },
-  cib:    { label: 'Corporate & Investment Banking', icon: 'CIB', desc: 'Structuration, Pricing, Execution, Research' },
-  retail: { label: 'Retail Banking', icon: 'RET', desc: 'Onboarding, Prêts, Satisfaction, Conseil' },
-  risk:   { label: 'Risk & Compliance', icon: 'RSK', desc: 'KYC/AML, Crédit, Réglementation, Fraude' },
-  it:     { label: 'IT & Operations', icon: 'IT', desc: 'Sécurité, Infrastructure, Copilotes, CI/CD' },
+  group:  { label: 'Group Orchestration', icon: 'GRP', desc: 'Cross-domain coordination' },
+  cib:    { label: 'Corporate & Investment Banking', icon: 'CIB', desc: 'Structuring, Pricing, Execution, Research' },
+  retail: { label: 'Retail Banking', icon: 'RET', desc: 'Onboarding, Lending, Satisfaction, Advisory' },
+  risk:   { label: 'Risk & Compliance', icon: 'RSK', desc: 'KYC/AML, Credit, Regulatory, Fraud' },
+  it:     { label: 'IT & Operations', icon: 'IT', desc: 'Security, Infrastructure, Copilots, CI/CD' },
 };
 
 const PLATFORM_LABELS = {
@@ -495,7 +495,7 @@ const expandedSpecialists = {}; // track which domains have "show all" toggled
 // ================================================================
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function ini(name) { return name.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
-function fmt(n) { return n.toLocaleString('fr-FR'); }
+function fmt(n) { return n.toLocaleString('en-GB'); }
 
 function filtered() {
   return AGENTS.filter(a => {
@@ -526,13 +526,13 @@ function renderSidebar() {
   for (const k of Object.keys(avg)) avg[k] = avg[k] / n;
 
   let html = '';
-  html += '<div class="sb-hdr"><h3>Filtres</h3></div>';
+  html += '<div class="sb-hdr"><h3>Filters</h3></div>';
   html += '<div class="sb-body">';
 
   // Domain filter
-  html += '<div class="sb-sec">Domaine</div>';
+  html += '<div class="sb-sec">Domains</div>';
   const domainOpts = [
-    { key: 'all', label: 'Tous les domaines', color: '#00c895' },
+    { key: 'all', label: 'All Domains', color: '#00c895' },
     { key: 'cib', label: 'CIB', color: 'var(--databricks)' },
     { key: 'retail', label: 'Retail Banking', color: 'var(--salesforce)' },
     { key: 'risk', label: 'Risk & Compliance', color: 'var(--mistral)' },
@@ -548,9 +548,9 @@ function renderSidebar() {
   }
 
   // Platform filter
-  html += '<div class="sb-sec">Plateforme</div>';
+  html += '<div class="sb-sec">Platforms</div>';
   const platOpts = [
-    { key: 'all', label: 'Toutes', color: '#00c895' },
+    { key: 'all', label: 'All Platforms', color: '#00c895' },
     { key: 'databricks', label: 'Databricks', color: 'var(--databricks)' },
     { key: 'salesforce', label: 'Salesforce', color: 'var(--salesforce)' },
     { key: 'mistral', label: 'Mistral', color: 'var(--mistral)' },
@@ -566,9 +566,9 @@ function renderSidebar() {
   }
 
   // Facing filter
-  html += '<div class="sb-sec">Exposition</div>';
+  html += '<div class="sb-sec">Facing</div>';
   const facingOpts = [
-    { key: 'all', label: 'Tous', color: '#00c895' },
+    { key: 'all', label: 'All', color: '#00c895' },
     { key: 'customer', label: 'Customer-Facing', color: 'var(--sol-green)' },
     { key: 'internal', label: 'Internal', color: 'var(--sol-dim)' },
   ];
@@ -583,14 +583,14 @@ function renderSidebar() {
 
   // KPI Summary
   html += `<div class="sb-kpi-summary" style="margin-top:12px">
-    <div class="sb-kpi-title">KPI Moyennes (${agents.length} agents)</div>
-    <div class="sb-kpi-row"><span class="sb-kpi-label">Succès</span><span class="sb-kpi-val">${avg.successRate.toFixed(1)}%</span></div>
-    <div class="sb-kpi-row"><span class="sb-kpi-label">Coût / mois</span><span class="sb-kpi-val amber">€${fmt(Math.round(avg.costPerMonth))}</span></div>
-    <div class="sb-kpi-row"><span class="sb-kpi-label">Latence moy.</span><span class="sb-kpi-val blue">${Math.round(avg.avgLatency)} ms</span></div>
-    <div class="sb-kpi-row"><span class="sb-kpi-label">Escalade</span><span class="sb-kpi-val">${avg.escalationRate.toFixed(1)}%</span></div>
+    <div class="sb-kpi-title">KPI Averages (${agents.length} agents)</div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Success</span><span class="sb-kpi-val">${avg.successRate.toFixed(1)}%</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Cost / month</span><span class="sb-kpi-val amber">€${fmt(Math.round(avg.costPerMonth))}</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Avg. latency</span><span class="sb-kpi-val blue">${Math.round(avg.avgLatency)} ms</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Escalation</span><span class="sb-kpi-val">${avg.escalationRate.toFixed(1)}%</span></div>
     <div class="sb-kpi-row"><span class="sb-kpi-label">Grounding</span><span class="sb-kpi-val">${avg.groundingAccuracy.toFixed(1)}%</span></div>
-    <div class="sb-kpi-row"><span class="sb-kpi-label">Violations sécu.</span><span class="sb-kpi-val" style="color:#ef4444">${avg.securityViolations.toFixed(1)}</span></div>
-    <div class="sb-kpi-row"><span class="sb-kpi-label">Dépendances</span><span class="sb-kpi-val blue">${avg.dependencies.toFixed(1)}</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Security viol.</span><span class="sb-kpi-val" style="color:#ef4444">${avg.securityViolations.toFixed(1)}</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Dependencies</span><span class="sb-kpi-val blue">${avg.dependencies.toFixed(1)}</span></div>
     <div class="sb-kpi-row"><span class="sb-kpi-label">Feedback</span><span class="sb-kpi-val">${avg.feedbackScore.toFixed(1)} / 5</span></div>
   </div>`;
 
@@ -637,21 +637,21 @@ function renderCard(a) {
     <div class="kpi-strip">
       <div class="kpi-cell">
         <div class="kpi-cell-val ${successCls}">${k.successRate}%</div>
-        <div class="kpi-cell-lbl">Succès</div>
+        <div class="kpi-cell-lbl">Success</div>
         <div class="kpi-bar-track"><div class="kpi-bar-fill ${successCls === 'green' ? 'g' : successCls === 'amber' ? 'a' : 'r'}" style="width:${k.successRate}%"></div></div>
       </div>
       <div class="kpi-cell">
         <div class="kpi-cell-val amber">€${fmt(k.costPerMonth)}</div>
-        <div class="kpi-cell-lbl">Coût/mois</div>
+        <div class="kpi-cell-lbl">Cost/mo</div>
       </div>
       <div class="kpi-cell">
         <div class="kpi-cell-val ${latencyCls}">${k.avgLatency} ms</div>
-        <div class="kpi-cell-lbl">Latence</div>
+        <div class="kpi-cell-lbl">Latency</div>
         <div class="kpi-bar-track"><div class="kpi-bar-fill ${latencyCls === 'green' ? 'g' : latencyCls === 'amber' ? 'a' : 'r'}" style="width:${Math.min(100, k.avgLatency / 5)}%"></div></div>
       </div>
       <div class="kpi-cell">
         <div class="kpi-cell-val ${escalCls}">${k.escalationRate}%</div>
-        <div class="kpi-cell-lbl">Escalade</div>
+        <div class="kpi-cell-lbl">Escalation</div>
       </div>
       <div class="kpi-cell">
         <div class="kpi-cell-val ${groundCls}">${k.groundingAccuracy}%</div>
@@ -660,11 +660,11 @@ function renderCard(a) {
       </div>
       <div class="kpi-cell">
         <div class="kpi-cell-val ${secCls}">${k.securityViolations}</div>
-        <div class="kpi-cell-lbl">Sécurité</div>
+        <div class="kpi-cell-lbl">Security</div>
       </div>
       <div class="kpi-cell">
         <div class="kpi-cell-val blue">${k.dependencies}</div>
-        <div class="kpi-cell-lbl">Dépend.</div>
+        <div class="kpi-cell-lbl">Deps</div>
       </div>
       <div class="kpi-cell">
         <div class="kpi-cell-val ${fbCls}">${k.feedbackScore}</div>
@@ -682,7 +682,7 @@ function renderCompactCard(a) {
   const platClass = a.platform;
   const successCls = k.successRate >= 95 ? 'green' : k.successRate >= 90 ? 'amber' : 'red';
   const platLabel = PLATFORM_LABELS[a.platform] || a.platform;
-  const facingLabel = a.facing === 'customer' ? 'Client' : 'Interne';
+  const facingLabel = a.facing === 'customer' ? 'Customer-Facing' : 'Internal';
 
   return `<div class="agent-card-compact">
     <div class="card-av ${platClass}">${ini(a.name)}</div>
@@ -720,24 +720,24 @@ function renderContent() {
 
   // Hero stats
   html += '<div class="hero-stats">';
-  html += `<div class="stat-card c-green"><div class="stat-val">${totalAgents}</div><div class="stat-lbl">Total Agents</div><div class="stat-sub">1 orchestrateur + 4 heads + 195 spécialistes</div></div>`;
-  html += `<div class="stat-card c-databricks"><div class="stat-val">${domainSet.size || 4}</div><div class="stat-lbl">Domaines</div><div class="stat-sub">CIB, Retail, Risk, IT</div></div>`;
-  html += `<div class="stat-card c-salesforce"><div class="stat-val">${platSet.size}</div><div class="stat-lbl">Plateformes</div><div class="stat-sub">DB ${allDb} / SF ${allSf} / Mi ${allMi} / Cl ${allCl}</div></div>`;
-  html += `<div class="stat-card c-mistral"><div class="stat-val">${customerFacing}</div><div class="stat-lbl">Customer-Facing</div><div class="stat-sub">Agents exposés au client</div></div>`;
-  html += `<div class="stat-card c-claude"><div class="stat-val">${internalFacing}</div><div class="stat-lbl">Internal</div><div class="stat-sub">Agents internes</div></div>`;
+  html += `<div class="stat-card c-green"><div class="stat-val">${totalAgents}</div><div class="stat-lbl">Total Agents</div><div class="stat-sub">1 orchestrator + 4 heads + 195 specialists</div></div>`;
+  html += `<div class="stat-card c-databricks"><div class="stat-val">${domainSet.size || 4}</div><div class="stat-lbl">Domains</div><div class="stat-sub">CIB, Retail, Risk, IT</div></div>`;
+  html += `<div class="stat-card c-salesforce"><div class="stat-val">${platSet.size}</div><div class="stat-lbl">Platforms</div><div class="stat-sub">DB ${allDb} / SF ${allSf} / Mi ${allMi} / Cl ${allCl}</div></div>`;
+  html += `<div class="stat-card c-mistral"><div class="stat-val">${customerFacing}</div><div class="stat-lbl">Customer-Facing</div><div class="stat-sub">Client-exposed agents</div></div>`;
+  html += `<div class="stat-card c-claude"><div class="stat-val">${internalFacing}</div><div class="stat-lbl">Internal</div><div class="stat-sub">Back-office agents</div></div>`;
   html += '</div>';
 
   // Search toolbar
   html += `<div class="toolbar">
     <div class="search-box">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" placeholder="Rechercher un agent par nom, ID ou description..." value="${esc(searchTerm)}" oninput="setSearch(this.value)" />
+      <input type="text" placeholder="Search agents by name, ID or description..." value="${esc(searchTerm)}" oninput="setSearch(this.value)" />
     </div>
-    <span class="rmeta">${agents.length} agent${agents.length > 1 ? 's' : ''} affiché${agents.length > 1 ? 's' : ''}</span>
+    <span class="rmeta">${agents.length} agent${agents.length > 1 ? 's' : ''} shown</span>
   </div>`;
 
   if (agents.length === 0) {
-    html += '<div class="empty"><h3>Aucun agent trouvé</h3><p>Modifiez les filtres ou la recherche.</p></div>';
+    html += '<div class="empty"><h3>No agents found</h3><p>Adjust filters or search query.</p></div>';
     content.innerHTML = html;
     return;
   }
@@ -745,7 +745,7 @@ function renderContent() {
   // Group by domain, then by role
   const domainOrder = ['group', 'cib', 'retail', 'risk', 'it'];
   const roleOrder = ['orchestrator', 'head', 'specialist'];
-  const roleFrench = { orchestrator: 'Orchestrateur', head: 'Responsable de Domaine', specialist: 'Agent Spécialiste' };
+  const roleFrench = { orchestrator: 'Multi-Agent Orchestrator', head: 'Domain Head', specialist: 'Specialist Agent' };
 
   for (const domain of domainOrder) {
     const domainAgents = agents.filter(a => a.domain === domain);
@@ -782,10 +782,10 @@ function renderContent() {
 
     // Domain KPI bar
     html += '<div class="domain-kpi-bar">';
-    html += `<div class="domain-kpi-item"><div class="domain-kpi-val">${davg.successRate.toFixed(1)}%</div><div class="domain-kpi-lbl">Succès Moyen</div></div>`;
-    html += `<div class="domain-kpi-item"><div class="domain-kpi-val amber">€${fmt(Math.round(davg.costPerMonth))}</div><div class="domain-kpi-lbl">Coût Moyen/Mois</div></div>`;
-    html += `<div class="domain-kpi-item"><div class="domain-kpi-val blue">${Math.round(davg.avgLatency)} ms</div><div class="domain-kpi-lbl">Latence Moyenne</div></div>`;
-    html += `<div class="domain-kpi-item"><div class="domain-kpi-val">${davg.feedbackScore.toFixed(1)} / 5</div><div class="domain-kpi-lbl">Feedback Moyen</div></div>`;
+    html += `<div class="domain-kpi-item"><div class="domain-kpi-val">${davg.successRate.toFixed(1)}%</div><div class="domain-kpi-lbl">Avg Success</div></div>`;
+    html += `<div class="domain-kpi-item"><div class="domain-kpi-val amber">€${fmt(Math.round(davg.costPerMonth))}</div><div class="domain-kpi-lbl">Avg Cost/Mo</div></div>`;
+    html += `<div class="domain-kpi-item"><div class="domain-kpi-val blue">${Math.round(davg.avgLatency)} ms</div><div class="domain-kpi-lbl">Avg Latency</div></div>`;
+    html += `<div class="domain-kpi-item"><div class="domain-kpi-val">${davg.feedbackScore.toFixed(1)} / 5</div><div class="domain-kpi-lbl">Avg Feedback</div></div>`;
     html += '</div>';
 
     for (const role of roleOrder) {
@@ -809,9 +809,9 @@ function renderContent() {
         }
         html += '</div>';
         if (remaining > 0) {
-          html += `<button class="show-more-btn" onclick="toggleShowMore('${domain}')">Afficher ${remaining} agents supplémentaires</button>`;
+          html += `<button class="show-more-btn" onclick="toggleShowMore('${domain}')">Show ${remaining} more agents</button>`;
         } else if (isExpanded && roleAgents.length > SPECIALISTS_PER_PAGE && !searchTerm) {
-          html += `<button class="show-more-btn" onclick="toggleShowMore('${domain}')">Replier</button>`;
+          html += `<button class="show-more-btn" onclick="toggleShowMore('${domain}')">Collapse</button>`;
         }
       } else {
         // Full cards for orchestrator & heads

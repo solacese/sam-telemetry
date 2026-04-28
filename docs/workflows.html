@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -372,19 +372,19 @@
   <div class="topbar">
     <div class="logo-block">
       <span class="logo-text">solace.</span>
-      <span class="logo-sep"></span>
+      <div class="logo-sep"></div>
     </div>
     <div class="title-block">
       <h1>Your Bank &mdash; Workflow Replay</h1>
-      <div class="sub">Orchestration Multi-Cloud &amp; Multi-Agents</div>
+      <span class="sub">Multi-Platform Agent Orchestration</span>
     </div>
     <div class="topbar-right">
-      <span class="live-badge"><span class="dot"></span> <span id="live-count">0</span> agents live</span>
+      <span class="live-badge"><span class="dot"></span> 200 agents live</span>
       <a href="agents.html">Agents</a>
       <a href="governance.html">Governance</a>
       <a href="workflows.html" class="active">Workflows</a>
-      <a href="observability.html">Observabilit&eacute;</a>
-      <a href="cost.html">Co&ucirc;ts</a>
+      <a href="cost.html">Cost</a>
+      <a href="observability.html">Observability</a>
     </div>
   </div>
 
@@ -393,13 +393,13 @@
     <div class="sidebar">
       <div class="sb-hdr"><h3>Workflow Replay</h3></div>
       <div class="sb-body">
-        <div class="sb-sec">Sc&eacute;narios</div>
+        <div class="sb-sec">Scenarios</div>
         <div id="sbScenarios"></div>
 
-        <div class="sb-sec" style="margin-top:8px">Navigateur d'&eacute;tapes</div>
+        <div class="sb-sec" style="margin-top:8px">Step Navigator</div>
         <div id="sbSteps"></div>
 
-        <div class="sb-sec" style="margin-top:8px">Statistiques</div>
+        <div class="sb-sec" style="margin-top:8px">Statistics</div>
         <div id="sbStats"></div>
       </div>
     </div>
@@ -420,11 +420,11 @@
    Domain / Lane Configuration — 5 columns
    ================================================================ */
 const LANES = [
-  { id: 'orchestrator', label: 'Orchestrateur',          platform: 'mistral', platformLabel: 'Mistral', colorCls: 'c-green',      badgeCls: 'green' },
+  { id: 'orchestrator', label: 'Orchestrator',           platform: 'mistral', platformLabel: 'Mistral', colorCls: 'c-green',      badgeCls: 'green' },
   { id: 'cib',          label: 'CIB',                    platform: 'databricks', platformLabel: 'Databricks', colorCls: 'c-databricks', badgeCls: 'databricks' },
-  { id: 'retail',       label: 'Banque de Détail',  platform: 'salesforce',  platformLabel: 'Salesforce', colorCls: 'c-salesforce', badgeCls: 'salesforce' },
-  { id: 'risk',         label: 'Risques & Conformité', platform: 'mistral', platformLabel: 'Mistral', colorCls: 'c-mistral',    badgeCls: 'mistral' },
-  { id: 'it',           label: 'IT & Ops',               platform: 'claude',  platformLabel: 'Claude',  colorCls: 'c-claude',     badgeCls: 'claude' },
+  { id: 'retail',       label: 'Retail Banking',         platform: 'salesforce',  platformLabel: 'Salesforce', colorCls: 'c-salesforce', badgeCls: 'salesforce' },
+  { id: 'risk',         label: 'Risk & Compliance',      platform: 'mistral', platformLabel: 'Mistral', colorCls: 'c-mistral',    badgeCls: 'mistral' },
+  { id: 'it',           label: 'IT & Operations',        platform: 'claude',  platformLabel: 'Claude',  colorCls: 'c-claude',     badgeCls: 'claude' },
 ];
 
 /* Agent-to-lane mapping */
@@ -449,31 +449,31 @@ const AGENT_LANE = {
 };
 
 const AGENT_LABELS = {
-  orchestrator:      'Orchestrateur',
+  orchestrator:      'Orchestrator',
   head_retail:       'Head Retail Banking',
-  retail_onboarding: 'Agent Onboarding',
-  retail_mortgage:   'Agent Prêt Hypothécaire',
-  retail_advisor:    'Agent Conseiller',
-  retail_sentiment:  'Agent Sentiment',
-  head_risk:         'Head Risques',
-  risk_kyc:          'Agent KYC/AML',
-  risk_credit:       'Agent Crédit',
-  risk_regulatory:   'Agent Réglementaire',
-  risk_fraud:        'Agent Anti-Fraude',
-  head_it:           'Head IT & Ops',
+  retail_onboarding: 'Onboarding Agent',
+  retail_mortgage:   'Mortgage Agent',
+  retail_advisor:    'Advisor Agent',
+  retail_sentiment:  'Sentiment Agent',
+  head_risk:         'Head Risk',
+  risk_kyc:          'KYC/AML Agent',
+  risk_credit:       'Credit Agent',
+  risk_regulatory:   'Regulatory Agent',
+  risk_fraud:        'Anti-Fraud Agent',
+  head_it:           'Head IT & Operations',
   head_cib:          'Head CIB',
-  cib_structuring:   'Agent Structuration',
-  cib_market_data:   'Agent Marchés',
-  cib_trade_exec:    'Agent Exécution',
-  cib_research:      'Agent Recherche',
+  cib_structuring:   'Structuring Agent',
+  cib_market_data:   'Market Data Agent',
+  cib_trade_exec:    'Execution Agent',
+  cib_research:      'Research Agent',
 };
 
 const DOMAIN_LABELS = {
-  orchestrator: 'Orchestrateur',
+  orchestrator: 'Orchestrator',
   cib:    'CIB',
-  retail: 'Banque de Détail',
-  risk:   'Risques & Conformité',
-  it:     'IT & Ops',
+  retail: 'Retail Banking',
+  risk:   'Risk & Compliance',
+  it:     'IT & Operations',
 };
 
 /* ================================================================
@@ -482,50 +482,50 @@ const DOMAIN_LABELS = {
 const scenarios = [
   {
     name: 'KYC/AML Corporate Onboarding',
-    desc: 'Onboarding corporate — 4 domaines, 4 plateformes',
+    desc: 'Corporate onboarding — 4 domains, 4 platforms',
     steps: [
-      { step:1, from:'orchestrator', to:'head_retail', action:'Initier onboarding corporate — collecter les documents', platform:'mistral', toPlatform:'salesforce', cost:0.08, latency:220 },
-      { step:2, from:'head_retail', to:'retail_onboarding', action:'Vérification documentaire — extraire les données KYB', platform:'salesforce', toPlatform:'salesforce', cost:0.12, latency:350 },
-      { step:3, from:'orchestrator', to:'head_risk', action:'Lancer screening KYC/AML', platform:'mistral', toPlatform:'mistral', cost:0.15, latency:480 },
-      { step:4, from:'head_risk', to:'risk_kyc', action:'Screening sanctions, PEP et médias défavorables', platform:'mistral', toPlatform:'mistral', cost:0.18, latency:520 },
-      { step:5, from:'head_risk', to:'risk_credit', action:'Scoring de risque de crédit initial', platform:'mistral', toPlatform:'databricks', cost:0.14, latency:410 },
-      { step:6, from:'orchestrator', to:'head_it', action:'Provisionner les accès systèmes', platform:'mistral', toPlatform:'claude', cost:0.06, latency:180 },
-      { step:7, from:'orchestrator', to:'head_retail', action:'Finaliser et notifier le client', platform:'mistral', toPlatform:'salesforce', cost:0.05, latency:150 },
+      { step:1, from:'orchestrator', to:'head_retail', action:'Initiate corporate onboarding — collect documents', platform:'mistral', toPlatform:'salesforce', cost:0.08, latency:220 },
+      { step:2, from:'head_retail', to:'retail_onboarding', action:'Document verification — extract KYB data', platform:'salesforce', toPlatform:'salesforce', cost:0.12, latency:350 },
+      { step:3, from:'orchestrator', to:'head_risk', action:'Launch KYC/AML screening', platform:'mistral', toPlatform:'mistral', cost:0.15, latency:480 },
+      { step:4, from:'head_risk', to:'risk_kyc', action:'Sanctions, PEP and adverse media screening', platform:'mistral', toPlatform:'mistral', cost:0.18, latency:520 },
+      { step:5, from:'head_risk', to:'risk_credit', action:'Initial credit risk scoring', platform:'mistral', toPlatform:'databricks', cost:0.14, latency:410 },
+      { step:6, from:'orchestrator', to:'head_it', action:'Provision system access', platform:'mistral', toPlatform:'claude', cost:0.06, latency:180 },
+      { step:7, from:'orchestrator', to:'head_retail', action:'Finalize and notify client', platform:'mistral', toPlatform:'salesforce', cost:0.05, latency:150 },
     ]
   },
   {
-    name: 'Pré-Approbation Hypothécaire',
-    desc: 'Parcours prêt immobilier — scoring IRBA & MiFID II',
+    name: 'Mortgage Pre-Approval',
+    desc: 'Mortgage journey — IRBA scoring & MiFID II',
     steps: [
-      { step:1, from:'orchestrator', to:'retail_mortgage', action:'Réception demande de prêt hypothécaire', platform:'mistral', toPlatform:'salesforce', cost:0.10, latency:260 },
-      { step:2, from:'retail_mortgage', to:'risk_credit', action:'Calcul du scoring IRBA', platform:'salesforce', toPlatform:'databricks', cost:0.16, latency:380 },
-      { step:3, from:'risk_credit', to:'risk_regulatory', action:'Vérification conformité MiFID II', platform:'databricks', toPlatform:'mistral', cost:0.08, latency:290 },
-      { step:4, from:'orchestrator', to:'risk_fraud', action:'Analyse anti-fraude du dossier', platform:'mistral', toPlatform:'databricks', cost:0.12, latency:340 },
-      { step:5, from:'orchestrator', to:'retail_advisor', action:'Préparer la recommandation conseiller', platform:'mistral', toPlatform:'claude', cost:0.09, latency:310 },
-      { step:6, from:'retail_mortgage', to:'retail_onboarding', action:'Envoyer offre de prêt personnalisée', platform:'salesforce', toPlatform:'salesforce', cost:0.05, latency:180 },
+      { step:1, from:'orchestrator', to:'retail_mortgage', action:'Receive mortgage application', platform:'mistral', toPlatform:'salesforce', cost:0.10, latency:260 },
+      { step:2, from:'retail_mortgage', to:'risk_credit', action:'Compute IRBA scoring', platform:'salesforce', toPlatform:'databricks', cost:0.16, latency:380 },
+      { step:3, from:'risk_credit', to:'risk_regulatory', action:'MiFID II compliance check', platform:'databricks', toPlatform:'mistral', cost:0.08, latency:290 },
+      { step:4, from:'orchestrator', to:'risk_fraud', action:'Anti-fraud analysis of application', platform:'mistral', toPlatform:'databricks', cost:0.12, latency:340 },
+      { step:5, from:'orchestrator', to:'retail_advisor', action:'Prepare advisor recommendation', platform:'mistral', toPlatform:'claude', cost:0.09, latency:310 },
+      { step:6, from:'retail_mortgage', to:'retail_onboarding', action:'Send personalized loan offer', platform:'salesforce', toPlatform:'salesforce', cost:0.05, latency:180 },
     ]
   },
   {
     name: 'Customer Sentiment Recovery',
-    desc: 'Récupération client insatisfait — détection & action',
+    desc: 'Dissatisfied customer recovery — detection & action',
     steps: [
-      { step:1, from:'orchestrator', to:'retail_sentiment', action:'Détecter avis négatif post-rendez-vous', platform:'mistral', toPlatform:'mistral', cost:0.06, latency:150 },
-      { step:2, from:'retail_sentiment', to:'retail_advisor', action:'Résumer le contexte et l\'historique client', platform:'mistral', toPlatform:'claude', cost:0.10, latency:280 },
-      { step:3, from:'orchestrator', to:'head_retail', action:'Créer ticket de suivi et assigner', platform:'mistral', toPlatform:'salesforce', cost:0.08, latency:220 },
-      { step:4, from:'head_retail', to:'retail_onboarding', action:'Proposer un geste commercial', platform:'salesforce', toPlatform:'salesforce', cost:0.05, latency:160 },
-      { step:5, from:'orchestrator', to:'head_it', action:'Logger l\'incident et mettre à jour le CRM', platform:'mistral', toPlatform:'claude', cost:0.04, latency:120 },
+      { step:1, from:'orchestrator', to:'retail_sentiment', action:'Detect negative post-meeting feedback', platform:'mistral', toPlatform:'mistral', cost:0.06, latency:150 },
+      { step:2, from:'retail_sentiment', to:'retail_advisor', action:'Summarize client context and history', platform:'mistral', toPlatform:'claude', cost:0.10, latency:280 },
+      { step:3, from:'orchestrator', to:'head_retail', action:'Create follow-up ticket and assign', platform:'mistral', toPlatform:'salesforce', cost:0.08, latency:220 },
+      { step:4, from:'head_retail', to:'retail_onboarding', action:'Offer a goodwill gesture', platform:'salesforce', toPlatform:'salesforce', cost:0.05, latency:160 },
+      { step:5, from:'orchestrator', to:'head_it', action:'Log incident and update CRM', platform:'mistral', toPlatform:'claude', cost:0.04, latency:120 },
     ]
   },
   {
     name: 'CIB Product Structuring',
-    desc: 'Structuration produit dérivé — pricing & best execution',
+    desc: 'Derivative product structuring — pricing & best execution',
     steps: [
-      { step:1, from:'orchestrator', to:'head_cib', action:'Demande de structuration produit dérivé', platform:'mistral', toPlatform:'databricks', cost:0.12, latency:280 },
-      { step:2, from:'head_cib', to:'cib_structuring', action:'Modélisation et pricing du produit', platform:'databricks', toPlatform:'databricks', cost:0.22, latency:520 },
-      { step:3, from:'head_cib', to:'cib_market_data', action:'Analyse des données de marché sous-jacentes', platform:'databricks', toPlatform:'databricks', cost:0.18, latency:440 },
-      { step:4, from:'orchestrator', to:'risk_regulatory', action:'Validation conformité MiFID II et EMIR', platform:'mistral', toPlatform:'mistral', cost:0.10, latency:320 },
-      { step:5, from:'cib_structuring', to:'cib_trade_exec', action:'Préparer l\'exécution — best execution check', platform:'databricks', toPlatform:'mistral', cost:0.14, latency:380 },
-      { step:6, from:'orchestrator', to:'cib_research', action:'Générer la note de synthèse pour le client', platform:'mistral', toPlatform:'claude', cost:0.08, latency:240 },
+      { step:1, from:'orchestrator', to:'head_cib', action:'Request derivative product structuring', platform:'mistral', toPlatform:'databricks', cost:0.12, latency:280 },
+      { step:2, from:'head_cib', to:'cib_structuring', action:'Product modeling and pricing', platform:'databricks', toPlatform:'databricks', cost:0.22, latency:520 },
+      { step:3, from:'head_cib', to:'cib_market_data', action:'Underlying market data analysis', platform:'databricks', toPlatform:'databricks', cost:0.18, latency:440 },
+      { step:4, from:'orchestrator', to:'risk_regulatory', action:'MiFID II and EMIR compliance validation', platform:'mistral', toPlatform:'mistral', cost:0.10, latency:320 },
+      { step:5, from:'cib_structuring', to:'cib_trade_exec', action:'Prepare execution — best execution check', platform:'databricks', toPlatform:'mistral', cost:0.14, latency:380 },
+      { step:6, from:'orchestrator', to:'cib_research', action:'Generate client summary note', platform:'mistral', toPlatform:'claude', cost:0.08, latency:240 },
     ]
   }
 ];
@@ -594,27 +594,27 @@ function renderHeroStats() {
     <div class="stat-card c-green">
       <div class="stat-val">4</div>
       <div class="stat-lbl">Workflows</div>
-      <div class="stat-sub">Scénarios d'orchestration multi-domaines</div>
+      <div class="stat-sub">Multi-domain orchestration scenarios</div>
     </div>
     <div class="stat-card c-salesforce">
       <div class="stat-val">${g.avgSteps.toFixed(0)}</div>
-      <div class="stat-lbl">Étapes Moyennes</div>
-      <div class="stat-sub">Hops agent-à-agent par workflow</div>
+      <div class="stat-lbl">Avg. Steps</div>
+      <div class="stat-sub">Agent-to-agent hops per workflow</div>
     </div>
     <div class="stat-card c-databricks">
       <div class="stat-val">${g.platformCount}</div>
-      <div class="stat-lbl">Plateformes Touchées</div>
+      <div class="stat-lbl">Platforms Used</div>
       <div class="stat-sub">Databricks · Salesforce · Mistral · Claude</div>
     </div>
     <div class="stat-card c-mistral">
       <div class="stat-val">€${g.avgCost.toFixed(2)}</div>
-      <div class="stat-lbl">Coût Moyen</div>
-      <div class="stat-sub">Par exécution de workflow</div>
+      <div class="stat-lbl">Avg. Cost</div>
+      <div class="stat-sub">Per workflow execution</div>
     </div>
     <div class="stat-card c-roi">
       <div class="stat-val">${(g.avgLatency / 1000).toFixed(1)}s</div>
-      <div class="stat-lbl">Latence Moyenne E2E</div>
-      <div class="stat-sub">Somme des latences étapes</div>
+      <div class="stat-lbl">Avg. E2E Latency</div>
+      <div class="stat-sub">Sum of step latencies</div>
     </div>
   `;
 }
@@ -628,18 +628,18 @@ function renderControls() {
     : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="6,4 20,12 6,20"/></svg>';
 
   document.getElementById('controls').innerHTML = `
-    <button class="ctrl-btn primary" onclick="togglePlay()">${playIcon} ${playing ? 'Pause' : 'Lecture'}</button>
+    <button class="ctrl-btn primary" onclick="togglePlay()">${playIcon} ${playing ? 'Pause' : 'Play'}</button>
     <button class="ctrl-btn" onclick="reset()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-      Réinitialiser
+      Reset
     </button>
     <span class="ctrl-sep"></span>
-    <span class="ctrl-label">Vitesse</span>
+    <span class="ctrl-label">Speed</span>
     <button class="ctrl-btn ${speed===1500?'active-speed':''}" onclick="setSpeed(1500)">1x</button>
     <button class="ctrl-btn ${speed===750?'active-speed':''}" onclick="setSpeed(750)">2x</button>
     <button class="ctrl-btn ${speed===375?'active-speed':''}" onclick="setSpeed(375)">4x</button>
     <span class="ctrl-sep"></span>
-    <span style="font-size:11px;color:var(--sol-dim);font-weight:500;">Étape ${currentStep} sur ${activeWorkflow().length}</span>
+    <span style="font-size:11px;color:var(--sol-dim);font-weight:500;">Step ${currentStep} of ${activeWorkflow().length}</span>
   `;
 }
 
@@ -751,7 +751,7 @@ function drawConnectors() {
 function renderStepDetail() {
   const panel = document.getElementById('detailPanel');
   if (currentStep === 0) {
-    panel.innerHTML = '<div class="detail-empty">Appuyez sur <strong>Lecture</strong> ou cliquez sur une étape pour l\'inspecter.</div>';
+    panel.innerHTML = '<div class="detail-empty">Press <strong>Play</strong> or click a step to inspect it.</div>';
     return;
   }
   const s = activeWorkflow()[currentStep - 1];
@@ -769,19 +769,19 @@ function renderStepDetail() {
         <span class="badge ${platformBadgeCls(s.platform)}">${platformLabel(s.platform)}</span>
         <span class="arrow">&rarr;</span>
         <span class="badge ${platformBadgeCls(s.toPlatform)}">${platformLabel(s.toPlatform)}</span>
-        <span style="font-size:10px;color:var(--roi-amber);margin-left:4px;font-weight:600;">Transition cross-platform</span>
+        <span style="font-size:10px;color:var(--roi-amber);margin-left:4px;font-weight:600;">Cross-platform transition</span>
        </div>`
-    : `<span style="font-size:12px;color:var(--sol-dim);">Même plateforme (${platformLabel(s.toPlatform)})</span>`;
+    : `<span style="font-size:12px;color:var(--sol-dim);">Same platform (${platformLabel(s.toPlatform)})</span>`;
 
   panel.innerHTML = `
-    <div class="detail-title">Étape ${s.step} sur ${total}</div>
+    <div class="detail-title">Step ${s.step} of ${total}</div>
     <div class="detail-grid">
       <div class="detail-field">
-        <div class="detail-field-label">De</div>
+        <div class="detail-field-label">From</div>
         <div class="detail-field-val">${AGENT_LABELS[s.from] || s.from} ${fromDomBadge} ${fromPlatBadge}</div>
       </div>
       <div class="detail-field">
-        <div class="detail-field-label">Vers</div>
+        <div class="detail-field-label">To</div>
         <div class="detail-field-val">${AGENT_LABELS[s.to] || s.to} ${toDomBadge} ${toPlatBadge}</div>
       </div>
       <div class="detail-field detail-full">
@@ -789,15 +789,15 @@ function renderStepDetail() {
         <div class="detail-field-val">${s.action}</div>
       </div>
       <div class="detail-field">
-        <div class="detail-field-label">Coût Token</div>
+        <div class="detail-field-label">Token Cost</div>
         <div class="detail-field-val" style="color:var(--sol-green);font-weight:700;">€${s.cost.toFixed(2)}</div>
       </div>
       <div class="detail-field">
-        <div class="detail-field-label">Latence</div>
+        <div class="detail-field-label">Latency</div>
         <div class="detail-field-val" style="color:var(--roi-blue);font-weight:700;">${s.latency}ms</div>
       </div>
       <div class="detail-field detail-full">
-        <div class="detail-field-label">Transition Plateforme</div>
+        <div class="detail-field-label">Platform Transition</div>
         <div class="detail-field-val">${transitionHtml}</div>
       </div>
     </div>
@@ -825,7 +825,7 @@ function renderAggBar() {
       segHtml += `<div class="agg-seg ${cls}" style="width:${pct}%">${s.step}</div>`;
     });
   } else {
-    segHtml = '<div class="agg-seg" style="width:100%;background:var(--sol-border);color:var(--sol-dim);">Aucune étape</div>';
+    segHtml = '<div class="agg-seg" style="width:100%;background:var(--sol-border);color:var(--sol-dim);">No steps</div>';
   }
 
   const platBadges = platforms.map(p =>
@@ -837,23 +837,23 @@ function renderAggBar() {
   ).join('');
 
   document.getElementById('aggBar').innerHTML = `
-    <div class="agg-title">Timeline Workflow &mdash; Distribution de Latence</div>
+    <div class="agg-title">Workflow Timeline &mdash; Latency Distribution</div>
     <div class="agg-timeline">${segHtml}</div>
     <div class="agg-meta">
       <div class="agg-item">
-        <span class="agg-item-label">Coût Total</span>
+        <span class="agg-item-label">Total Cost</span>
         <span class="agg-item-val" style="color:var(--sol-green)">€${totalCost.toFixed(2)}</span>
       </div>
       <div class="agg-item">
-        <span class="agg-item-label">Latence Totale</span>
+        <span class="agg-item-label">Total Latency</span>
         <span class="agg-item-val" style="color:var(--roi-blue)">${totalLatency}ms</span>
       </div>
       <div class="agg-item">
-        <span class="agg-item-label">Plateformes</span>
+        <span class="agg-item-label">Platforms</span>
         <div class="agg-badges">${platBadges || '<span style="color:var(--sol-dim);font-size:11px;">—</span>'}</div>
       </div>
       <div class="agg-item">
-        <span class="agg-item-label">Domaines</span>
+        <span class="agg-item-label">Domains</span>
         <div class="agg-badges">${domBadges || '<span style="color:var(--sol-dim);font-size:11px;">—</span>'}</div>
       </div>
     </div>
@@ -902,11 +902,11 @@ function renderSidebar() {
   ).join('');
   document.getElementById('sbStats').innerHTML = `
     <div class="sb-stats">
-      <div class="sb-stats-row"><span class="sb-stats-label">Étapes</span><span class="sb-stats-val">${st.count}</span></div>
-      <div class="sb-stats-row"><span class="sb-stats-label">Coût Total</span><span class="sb-stats-val">€${st.cost.toFixed(2)}</span></div>
-      <div class="sb-stats-row"><span class="sb-stats-label">Latence Totale</span><span class="sb-stats-val">${st.latency}ms</span></div>
-      <div class="sb-stats-row"><span class="sb-stats-label">Plateformes</span><span class="sb-stats-val">${platBadges}</span></div>
-      <div class="sb-stats-row"><span class="sb-stats-label">Domaines</span><span class="sb-stats-val">${st.domains.length}</span></div>
+      <div class="sb-stats-row"><span class="sb-stats-label">Steps</span><span class="sb-stats-val">${st.count}</span></div>
+      <div class="sb-stats-row"><span class="sb-stats-label">Total Cost</span><span class="sb-stats-val">€${st.cost.toFixed(2)}</span></div>
+      <div class="sb-stats-row"><span class="sb-stats-label">Total Latency</span><span class="sb-stats-val">${st.latency}ms</span></div>
+      <div class="sb-stats-row"><span class="sb-stats-label">Platforms</span><span class="sb-stats-val">${platBadges}</span></div>
+      <div class="sb-stats-row"><span class="sb-stats-label">Domains</span><span class="sb-stats-val">${st.domains.length}</span></div>
     </div>
   `;
 }

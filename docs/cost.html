@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Bank &mdash; Gestion des Co&ucirc;ts &amp; ROI</title>
+  <title>Your Bank &mdash; Cost Analysis &amp; ROI</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -358,22 +358,22 @@
     </div>
     <div class="logo-sep"></div>
     <div class="title-block">
-      <h1>Your Bank &mdash; Gestion des Co&ucirc;ts &amp; ROI</h1>
-      <span class="sub">Analyse Financi&egrave;re &amp; Optimisation</span>
+      <h1>Your Bank &mdash; Cost Analysis &amp; ROI</h1>
+      <span class="sub">Financial Impact and Platform Comparison</span>
     </div>
     <div class="topbar-right">
-      <span class="live-badge"><span class="dot"></span> <span id="live-count">200</span> agents actifs</span>
-      <a href="governance.html">Gouvernance</a>
+      <span class="live-badge"><span class="dot"></span> 200 agents live</span>
+      <a href="agents.html">Agents</a>
+      <a href="governance.html">Governance</a>
       <a href="workflows.html">Workflows</a>
-      <a href="observability.html">Observabilit&eacute;</a>
-      <a href="cost.html" class="active">Co&ucirc;ts</a>
-      <a href="resilience.html">R&eacute;silience</a>
+      <a href="cost.html" class="active">Cost</a>
+      <a href="observability.html">Observability</a>
     </div>
   </div>
   <div class="main">
     <div class="sidebar" id="sidebar"></div>
     <div class="content" id="content">
-      <div class="loading"><div class="spinner"></div>Calcul de l'analyse des co&ucirc;ts pour 200 agents...</div>
+      <div class="loading"><div class="spinner"></div>Computing cost analysis for 200 agents...</div>
     </div>
   </div>
 </div>
@@ -401,9 +401,9 @@
   // ================================================================
   const DOMAINS = {
     cib:    { label: 'CIB', full: 'Corporate & Investment Banking', platform: 'databricks', color: 'var(--databricks)' },
-    retail: { label: 'Retail', full: 'Banque de Détail', platform: 'salesforce', color: 'var(--salesforce)' },
-    risk:   { label: 'Risk', full: 'Gestion des Risques', platform: 'mistral', color: 'var(--mistral)' },
-    it_ops: { label: 'IT & Ops', full: 'IT & Opérations', platform: 'claude', color: 'var(--claude)' },
+    retail: { label: 'Retail', full: 'Retail Banking', platform: 'salesforce', color: 'var(--salesforce)' },
+    risk:   { label: 'Risk', full: 'Risk & Compliance', platform: 'mistral', color: 'var(--mistral)' },
+    it_ops: { label: 'IT & Ops', full: 'IT & Operations', platform: 'claude', color: 'var(--claude)' },
   };
 
   const PLAT_LABELS = {
@@ -419,46 +419,46 @@
   // Orchestrator
   AGENTS.push({
     id: 'bnpp_orchestrator',
-    name: 'Orchestrateur Your Bank',
+    name: 'Your Bank Orchestrator',
     domain: 'orchestrator',
     platform: 'orch',
     role: 'orchestrator',
-    agentType: 'Orchestrateur',
+    agentType: 'Orchestrator',
   });
 
   // Heads (4)
   const HEAD_DEFS = [
-    { id: 'bnpp_head_cib', name: 'Directeur CIB', domain: 'cib', platform: 'databricks' },
-    { id: 'bnpp_head_retail', name: 'Directeur Retail', domain: 'retail', platform: 'salesforce' },
-    { id: 'bnpp_head_risk', name: 'Directeur Risques', domain: 'risk', platform: 'mistral' },
-    { id: 'bnpp_head_it_ops', name: 'Directeur IT & Ops', domain: 'it_ops', platform: 'claude' },
+    { id: 'bnpp_head_cib', name: 'Head CIB', domain: 'cib', platform: 'databricks' },
+    { id: 'bnpp_head_retail', name: 'Head Retail', domain: 'retail', platform: 'salesforce' },
+    { id: 'bnpp_head_risk', name: 'Head Risk', domain: 'risk', platform: 'mistral' },
+    { id: 'bnpp_head_it_ops', name: 'Head IT & Ops', domain: 'it_ops', platform: 'claude' },
   ];
   HEAD_DEFS.forEach(h => {
-    AGENTS.push({ ...h, role: 'head', agentType: 'Directeur' });
+    AGENTS.push({ ...h, role: 'head', agentType: 'Domain Head' });
   });
 
   // Specialists (16, 4 per domain)
   const SPEC_DEFS = [
     // CIB — Databricks
-    { id: 'bnpp_cib_trade_analytics', name: 'Analyste Trading', domain: 'cib', platform: 'databricks', agentType: 'Analyste Trading' },
-    { id: 'bnpp_cib_market_risk', name: 'Risque Marché', domain: 'cib', platform: 'databricks', agentType: 'Risque Marché' },
+    { id: 'bnpp_cib_trade_analytics', name: 'Trade Analytics', domain: 'cib', platform: 'databricks', agentType: 'Trade Analytics' },
+    { id: 'bnpp_cib_market_risk', name: 'Market Risk', domain: 'cib', platform: 'databricks', agentType: 'Market Risk' },
     { id: 'bnpp_cib_prime_services', name: 'Prime Services', domain: 'cib', platform: 'databricks', agentType: 'Prime Services' },
-    { id: 'bnpp_cib_compliance', name: 'Conformité CIB', domain: 'cib', platform: 'databricks', agentType: 'Conformité' },
+    { id: 'bnpp_cib_compliance', name: 'CIB Compliance', domain: 'cib', platform: 'databricks', agentType: 'Compliance' },
     // Retail — Salesforce
-    { id: 'bnpp_retail_crm', name: 'CRM Particuliers', domain: 'retail', platform: 'salesforce', agentType: 'CRM' },
-    { id: 'bnpp_retail_credit', name: 'Scoring Crédit', domain: 'retail', platform: 'salesforce', agentType: 'Scoring Crédit' },
-    { id: 'bnpp_retail_onboarding', name: 'Onboarding Client', domain: 'retail', platform: 'salesforce', agentType: 'Onboarding' },
-    { id: 'bnpp_retail_support', name: 'Support Client', domain: 'retail', platform: 'salesforce', agentType: 'Support' },
+    { id: 'bnpp_retail_crm', name: 'Retail CRM', domain: 'retail', platform: 'salesforce', agentType: 'CRM' },
+    { id: 'bnpp_retail_credit', name: 'Credit Scoring', domain: 'retail', platform: 'salesforce', agentType: 'Credit Scoring' },
+    { id: 'bnpp_retail_onboarding', name: 'Client Onboarding', domain: 'retail', platform: 'salesforce', agentType: 'Onboarding' },
+    { id: 'bnpp_retail_support', name: 'Client Support', domain: 'retail', platform: 'salesforce', agentType: 'Support' },
     // Risk — Mistral
-    { id: 'bnpp_risk_credit_model', name: 'Modèle Crédit', domain: 'risk', platform: 'mistral', agentType: 'Modélisation' },
-    { id: 'bnpp_risk_fraud', name: 'Détection Fraude', domain: 'risk', platform: 'mistral', agentType: 'Anti-Fraude' },
-    { id: 'bnpp_risk_aml', name: 'LCB-FT / AML', domain: 'risk', platform: 'mistral', agentType: 'AML' },
+    { id: 'bnpp_risk_credit_model', name: 'Credit Model', domain: 'risk', platform: 'mistral', agentType: 'Modeling' },
+    { id: 'bnpp_risk_fraud', name: 'Fraud Detection', domain: 'risk', platform: 'mistral', agentType: 'Anti-Fraud' },
+    { id: 'bnpp_risk_aml', name: 'AML/CFT', domain: 'risk', platform: 'mistral', agentType: 'AML' },
     { id: 'bnpp_risk_stress_test', name: 'Stress Testing', domain: 'risk', platform: 'mistral', agentType: 'Stress Test' },
     // IT & Ops — Claude
-    { id: 'bnpp_it_incident', name: 'Gestion Incidents', domain: 'it_ops', platform: 'claude', agentType: 'Incidents' },
-    { id: 'bnpp_it_deploy', name: 'Déploiement CI/CD', domain: 'it_ops', platform: 'claude', agentType: 'Déploiement' },
-    { id: 'bnpp_it_monitoring', name: 'Monitoring Infra', domain: 'it_ops', platform: 'claude', agentType: 'Monitoring' },
-    { id: 'bnpp_it_security', name: 'Sécurité SI', domain: 'it_ops', platform: 'claude', agentType: 'Sécurité' },
+    { id: 'bnpp_it_incident', name: 'Incident Management', domain: 'it_ops', platform: 'claude', agentType: 'Incidents' },
+    { id: 'bnpp_it_deploy', name: 'CI/CD Deployment', domain: 'it_ops', platform: 'claude', agentType: 'Deployment' },
+    { id: 'bnpp_it_monitoring', name: 'Infra Monitoring', domain: 'it_ops', platform: 'claude', agentType: 'Monitoring' },
+    { id: 'bnpp_it_security', name: 'IT Security', domain: 'it_ops', platform: 'claude', agentType: 'Security' },
   ];
   SPEC_DEFS.forEach(s => {
     AGENTS.push({ ...s, role: 'specialist' });
@@ -489,7 +489,7 @@
     }
 
     const costPerExec = exec > 0 ? cost / exec : 0;
-    const efficiency = successRate >= 97 ? 'Excellent' : successRate >= 93 ? 'Bon' : 'Correct';
+    const efficiency = successRate >= 97 ? 'Excellent' : successRate >= 93 ? 'Good' : 'Fair';
 
     return { cost, exec, tokens, successRate, costPerExec, efficiency };
   }
@@ -525,20 +525,20 @@
   // Formatting helpers (EUR, French locale)
   // ================================================================
   function fmtEUR(n) {
-    if (n >= 1000000) return (n / 1000000).toFixed(2).replace('.', ',') + ' M€';
-    if (n >= 1000) return (n / 1000).toFixed(1).replace('.', ',') + 'k€';
-    return n.toLocaleString('fr-FR') + ' €';
+    if (n >= 1000000) return '€' + (n / 1000000).toFixed(2) + 'M';
+    if (n >= 1000) return '€' + (n / 1000).toFixed(1) + 'k';
+    return '€' + n.toLocaleString('en-GB');
   }
   function fmtEURFull(n) {
-    return n.toLocaleString('fr-FR') + ' €';
+    return '€' + n.toLocaleString('en-GB');
   }
   function fmtK(n) {
     if (n >= 10000) return (n / 1000).toFixed(0) + 'k';
-    if (n >= 1000) return (n / 1000).toFixed(1).replace('.', ',') + 'k';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
     return String(n);
   }
   function fmtTokens(n) {
-    if (n >= 1000000) return (n / 1000000).toFixed(1).replace('.', ',') + 'M';
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
     if (n >= 1000) return (n / 1000).toFixed(0) + 'k';
     return String(n);
   }
@@ -555,14 +555,14 @@
   });
   const avgCostPerExec = totalExec > 0 ? totalCost / totalExec : 0;
 
-  // "Sans Solace" costs
-  const withoutOrchestration = 4 * 8000;  // 32,000
-  const withoutIntegrations  = 6 * 3500;  // 21,000
-  const withoutGovernance    = 4 * 5000;  // 20,000
-  const withoutFTE           = 2 * 10000; // 20,000
-  const withoutTotal         = withoutOrchestration + withoutIntegrations + withoutGovernance + withoutFTE; // 93,000
+  // "Without Solace" costs
+  const withoutOrchestration = 4 * 8200;  // 32,800
+  const withoutIntegrations  = 6 * 3800;  // 22,800
+  const withoutGovernance    = 4 * 4600;  // 18,400
+  const withoutFTE           = 2 * 9500;  // 19,000
+  const withoutTotal         = withoutOrchestration + withoutIntegrations + withoutGovernance + withoutFTE;
 
-  // "Avec Solace" costs
+  // "With Solace" costs
   const solacePlatform = 12000;
   const agentCompute   = totalCost;
   const avecTotal      = solacePlatform + agentCompute;
@@ -581,45 +581,45 @@
 
     // ---- Hero Stats ----
     h += '<div class="hero-stats">';
-    h += '<div class="stat-card c-amber"><div class="stat-val" style="color:var(--roi-amber)">' + fmtEUR(totalCost) + '</div><div class="stat-lbl">Coût Mensuel</div><div class="stat-sub">200 agents</div></div>';
-    h += '<div class="stat-card c-blue"><div class="stat-val" style="color:var(--roi-blue)">' + fmtK(totalExec) + '</div><div class="stat-lbl">Exécutions / Mois</div><div class="stat-sub">tous domaines</div></div>';
-    h += '<div class="stat-card c-roi"><div class="stat-val" style="color:var(--sol-text)">' + avgCostPerExec.toFixed(2).replace('.', ',') + ' €</div><div class="stat-lbl">Coût Moy. / Exécution</div><div class="stat-sub">ensemble de la plateforme</div></div>';
-    h += '<div class="stat-card c-green"><div class="stat-val" style="color:var(--sol-green)">' + fmtEUR(savings) + '</div><div class="stat-lbl">Économie vs Silos</div><div class="stat-sub">~' + fmtEUR(savings * 12) + '/an</div></div>';
-    h += '<div class="stat-card c-green"><div class="stat-val" style="color:var(--sol-green)">' + roi + '%</div><div class="stat-lbl">Retour sur Investissement</div><div class="stat-sub">annualisé</div></div>';
-    h += '<div class="stat-card c-green"><div class="stat-val" style="color:var(--sol-green)">' + payback.replace('.', ',') + ' mois</div><div class="stat-lbl">Délai de Rentabilité</div><div class="stat-sub">seuil de rentabilité</div></div>';
+    h += '<div class="stat-card c-amber"><div class="stat-val" style="color:var(--roi-amber)">' + fmtEUR(totalCost) + '</div><div class="stat-lbl">Monthly Cost</div><div class="stat-sub">200 agents</div></div>';
+    h += '<div class="stat-card c-blue"><div class="stat-val" style="color:var(--roi-blue)">' + fmtK(totalExec) + '</div><div class="stat-lbl">Executions/Month</div><div class="stat-sub">all domains</div></div>';
+    h += '<div class="stat-card c-roi"><div class="stat-val" style="color:var(--sol-text)">€' + avgCostPerExec.toFixed(2) + '</div><div class="stat-lbl">Avg. Cost/Execution</div><div class="stat-sub">entire platform</div></div>';
+    h += '<div class="stat-card c-green"><div class="stat-val" style="color:var(--sol-green)">' + fmtEUR(savings) + '</div><div class="stat-lbl">Savings vs Silos</div><div class="stat-sub">~' + fmtEUR(savings * 12) + '/yr</div></div>';
+    h += '<div class="stat-card c-green"><div class="stat-val" style="color:var(--sol-green)">' + roi + '%</div><div class="stat-lbl">Return on Investment</div><div class="stat-sub">annualized</div></div>';
+    h += '<div class="stat-card c-green"><div class="stat-val" style="color:var(--sol-green)">' + payback + ' months</div><div class="stat-lbl">Payback Period</div><div class="stat-sub">break-even</div></div>';
     h += '</div>';
 
     // ---- Comparison Panel ----
     h += '<div class="section" id="sec-comparison">';
-    h += '<div class="section-hdr"><span class="section-title">Comparaison de Plateforme</span>';
-    h += '<span class="section-sub">« Avec Solace » vs « Sans Solace » &mdash; analyse mensuelle</span><span class="section-line"></span></div>';
+    h += '<div class="section-hdr"><span class="section-title">Platform Comparison</span>';
+    h += '<span class="section-sub">&ldquo;With Solace&rdquo; vs &ldquo;Without Solace&rdquo; &mdash; monthly analysis</span><span class="section-line"></span></div>';
     h += '<div class="comparison">';
 
     // Sans Solace (left)
     h += '<div class="comp-side without">';
-    h += '<div class="comp-title red"><span class="icon">&#x2717;</span> Sans Solace</div>';
-    h += '<div class="comp-line"><div><div class="comp-line-desc">Outils d\'orchestration séparés</div><div class="comp-line-detail">4 plateformes &times; 8 000 €/mois</div></div><div class="comp-line-cost red">' + fmtEURFull(withoutOrchestration) + '</div></div>';
-    h += '<div class="comp-line"><div><div class="comp-line-desc">Intégrations point-à-point</div><div class="comp-line-detail">6 paires de domaines &times; 3 500 €/mois</div></div><div class="comp-line-cost red">' + fmtEURFull(withoutIntegrations) + '</div></div>';
-    h += '<div class="comp-line"><div><div class="comp-line-desc">Stacks de gouvernance séparés</div><div class="comp-line-detail">4 stacks &times; 5 000 €/mois</div></div><div class="comp-line-cost red">' + fmtEURFull(withoutGovernance) + '</div></div>';
-    h += '<div class="comp-line"><div><div class="comp-line-desc">FTE d\'intégration</div><div class="comp-line-detail">2 ingénieurs &times; 10 000 €/mois</div></div><div class="comp-line-cost red">' + fmtEURFull(withoutFTE) + '</div></div>';
-    h += '<div class="comp-total red"><span class="comp-total-label" style="color:var(--roi-red)">Coût Total Mensuel</span><span class="comp-total-val red">' + fmtEURFull(withoutTotal) + '</span></div>';
+    h += '<div class="comp-title red"><span class="icon">&#x2717;</span> Without Solace</div>';
+    h += '<div class="comp-line"><div><div class="comp-line-desc">Separate orchestration tools</div><div class="comp-line-detail">4 platforms &times; &euro;8,200/month</div></div><div class="comp-line-cost red">' + fmtEURFull(withoutOrchestration) + '</div></div>';
+    h += '<div class="comp-line"><div><div class="comp-line-desc">Point-to-point integrations</div><div class="comp-line-detail">6 domain pairs &times; &euro;3,800/month</div></div><div class="comp-line-cost red">' + fmtEURFull(withoutIntegrations) + '</div></div>';
+    h += '<div class="comp-line"><div><div class="comp-line-desc">Separate governance stacks</div><div class="comp-line-detail">4 stacks &times; &euro;4,600/month</div></div><div class="comp-line-cost red">' + fmtEURFull(withoutGovernance) + '</div></div>';
+    h += '<div class="comp-line"><div><div class="comp-line-desc">Integration FTEs</div><div class="comp-line-detail">2 engineers &times; &euro;9,500/month</div></div><div class="comp-line-cost red">' + fmtEURFull(withoutFTE) + '</div></div>';
+    h += '<div class="comp-total red"><span class="comp-total-label" style="color:var(--roi-red)">Total Monthly Cost</span><span class="comp-total-val red">' + fmtEURFull(withoutTotal) + '</span></div>';
     h += '</div>';
 
     // Avec Solace (right)
     h += '<div class="comp-side with">';
-    h += '<div class="comp-title green"><span class="icon">&#x2713;</span> Avec Solace</div>';
-    h += '<div class="comp-line"><div><div class="comp-line-desc">Plateforme Solace Agent Mesh</div><div class="comp-line-detail">Event mesh unifié + routage</div></div><div class="comp-line-cost green">' + fmtEURFull(solacePlatform) + '</div></div>';
-    h += '<div class="comp-line"><div><div class="comp-line-desc">Calcul agents (200 agents)</div><div class="comp-line-detail">Databricks + Salesforce + Mistral + Claude</div></div><div class="comp-line-cost green">' + fmtEURFull(agentCompute) + '</div></div>';
-    h += '<div class="comp-line"><div><div class="comp-line-desc">Gouvernance unifiée</div><div class="comp-line-detail">Moteur de politiques, audit, RBAC</div></div><div class="comp-line-cost included">Inclus</div></div>';
-    h += '<div class="comp-line"><div><div class="comp-line-desc">Observabilité</div><div class="comp-line-detail">Métriques, traçage, suivi des coûts</div></div><div class="comp-line-cost included">Inclus</div></div>';
-    h += '<div class="comp-total green"><span class="comp-total-label" style="color:var(--sol-green)">Coût Total Mensuel</span><span class="comp-total-val green">' + fmtEURFull(avecTotal) + '</span></div>';
+    h += '<div class="comp-title green"><span class="icon">&#x2713;</span> With Solace</div>';
+    h += '<div class="comp-line"><div><div class="comp-line-desc">Solace Agent Mesh Platform</div><div class="comp-line-detail">Unified event mesh + routing</div></div><div class="comp-line-cost green">' + fmtEURFull(solacePlatform) + '</div></div>';
+    h += '<div class="comp-line"><div><div class="comp-line-desc">Agent compute (200 agents)</div><div class="comp-line-detail">Databricks + Salesforce + Mistral + Claude</div></div><div class="comp-line-cost green">' + fmtEURFull(agentCompute) + '</div></div>';
+    h += '<div class="comp-line"><div><div class="comp-line-desc">Unified governance</div><div class="comp-line-detail">Policy engine, audit, RBAC</div></div><div class="comp-line-cost included">Included</div></div>';
+    h += '<div class="comp-line"><div><div class="comp-line-desc">Observability</div><div class="comp-line-detail">Metrics, tracing, cost tracking</div></div><div class="comp-line-cost included">Included</div></div>';
+    h += '<div class="comp-total green"><span class="comp-total-label" style="color:var(--sol-green)">Total Monthly Cost</span><span class="comp-total-val green">' + fmtEURFull(avecTotal) + '</span></div>';
     h += '</div>';
 
     // Savings bar
     h += '<div class="savings-bar">';
-    h += '<div class="savings-label">Économie Mensuelle</div>';
-    h += '<div class="savings-track"><div class="savings-fill" style="width:' + savingsPct + '%">' + savingsPct + '% de réduction</div></div>';
-    h += '<div class="savings-amount">' + fmtEURFull(savings) + '/mois</div>';
+    h += '<div class="savings-label">Monthly Savings</div>';
+    h += '<div class="savings-track"><div class="savings-fill" style="width:' + savingsPct + '%">' + savingsPct + '% reduction</div></div>';
+    h += '<div class="savings-amount">' + fmtEURFull(savings) + '/month</div>';
     h += '</div>';
 
     h += '</div></div>';
@@ -629,7 +629,7 @@
     const maxDomainCost = Math.max(...domainData.map(d => d.cost));
 
     h += '<div class="section" id="sec-domain">';
-    h += '<div class="section-hdr"><span class="section-title">Coût par Domaine</span><span class="section-sub">Coût mensuel de calcul par domaine métier</span><span class="section-line"></span></div>';
+    h += '<div class="section-hdr"><span class="section-title">Cost by Domain</span><span class="section-sub">Monthly compute cost per business domain</span><span class="section-line"></span></div>';
     h += '<div class="h-bar-group">';
     domainData.forEach(d => {
       const pct = Math.round((d.cost / totalCost) * 100);
@@ -637,7 +637,7 @@
       h += '<div class="h-bar-item">';
       h += '<div class="h-bar-label"><div class="h-bar-label-name">' + esc(d.full) + '<span class="platform-badge ' + d.platform + '">' + esc(d.platform) + '</span></div><div class="h-bar-label-sub">' + d.count + ' agents</div></div>';
       h += '<div class="h-bar-track"><div class="h-bar-fill ' + d.platform + '" style="width:' + barW + '%">' + fmtEUR(d.cost) + '</div></div>';
-      h += '<div class="h-bar-meta"><div class="h-bar-cost">' + fmtEUR(d.cost) + '</div><div class="h-bar-pct">' + pct + '% du total</div></div>';
+      h += '<div class="h-bar-meta"><div class="h-bar-cost">' + fmtEUR(d.cost) + '</div><div class="h-bar-pct">' + pct + '% of total</div></div>';
       h += '</div>';
     });
     h += '</div></div>';
@@ -648,7 +648,7 @@
     const maxPlatCost = Math.max(...platData.map(p => p.cost));
 
     h += '<div class="section" id="sec-platform">';
-    h += '<div class="section-hdr"><span class="section-title">Coût par Plateforme</span><span class="section-sub">Agrégé par fournisseur IA</span><span class="section-line"></span></div>';
+    h += '<div class="section-hdr"><span class="section-title">Cost by Platform</span><span class="section-sub">Aggregated by AI provider</span><span class="section-line"></span></div>';
     h += '<div class="h-bar-group">';
     platData.forEach(p => {
       const pct = Math.round((p.cost / totalCost) * 100);
@@ -663,15 +663,15 @@
 
     // ---- Cost by Agent Type ----
     const roleData = [
-      { key: 'orchestrator', label: 'Orchestrateur', sub: '1 agent', ...aggRole('orchestrator') },
-      { key: 'head', label: 'Directeurs', sub: '4 agents', ...aggRole('head') },
-      { key: 'specialist', label: 'Spécialistes', sub: '16 agents', ...aggRole('specialist') },
+      { key: 'orchestrator', label: 'Orchestrator', sub: '1 agent', ...aggRole('orchestrator') },
+      { key: 'head', label: 'Domain Heads', sub: '4 agents', ...aggRole('head') },
+      { key: 'specialist', label: 'Specialists', sub: '16 agents', ...aggRole('specialist') },
     ];
     const maxRoleCost = Math.max(...roleData.map(r => r.cost));
     const roleColors = { orchestrator: 'green', head: 'blue', specialist: 'amber' };
 
     h += '<div class="section" id="sec-type">';
-    h += '<div class="section-hdr"><span class="section-title">Coût par Type d\'Agent</span><span class="section-sub">Distribution hiérarchique</span><span class="section-line"></span></div>';
+    h += '<div class="section-hdr"><span class="section-title">Cost by Agent Type</span><span class="section-sub">Hierarchical distribution</span><span class="section-line"></span></div>';
     h += '<div class="h-bar-group">';
     roleData.forEach(r => {
       const pct = Math.round((r.cost / totalCost) * 100);
@@ -685,12 +685,12 @@
     h += '</div></div>';
 
     // ---- 6-Month Cost Trend ----
-    const months = ['Nov 2025', 'Déc 2025', 'Jan 2026', 'Fév 2026', 'Mar 2026', 'Avr 2026'];
+    const months = ['Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026', 'Apr 2026'];
     const totals = [22000, 20200, 18500, 17100, 16000, totalCost];
     const maxTrend = Math.max(...totals);
 
     h += '<div class="section">';
-    h += '<div class="section-hdr"><span class="section-title">Tendance sur 6 Mois</span><span class="section-sub">Trajectoire d\'optimisation de Nov 2025 à Avr 2026</span><span class="section-line"></span></div>';
+    h += '<div class="section-hdr"><span class="section-title">6-Month Trend</span><span class="section-sub">Optimization trajectory from Nov 2025 to Apr 2026</span><span class="section-line"></span></div>';
     h += '<div class="trend-chart">';
     totals.forEach((t, i) => {
       const govPct = 0.12 - i * 0.01;
@@ -712,22 +712,22 @@
     });
     h += '</div>';
     h += '<div class="trend-legend">';
-    h += '<div class="trend-legend-item"><div class="trend-legend-dot" style="background:var(--roi-blue)"></div>Calcul</div>';
+    h += '<div class="trend-legend-item"><div class="trend-legend-dot" style="background:var(--roi-blue)"></div>Compute</div>';
     h += '<div class="trend-legend-item"><div class="trend-legend-dot" style="background:var(--roi-amber)"></div>Tokens</div>';
-    h += '<div class="trend-legend-item"><div class="trend-legend-dot" style="background:var(--sol-green)"></div>Gouvernance</div>';
+    h += '<div class="trend-legend-item"><div class="trend-legend-dot" style="background:var(--sol-green)"></div>Governance</div>';
     h += '</div></div>';
 
     // ---- Top Agents by Cost (table, 10 rows) ----
     const sortedAgents = [...AGENTS].sort((a, b) => b.costs.cost - a.costs.cost).slice(0, 10);
 
     h += '<div class="section" id="sec-top-agents">';
-    h += '<div class="section-hdr"><span class="section-title">Top 10 Agents par Coût</span><span class="section-sub">Trié par coût mensuel décroissant</span><span class="section-line"></span></div>';
+    h += '<div class="section-hdr"><span class="section-title">Top 10 Agents by Cost</span><span class="section-sub">Sorted by monthly cost descending</span><span class="section-line"></span></div>';
     h += '<div style="overflow-x:auto"><table class="util-table"><thead><tr>';
-    h += '<th>Agent</th><th>Domaine</th><th>Plateforme</th><th>Coût/Mois</th><th>Exec/Mois</th><th>Coût/Exec</th><th>Taux Réussite</th><th>Efficacité</th>';
+    h += '<th>Agent</th><th>Domain</th><th>Platform</th><th>Cost/Month</th><th>Exec/Month</th><th>Cost/Exec</th><th>Success Rate</th><th>Efficiency</th>';
     h += '</tr></thead><tbody>';
 
     sortedAgents.forEach(a => {
-      const domainLabel = a.domain === 'orchestrator' ? 'Orchestrateur' : (DOMAINS[a.domain]?.label || a.domain);
+      const domainLabel = a.domain === 'orchestrator' ? 'Orchestrator' : (DOMAINS[a.domain]?.label || a.domain);
       const platLabel = PLAT_LABELS[a.platform] || a.platform;
       const isExpensive = a.costs.cost > 500;
       const costColor = isExpensive ? 'color:var(--roi-amber)' : '';
@@ -738,9 +738,9 @@
       h += '<td>' + esc(domainLabel) + '</td>';
       h += '<td><span class="platform-badge ' + a.platform + '">' + esc(platLabel) + '</span></td>';
       h += '<td style="font-weight:700;' + costColor + '">' + fmtEURFull(a.costs.cost) + '</td>';
-      h += '<td style="font-weight:600">' + a.costs.exec.toLocaleString('fr-FR') + '</td>';
-      h += '<td style="font-weight:600">' + a.costs.costPerExec.toFixed(2).replace('.', ',') + ' €</td>';
-      h += '<td>' + a.costs.successRate.toFixed(1).replace('.', ',') + '%</td>';
+      h += '<td style="font-weight:600">' + a.costs.exec.toLocaleString('en-GB') + '</td>';
+      h += '<td style="font-weight:600">' + a.costs.costPerExec.toFixed(2) + ' €</td>';
+      h += '<td>' + a.costs.successRate.toFixed(1) + '%</td>';
       h += '<td><span class="badge-status ' + effClass + '">' + a.costs.efficiency + '</span></td>';
       h += '</tr>';
     });
@@ -753,14 +753,14 @@
     const netBenefit = annualSavings;
 
     h += '<div class="section">';
-    h += '<div class="section-hdr"><span class="section-title">Synthèse ROI</span><span class="section-sub">Impact financier annuel du déploiement Solace Agent Mesh</span><span class="section-line"></span></div>';
+    h += '<div class="section-hdr"><span class="section-title">ROI Summary</span><span class="section-sub">Annual financial impact of Solace Agent Mesh deployment</span><span class="section-line"></span></div>';
     h += '<div class="roi-summary">';
-    h += '<div class="roi-col"><div class="roi-col-label">Investissement Annuel</div><div class="roi-col-val" style="color:var(--roi-amber)">' + fmtEUR(annualInvestment) + '</div><div class="roi-col-sub">' + fmtEURFull(avecTotal) + '/mois &times; 12</div></div>';
+    h += '<div class="roi-col"><div class="roi-col-label">Annual Investment</div><div class="roi-col-val" style="color:var(--roi-amber)">' + fmtEUR(annualInvestment) + '</div><div class="roi-col-sub">' + fmtEURFull(avecTotal) + '/month &times; 12</div></div>';
     h += '<div class="roi-arrow">&#x2192;</div>';
-    h += '<div class="roi-col"><div class="roi-col-label">Économies Annuelles</div><div class="roi-col-val" style="color:var(--sol-green)">' + fmtEUR(annualSavings) + '</div><div class="roi-col-sub">' + fmtEURFull(savings) + '/mois &times; 12</div></div>';
+    h += '<div class="roi-col"><div class="roi-col-label">Annual Savings</div><div class="roi-col-val" style="color:var(--sol-green)">' + fmtEUR(annualSavings) + '</div><div class="roi-col-sub">' + fmtEURFull(savings) + '/month &times; 12</div></div>';
     h += '<div class="roi-arrow">&#x2192;</div>';
-    h += '<div class="roi-col"><div class="roi-col-label">Bénéfice Net Annuel</div><div class="roi-col-val" style="color:var(--sol-green)">' + fmtEUR(netBenefit) + '</div><div class="roi-col-sub">Rentabilité en ' + payback.replace('.', ',') + ' mois</div></div>';
-    h += '<div class="roi-progress"><div class="roi-progress-label"><span>Trajectoire de rentabilité</span><span style="color:var(--sol-green);font-weight:700">' + payback.replace('.', ',') + ' mois pour le seuil de rentabilité</span></div>';
+    h += '<div class="roi-col"><div class="roi-col-label">Net Benefit (Annual)</div><div class="roi-col-val" style="color:var(--sol-green)">' + fmtEUR(netBenefit) + '</div><div class="roi-col-sub">Payback in ' + payback + ' months</div></div>';
+    h += '<div class="roi-progress"><div class="roi-progress-label"><span>Payback trajectory</span><span style="color:var(--sol-green);font-weight:700">' + payback + ' months to break-even</span></div>';
     h += '<div class="roi-progress-track"><div class="roi-progress-fill" style="width:' + Math.min(100, Math.round((1 / parseFloat(payback)) * 100 * 12)) + '%"></div></div></div>';
     h += '</div></div>';
 
@@ -771,17 +771,17 @@
   // Sidebar
   // ================================================================
   function renderSidebar() {
-    let s = '<div class="sb-hdr"><h3>Navigateur Coûts</h3></div><div class="sb-body">';
+    let s = '<div class="sb-hdr"><h3>Cost Navigator</h3></div><div class="sb-body">';
 
     // Views
     s += '<div class="sb-sec">Sections</div>';
-    s += '<button class="sb-btn" onclick="document.getElementById(\'sec-comparison\').scrollIntoView({behavior:\'smooth\'})"><span class="sb-dot" style="background:var(--sol-green)"></span>Comparaison</button>';
-    s += '<button class="sb-btn" onclick="document.getElementById(\'sec-domain\').scrollIntoView({behavior:\'smooth\'})"><span class="sb-dot" style="background:var(--roi-amber)"></span>Par Domaine</button>';
-    s += '<button class="sb-btn" onclick="document.getElementById(\'sec-platform\').scrollIntoView({behavior:\'smooth\'})"><span class="sb-dot" style="background:var(--roi-blue)"></span>Par Plateforme</button>';
+    s += '<button class="sb-btn" onclick="document.getElementById(\'sec-comparison\').scrollIntoView({behavior:\'smooth\'})"><span class="sb-dot" style="background:var(--sol-green)"></span>Comparison</button>';
+    s += '<button class="sb-btn" onclick="document.getElementById(\'sec-domain\').scrollIntoView({behavior:\'smooth\'})"><span class="sb-dot" style="background:var(--roi-amber)"></span>By Domain</button>';
+    s += '<button class="sb-btn" onclick="document.getElementById(\'sec-platform\').scrollIntoView({behavior:\'smooth\'})"><span class="sb-dot" style="background:var(--roi-blue)"></span>By Platform</button>';
     s += '<button class="sb-btn" onclick="document.getElementById(\'sec-top-agents\').scrollIntoView({behavior:\'smooth\'})"><span class="sb-dot" style="background:var(--databricks)"></span>Top Agents</button>';
 
     // Domain cost mini bars
-    s += '<div class="sb-sec">Coût par Domaine</div>';
+    s += '<div class="sb-sec">Cost by Domain</div>';
     const domainData = Object.keys(DOMAINS).map(k => ({ key: k, ...DOMAINS[k], ...aggDomain(k) }));
     const maxDomain = Math.max(...domainData.map(d => d.cost));
     domainData.forEach(d => {
@@ -792,7 +792,7 @@
     });
 
     // Platform cost mini bars
-    s += '<div class="sb-sec">Coût par Plateforme</div>';
+    s += '<div class="sb-sec">Cost by Platform</div>';
     const platKeys = ['databricks', 'salesforce', 'mistral', 'claude'];
     const platData = platKeys.map(k => ({ key: k, label: PLAT_LABELS[k], ...aggPlatform(k) }));
     const maxPlat = Math.max(...platData.map(p => p.cost));
@@ -804,11 +804,11 @@
     });
 
     // Type cost mini bars
-    s += '<div class="sb-sec">Coût par Type</div>';
+    s += '<div class="sb-sec">Cost by Type</div>';
     const roleData = [
-      { key: 'orchestrator', label: 'Orchestrateur', ...aggRole('orchestrator') },
-      { key: 'head', label: 'Directeurs', ...aggRole('head') },
-      { key: 'specialist', label: 'Spécialistes', ...aggRole('specialist') },
+      { key: 'orchestrator', label: 'Orchestrator', ...aggRole('orchestrator') },
+      { key: 'head', label: 'Domain Heads', ...aggRole('head') },
+      { key: 'specialist', label: 'Specialists', ...aggRole('specialist') },
     ];
     const maxRole = Math.max(...roleData.map(r => r.cost));
     roleData.forEach(r => {
@@ -820,10 +820,10 @@
 
     // ROI Summary
     s += '<div class="sb-roi-summary" style="margin-top:12px">';
-    s += '<div class="sb-roi-row"><span class="sb-roi-label">Coût Total</span><span class="sb-roi-val amber">' + fmtEUR(avecTotal) + '</span></div>';
-    s += '<div class="sb-roi-row"><span class="sb-roi-label">Économies</span><span class="sb-roi-val">' + fmtEUR(savings) + '/mois</span></div>';
+    s += '<div class="sb-roi-row"><span class="sb-roi-label">Total Cost</span><span class="sb-roi-val amber">' + fmtEUR(avecTotal) + '</span></div>';
+    s += '<div class="sb-roi-row"><span class="sb-roi-label">Savings</span><span class="sb-roi-val">' + fmtEUR(savings) + '/month</span></div>';
     s += '<div class="sb-roi-row"><span class="sb-roi-label">ROI</span><span class="sb-roi-val">' + roi + '%</span></div>';
-    s += '<div class="sb-roi-row"><span class="sb-roi-label">Rentabilité</span><span class="sb-roi-val">' + payback.replace('.', ',') + ' mois</span></div>';
+    s += '<div class="sb-roi-row"><span class="sb-roi-label">Payback</span><span class="sb-roi-val">' + payback + ' months</span></div>';
     s += '</div>';
 
     s += '</div>';

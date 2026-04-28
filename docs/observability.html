@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Bank &mdash; Observabilit&eacute; &amp; KPIs</title>
+  <title>Your Bank &mdash; Observability &amp; KPIs</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -296,61 +296,61 @@
 <body>
 <div class="app">
   <!-- Topbar -->
-  <header class="topbar">
+  <div class="topbar">
     <div class="logo-block">
-      <div class="logo-text">solace.</div>
+      <span class="logo-text">solace.</span>
     </div>
     <div class="logo-sep"></div>
     <div class="title-block">
-      <h1>Your Bank &mdash; Observabilit&eacute; &amp; KPIs</h1>
-      <div class="sub">Supervision en Temps R&eacute;el &middot; 8 KPIs Cl&eacute;s</div>
+      <h1>Your Bank &mdash; Observability &amp; KPIs</h1>
+      <span class="sub">Real-Time Monitoring &middot; 8 Key KPIs</span>
     </div>
     <div class="topbar-right">
-      <span class="live-badge"><span class="dot"></span> Live</span>
+      <span class="live-badge"><span class="dot"></span> 200 agents live</span>
       <a href="agents.html">Agents</a>
+      <a href="governance.html">Governance</a>
       <a href="workflows.html">Workflows</a>
-      <a href="observability.html" class="active">Observabilit&eacute;</a>
-      <a href="governance.html">Gouvernance</a>
-      <a href="cost.html">Co&ucirc;ts</a>
+      <a href="cost.html">Cost</a>
+      <a href="observability.html" class="active">Observability</a>
     </div>
-  </header>
+  </div>
 
   <div class="main">
     <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="sb-hdr"><h3>Filtres &amp; Focus</h3></div>
+      <div class="sb-hdr"><h3>Filters &amp; Focus</h3></div>
       <div class="sb-body">
-        <div class="sb-sec">Domaine</div>
-        <button class="sb-btn active" data-filter="all"><span class="sb-dot" style="background:var(--sol-green)"></span> Tous les Domaines <span class="sb-count">200</span></button>
+        <div class="sb-sec">Domains</div>
+        <button class="sb-btn active" data-filter="all"><span class="sb-dot" style="background:var(--sol-green)"></span> All Domains <span class="sb-count">200</span></button>
         <button class="sb-btn" data-filter="cib"><span class="sb-dot" style="background:#6366f1"></span> CIB <span class="sb-count">6</span></button>
-        <button class="sb-btn" data-filter="retail"><span class="sb-dot" style="background:#06b6d4"></span> Retail <span class="sb-count">6</span></button>
-        <button class="sb-btn" data-filter="risk"><span class="sb-dot" style="background:#f43f5e"></span> Risk <span class="sb-count">5</span></button>
-        <button class="sb-btn" data-filter="it"><span class="sb-dot" style="background:#a855f7"></span> IT <span class="sb-count">4</span></button>
+        <button class="sb-btn" data-filter="retail"><span class="sb-dot" style="background:#06b6d4"></span> Retail Banking <span class="sb-count">6</span></button>
+        <button class="sb-btn" data-filter="risk"><span class="sb-dot" style="background:#f43f5e"></span> Risk &amp; Compliance <span class="sb-count">5</span></button>
+        <button class="sb-btn" data-filter="it"><span class="sb-dot" style="background:#a855f7"></span> IT &amp; Operations <span class="sb-count">4</span></button>
 
-        <div class="sb-sec">Plateforme</div>
-        <button class="sb-btn" data-platform="all"><span class="sb-dot" style="background:var(--sol-green)"></span> Toutes</button>
+        <div class="sb-sec">Platform</div>
+        <button class="sb-btn" data-platform="all"><span class="sb-dot" style="background:var(--sol-green)"></span> All</button>
         <button class="sb-btn" data-platform="databricks"><span class="sb-dot" style="background:var(--databricks)"></span> Databricks</button>
         <button class="sb-btn" data-platform="salesforce"><span class="sb-dot" style="background:var(--salesforce)"></span> Salesforce</button>
         <button class="sb-btn" data-platform="mistral"><span class="sb-dot" style="background:var(--mistral)"></span> Mistral</button>
         <button class="sb-btn" data-platform="claude"><span class="sb-dot" style="background:var(--claude)"></span> Claude</button>
 
         <div class="sb-sec">Focus KPI</div>
-        <button class="sb-btn" data-kpi="success">Taux de Succ&egrave;s</button>
-        <button class="sb-btn" data-kpi="cost">Co&ucirc;t</button>
-        <button class="sb-btn" data-kpi="latency">Latence</button>
-        <button class="sb-btn" data-kpi="escalation">Escalades</button>
+        <button class="sb-btn" data-kpi="success">Success Rate</button>
+        <button class="sb-btn" data-kpi="cost">Cost</button>
+        <button class="sb-btn" data-kpi="latency">Latency</button>
+        <button class="sb-btn" data-kpi="escalation">Escalation</button>
         <button class="sb-btn" data-kpi="grounding">Grounding</button>
-        <button class="sb-btn" data-kpi="security">S&eacute;curit&eacute;</button>
-        <button class="sb-btn" data-kpi="deps">D&eacute;pendances</button>
+        <button class="sb-btn" data-kpi="security">Security</button>
+        <button class="sb-btn" data-kpi="deps">Dependencies</button>
         <button class="sb-btn" data-kpi="feedback">Feedback</button>
       </div>
 
       <div class="sb-stats">
-        <div class="sb-stats-row"><span class="sb-stats-label">Agents Actifs</span><span class="sb-stats-val">200</span></div>
-        <div class="sb-stats-row"><span class="sb-stats-label">Uptime Global</span><span class="sb-stats-val">99.7%</span></div>
-        <div class="sb-stats-row"><span class="sb-stats-label">Alertes (24h)</span><span class="sb-stats-val amber">4</span></div>
+        <div class="sb-stats-row"><span class="sb-stats-label">Active Agents</span><span class="sb-stats-val">200</span></div>
+        <div class="sb-stats-row"><span class="sb-stats-label">Global Uptime</span><span class="sb-stats-val">99.7%</span></div>
+        <div class="sb-stats-row"><span class="sb-stats-label">Alerts (24h)</span><span class="sb-stats-val amber">4</span></div>
         <div class="sb-stats-row"><span class="sb-stats-label">Violations</span><span class="sb-stats-val red">3</span></div>
-        <div class="sb-stats-row"><span class="sb-stats-label">Derni&egrave;re MAJ</span><span class="sb-stats-val" id="lastUpdate">--:--</span></div>
+        <div class="sb-stats-row"><span class="sb-stats-label">Last Update</span><span class="sb-stats-val" id="lastUpdate">--:--</span></div>
       </div>
     </aside>
 
@@ -358,7 +358,7 @@
     <main class="content" id="content">
       <!-- HERO: 8 KPI Cards -->
       <div class="section-hdr" style="margin-top:0">
-        8 KPIs Cl&eacute;s &mdash; Vue Consolid&eacute;e
+        8 Key KPIs &mdash; Consolidated View
         <span class="badge">Slide 5</span>
         <span class="line"></span>
       </div>
@@ -366,7 +366,7 @@
 
       <!-- Agent Health Grid -->
       <div class="section-hdr">
-        Sant&eacute; des Agents
+        Agent Health
         <span class="badge">200 Agents</span>
         <span class="line"></span>
       </div>
@@ -374,8 +374,8 @@
 
       <!-- Per-Domain KPI Comparison -->
       <div class="section-hdr">
-        Comparaison par Domaine
-        <span class="badge">4 Domaines</span>
+        Domain Comparison
+        <span class="badge">4 Domains</span>
         <span class="line"></span>
       </div>
       <div class="domain-table-wrap">
@@ -384,15 +384,15 @@
 
       <!-- Per-Platform Performance -->
       <div class="section-hdr">
-        Performance par Plateforme
-        <span class="badge">4 Plateformes</span>
+        Platform Performance
+        <span class="badge">4 Platforms</span>
         <span class="line"></span>
       </div>
       <div class="platform-row" id="platformRow"></div>
 
       <!-- Activity Sparklines -->
       <div class="section-hdr">
-        Activit&eacute; Horaire (Paris, UTC+2)
+        24h Activity (Paris, UTC+2)
         <span class="badge">24h</span>
         <span class="line"></span>
       </div>
@@ -400,7 +400,7 @@
 
       <!-- SLA Tracking -->
       <div class="section-hdr">
-        Suivi SLA
+        SLA Tracking
         <span class="badge">6 Workflows</span>
         <span class="line"></span>
       </div>
@@ -447,7 +447,7 @@
   };
   const DOMAINS = ['cib','retail','risk','it'];
   const agents = [];
-  agents.push({id:'orchestrator',name:'Orchestrateur',domain:'group',platform:'mistral'});
+  agents.push({id:'orchestrator',name:'Orchestrator',domain:'group',platform:'mistral'});
   DOMAINS.forEach(d => agents.push({id:`head_${d}`,name:`Head ${d.toUpperCase()}`,domain:d,platform:TEMPLATES[d][0].platform}));
   let si = 1;
   DOMAINS.forEach(d => {
@@ -483,7 +483,7 @@
 
   // Domain aggregation
   const domains = ['cib', 'retail', 'risk', 'it'];
-  const domainLabels = { cib: 'CIB', retail: 'Retail', risk: 'Risk', it: 'IT' };
+  const domainLabels = { cib: 'CIB', retail: 'Retail Banking', risk: 'Risk & Compliance', it: 'IT & Operations' };
   const domainColors = { cib: '#6366f1', retail: '#06b6d4', risk: '#f43f5e', it: '#a855f7' };
 
   function domainAgents(d) { return agents.filter(a => a.domain === d); }
@@ -502,40 +502,40 @@
   function renderKPIHero() {
     const kpis = [
       {
-        label: 'Taux de Succès', value: '96.8%', color: 'green', cls: 'c-green',
-        trend: '↑ +2.6%', trendCls: 'arrow-up', sub: 'vs 94.2% mois dernier',
+        label: 'Success Rate', value: '96.8%', color: 'green', cls: 'c-green',
+        trend: '↑ +2.6%', trendCls: 'arrow-up', sub: 'vs 94.2% last month',
         sparkData: [85,88,90,91,93,94,95,96,95,97,96,97]
       },
       {
-        label: 'Coût Moyen / Exécution', value: '€0.12', color: 'amber', cls: 'c-amber',
-        trend: '↓ -18%', trendCls: 'arrow-down', sub: 'Budget: €0.15 / exécution',
+        label: 'Avg Cost / Execution', value: '€0.12', color: 'amber', cls: 'c-amber',
+        trend: '↓ -18%', trendCls: 'arrow-down', sub: 'budget: €0.15 / execution',
         sparkData: [16,15,14,14,13,13,12,12,12,11,12,12]
       },
       {
-        label: 'Latence P50', value: '185ms', color: 'blue', cls: 'c-blue',
+        label: 'P50 Latency', value: '185ms', color: 'blue', cls: 'c-blue',
         trend: '↓ -12ms', trendCls: 'arrow-down', sub: '',
         subMetrics: [{ l: 'P95', v: '420ms' }, { l: 'P99', v: '890ms' }],
         sparkData: [210,205,200,195,190,192,188,185,186,184,185,185]
       },
       {
-        label: "Taux d'Escalade", value: '4.2%', color: 'green', cls: 'c-green',
-        trend: '↓ -0.8%', trendCls: 'arrow-down', sub: 'Cible: < 5%',
+        label: 'Escalation Rate', value: '4.2%', color: 'green', cls: 'c-green',
+        trend: '↓ -0.8%', trendCls: 'arrow-down', sub: 'Target: < 5%',
         sparkData: [6,5.8,5.5,5.2,5,4.8,4.6,4.5,4.3,4.2,4.2,4.2]
       },
       {
         label: 'Grounding Accuracy', value: '97.3%', color: 'green', cls: 'c-green',
-        trend: '↑ +0.5%', trendCls: 'arrow-up', sub: 'Seuil min: 95%',
+        trend: '↑ +0.5%', trendCls: 'arrow-up', sub: 'min threshold: 95%',
         sparkData: [95.5,95.8,96,96.2,96.5,96.8,97,97.1,97.2,97.3,97.3,97.3]
       },
       {
-        label: 'Violations Sécurité', value: '3', color: 'red', cls: 'c-red',
-        trend: '', trendCls: '', sub: '30 derniers jours',
-        severity: [{ label: 'Haute', cls: 'high', count: 1 }, { label: 'Moyenne', cls: 'med', count: 1 }, { label: 'Basse', cls: 'low', count: 1 }]
+        label: 'Security Violations', value: '3', color: 'red', cls: 'c-red',
+        trend: '', trendCls: '', sub: 'last 30 days',
+        severity: [{ label: 'High', cls: 'high', count: 1 }, { label: 'Medium', cls: 'med', count: 1 }, { label: 'Low', cls: 'low', count: 1 }]
       },
       {
-        label: 'Dépendances Critiques', value: '2.4', color: 'blue', cls: 'c-blue',
-        trend: '', trendCls: '', sub: 'Moyenne par agent',
-        subMetrics: [{ l: 'Max', v: '7 (KYC Onboarding)' }],
+        label: 'Critical Dependencies', value: '2.4', color: 'blue', cls: 'c-blue',
+        trend: '', trendCls: '', sub: 'avg per agent',
+        subMetrics: [{ l: 'max:', v: '7 (KYC Onboarding)' }],
         sparkData: [2,3,2,4,1,3,2,7,2,3,1,2,3,2,4,2,1,3,2,2,3]
       },
       {
@@ -615,13 +615,13 @@
         const tooltip = document.getElementById('tooltip');
         tooltip.innerHTML = `
           <div class="tt-name">${agent.name}</div>
-          <div class="tt-row">Succès: <span>${k.success.toFixed(1)}%</span></div>
-          <div class="tt-row">Coût: <span>€${k.cost.toFixed(3)}</span></div>
-          <div class="tt-row">Latence P50: <span>${Math.round(k.latP50)}ms</span></div>
-          <div class="tt-row">Escalade: <span>${k.escalation.toFixed(1)}%</span></div>
+          <div class="tt-row">Success: <span>${k.success.toFixed(1)}%</span></div>
+          <div class="tt-row">Cost: <span>€${k.cost.toFixed(3)}</span></div>
+          <div class="tt-row">P50 Latency: <span>${Math.round(k.latP50)}ms</span></div>
+          <div class="tt-row">Escalation: <span>${k.escalation.toFixed(1)}%</span></div>
           <div class="tt-row">Grounding: <span>${k.grounding.toFixed(1)}%</span></div>
-          <div class="tt-row">Sécurité: <span>${k.security} violation${k.security !== 1 ? 's' : ''}</span></div>
-          <div class="tt-row">Dépendances: <span>${k.deps}</span></div>
+          <div class="tt-row">Security: <span>${k.security} violation${k.security !== 1 ? 's' : ''}</span></div>
+          <div class="tt-row">Dependencies: <span>${k.deps}</span></div>
           <div class="tt-row">Feedback: <span>${k.feedback.toFixed(1)}/5</span></div>
         `;
         tooltip.classList.add('show');
@@ -638,13 +638,13 @@
   // ---- Render Domain Comparison Table ----
   function renderDomainTable() {
     const kpiDefs = [
-      { key: 'success', label: 'Taux de Succès', fmt: v => v.toFixed(1) + '%', good: v => v >= 96, bad: v => v < 94 },
-      { key: 'cost', label: 'Coût Moyen', fmt: v => '€' + v.toFixed(2), good: v => v <= 0.10, bad: v => v > 0.15 },
-      { key: 'latP50', label: 'Latence P50', fmt: v => Math.round(v) + 'ms', good: v => v <= 180, bad: v => v > 250 },
-      { key: 'escalation', label: 'Escalade', fmt: v => v.toFixed(1) + '%', good: v => v < 4, bad: v => v > 6 },
+      { key: 'success', label: 'Success Rate', fmt: v => v.toFixed(1) + '%', good: v => v >= 96, bad: v => v < 94 },
+      { key: 'cost', label: 'Avg Cost', fmt: v => '€' + v.toFixed(2), good: v => v <= 0.10, bad: v => v > 0.15 },
+      { key: 'latP50', label: 'P50 Latency', fmt: v => Math.round(v) + 'ms', good: v => v <= 180, bad: v => v > 250 },
+      { key: 'escalation', label: 'Escalation Rate', fmt: v => v.toFixed(1) + '%', good: v => v < 4, bad: v => v > 6 },
       { key: 'grounding', label: 'Grounding', fmt: v => v.toFixed(1) + '%', good: v => v >= 97, bad: v => v < 95 },
-      { key: 'security', label: 'Sécurité', fmt: v => Math.round(v) + ' viol.', good: v => v === 0, bad: v => v >= 2 },
-      { key: 'deps', label: 'Dép. Moy.', fmt: v => v.toFixed(1), good: v => v <= 2.5, bad: v => v > 4 },
+      { key: 'security', label: 'Security', fmt: v => Math.round(v) + ' viol.', good: v => v === 0, bad: v => v >= 2 },
+      { key: 'deps', label: 'Avg Deps', fmt: v => v.toFixed(1), good: v => v <= 2.5, bad: v => v > 4 },
       { key: 'feedback', label: 'Feedback', fmt: v => v.toFixed(1) + '/5', good: v => v >= 4.5, bad: v => v < 4.2 }
     ];
 
@@ -678,9 +678,9 @@
         <div class="plat-name ${p}">${platformLabels[p]}</div>
         <div class="plat-metrics">
           <div class="plat-metric-item"><div class="plat-metric-label">Agents</div><div class="plat-metric-val">${pa.length}</div></div>
-          <div class="plat-metric-item"><div class="plat-metric-label">Succès Moy.</div><div class="plat-metric-val">${avgSuccess.toFixed(1)}%</div></div>
-          <div class="plat-metric-item"><div class="plat-metric-label">Latence P50</div><div class="plat-metric-val">${Math.round(avgLat)}ms</div></div>
-          <div class="plat-metric-item"><div class="plat-metric-label">Coût / Mois</div><div class="plat-metric-val">€${Math.round(totalCost).toLocaleString('fr-FR')}</div></div>
+          <div class="plat-metric-item"><div class="plat-metric-label">Avg Success</div><div class="plat-metric-val">${avgSuccess.toFixed(1)}%</div></div>
+          <div class="plat-metric-item"><div class="plat-metric-label">P50 Latency</div><div class="plat-metric-val">${Math.round(avgLat)}ms</div></div>
+          <div class="plat-metric-item"><div class="plat-metric-label">Cost / Month</div><div class="plat-metric-val">€${Math.round(totalCost).toLocaleString('en-US')}</div></div>
         </div>
       </div>`;
     }).join('');
@@ -704,11 +704,11 @@
     }
 
     const rows = [
-      { label: 'Orchestrateur Principal', seed: 'orch' },
+      { label: 'Main Orchestrator', seed: 'orch' },
       { label: 'Head CIB', seed: 'hcib' },
-      { label: 'Head Retail', seed: 'hret' },
-      { label: 'Head Risk', seed: 'hrisk' },
-      { label: 'Head IT', seed: 'hit' }
+      { label: 'Head Retail Banking', seed: 'hret' },
+      { label: 'Head Risk & Compliance', seed: 'hrisk' },
+      { label: 'Head IT & Operations', seed: 'hit' }
     ];
 
     const container = document.getElementById('activitySection');
@@ -742,7 +742,7 @@
 
     const table = document.getElementById('slaTable');
     let html = `<thead><tr>
-      <th>Workflow</th><th>Cible (ms)</th><th>Réel (ms)</th><th>Marge</th><th>Statut</th>
+      <th>Workflow</th><th>Target (ms)</th><th>Actual (ms)</th><th>Margin</th><th>Status</th>
     </tr></thead><tbody>`;
 
     slas.forEach(s => {
@@ -753,8 +753,8 @@
       const barWidth = Math.min(100, (s.actual / s.target) * 100);
       html += `<tr>
         <td style="font-weight:600">${s.workflow}</td>
-        <td>${s.target.toLocaleString('fr-FR')}ms</td>
-        <td style="color:${pass ? 'var(--green)' : 'var(--red)'}; font-weight:700">${s.actual.toLocaleString('fr-FR')}ms</td>
+        <td>${s.target.toLocaleString('en-US')}ms</td>
+        <td style="color:${pass ? 'var(--green)' : 'var(--red)'}; font-weight:700">${s.actual.toLocaleString('en-US')}ms</td>
         <td style="color:${pass ? 'var(--green)' : 'var(--red)'}; font-weight:600">${margin}</td>
         <td><span class="sla-status ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'FAIL'}</span>
           <div class="sla-bar-wrap"><div class="sla-bar" style="width:${barWidth}%;background:${barColor}"></div></div>
@@ -768,7 +768,7 @@
   // ---- Update clock ----
   function updateClock() {
     const now = new Date();
-    const paris = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Europe/Paris' }).format(now);
+    const paris = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Europe/Paris' }).format(now);
     const el = document.getElementById('lastUpdate');
     if (el) el.textContent = paris;
   }
