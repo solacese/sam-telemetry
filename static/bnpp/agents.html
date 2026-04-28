@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BNP Paribas &mdash; Agent Mesh Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    /* ================================================================
+       Solace colour system
+       ================================================================ */
+    :root {
+      --sol-bg:       #021b2f;
+      --sol-surface:  #01374e;
+      --sol-surface2: #014968;
+      --sol-header:   #03223b;
+      --sol-border:   #0a4060;
+      --sol-border-l: #0d5579;
+      --sol-green:    #00c895;
+      --sol-green-bg: rgba(0,200,149,.10);
+      --sol-green-20: rgba(0,200,149,.20);
+      --sol-green-40: rgba(0,200,149,.40);
+      --sol-text:     #e6eff2;
+      --sol-muted:    #b1b9c0;
+      --sol-dim:      #536574;
+      --sol-card:     #012e45;
+      --sol-card-hov: #013a56;
+      /* platforms */
+      --databricks:    #ff3621; --databricks-bg: rgba(255,54,33,.12);
+      --salesforce:    #00a1e0; --salesforce-bg: rgba(0,161,224,.12);
+      --mistral:       #f97316; --mistral-bg:    rgba(249,115,22,.12);
+      --claude:        #d4a574; --claude-bg:     rgba(212,165,116,.12);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--sol-bg); color: var(--sol-text); font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--sol-green); text-decoration: none; }
+
+    /* ---- layout ---- */
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    /* ---- topbar ---- */
+    .topbar {
+      background: var(--sol-header); border-bottom: 1px solid var(--sol-border);
+      padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+      position: relative;
+    }
+    .topbar::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 10%, var(--sol-green) 50%, transparent 90%);
+      opacity: .6;
+    }
+    .logo-block { display: flex; align-items: center; gap: 10px; }
+    .logo-text { font-size: 14px; font-weight: 700; color: var(--sol-green); letter-spacing: .02em; }
+    .logo-sep { width: 1px; height: 24px; background: var(--sol-border-l); margin: 0 6px; }
+    .title-block h1 { font-size: 15px; font-weight: 700; color: var(--sol-text); }
+    .title-block .sub { font-size: 10px; color: var(--sol-dim); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+    .topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .topbar-right a {
+      font-size: 12px; color: var(--sol-muted); padding: 5px 10px; border-radius: 6px;
+      transition: all .12s; font-weight: 500; border: 1px solid transparent;
+    }
+    .topbar-right a:hover { color: var(--sol-green); border-color: var(--sol-border); background: rgba(0,200,149,.05); }
+    .topbar-right a.active { color: var(--sol-green); border-color: var(--sol-green); background: var(--sol-green-bg); font-weight: 600; }
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 14px; font-size: 11px; font-weight: 600;
+      background: var(--sol-green-bg); border: 1px solid var(--sol-green-20); color: var(--sol-green);
+    }
+    .live-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sol-green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.3; } }
+
+    .main { display: flex; flex: 1; min-height: 0; }
+
+    /* ---- sidebar ---- */
+    .sidebar {
+      width: 250px; flex-shrink: 0; background: var(--sol-surface);
+      border-right: 1px solid var(--sol-border); display: flex; flex-direction: column; overflow-y: auto;
+    }
+    .sb-hdr { padding: 14px 16px 10px; border-bottom: 1px solid var(--sol-border); }
+    .sb-hdr h3 { font-size: 10px; font-weight: 700; color: var(--sol-dim); letter-spacing: .1em; text-transform: uppercase; }
+    .sb-body { flex: 1; padding: 6px 0; overflow-y: auto; }
+    .sb-sec { padding: 12px 16px 4px; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sol-dim); }
+    .sb-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border: none; background: none;
+      color: var(--sol-muted); font-size: 12px; font-weight: 500;
+      cursor: pointer; width: 100%; text-align: left; transition: all .12s; position: relative;
+      font-family: inherit;
+    }
+    .sb-btn:hover { background: rgba(0,200,149,.04); color: var(--sol-text); }
+    .sb-btn.active { background: var(--sol-surface2); color: var(--sol-green); font-weight: 600; }
+    .sb-btn.active::before {
+      content: ''; position: absolute; left: 0; top: 3px; bottom: 3px; width: 3px;
+      background: var(--sol-green); border-radius: 0 2px 2px 0;
+    }
+    .sb-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .sb-count {
+      margin-left: auto; font-size: 10px; color: var(--sol-dim);
+      background: rgba(255,255,255,.04); padding: 1px 6px; border-radius: 8px; font-weight: 600;
+    }
+    .sb-btn.active .sb-count { color: var(--sol-green); background: var(--sol-green-bg); }
+
+    /* sidebar KPI summary */
+    .sb-kpi-summary {
+      margin: 8px 12px; padding: 12px; border-radius: 8px;
+      background: rgba(0,200,149,.06); border: 1px solid var(--sol-green-20);
+    }
+    .sb-kpi-title { font-size: 9px; font-weight: 700; color: var(--sol-dim); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
+    .sb-kpi-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; }
+    .sb-kpi-label { font-size: 10px; color: var(--sol-muted); }
+    .sb-kpi-val { font-size: 12px; font-weight: 700; color: var(--sol-green); }
+    .sb-kpi-val.amber { color: #f59e0b; }
+    .sb-kpi-val.blue { color: #38bdf8; }
+
+    /* ---- content ---- */
+    .content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+
+    /* ---- hero stats ---- */
+    .hero-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
+    .stat-card {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px;
+      padding: 14px 16px; position: relative; overflow: hidden;
+    }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+    .stat-card.c-green::before  { background: var(--sol-green); }
+    .stat-card.c-databricks::before  { background: var(--databricks); }
+    .stat-card.c-salesforce::before { background: var(--salesforce); }
+    .stat-card.c-mistral::before    { background: var(--mistral); }
+    .stat-card.c-claude::before { background: var(--claude); }
+    .stat-val { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -.5px; }
+    .stat-lbl { font-size: 10px; color: var(--sol-muted); margin-top: 3px; font-weight: 500; }
+    .stat-sub { font-size: 9px; color: var(--sol-dim); margin-top: 2px; }
+
+    /* ---- domain groups ---- */
+    .domain-grp { margin-bottom: 24px; }
+    .domain-hdr {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; margin-bottom: 10px; border-bottom: 1px solid var(--sol-border);
+      cursor: pointer; user-select: none;
+    }
+    .domain-hdr:hover .domain-title { color: var(--sol-green); }
+    .domain-icon {
+      width: 38px; height: 38px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: #fff; flex-shrink: 0; letter-spacing: -.02em;
+    }
+    .domain-icon.cib    { background: var(--databricks); }
+    .domain-icon.retail  { background: var(--salesforce); }
+    .domain-icon.risk    { background: var(--mistral); }
+    .domain-icon.it      { background: var(--claude); }
+    .domain-icon.group   { background: var(--sol-green); }
+    .domain-info { flex: 1; }
+    .domain-title { font-size: 15px; font-weight: 700; transition: color .12s; }
+    .domain-sub { font-size: 11px; color: var(--sol-muted); }
+    .domain-badges { display: flex; gap: 6px; align-items: center; }
+    .domain-badge {
+      font-size: 9px; padding: 2px 7px; border-radius: 5px; font-weight: 700;
+      letter-spacing: .03em; text-transform: uppercase;
+    }
+    .domain-badge.databricks { background: var(--databricks-bg); color: var(--databricks); border: 1px solid rgba(255,54,33,.2); }
+    .domain-badge.salesforce { background: var(--salesforce-bg); color: var(--salesforce); border: 1px solid rgba(0,161,224,.2); }
+    .domain-badge.mistral    { background: var(--mistral-bg); color: var(--mistral); border: 1px solid rgba(249,115,22,.2); }
+    .domain-badge.claude     { background: var(--claude-bg); color: var(--claude); border: 1px solid rgba(212,165,116,.2); }
+    .domain-badge.green      { background: var(--sol-green-bg); color: var(--sol-green); border: 1px solid var(--sol-green-20); }
+    .domain-cnt { font-size: 11px; padding: 2px 9px; border-radius: 10px; background: rgba(255,255,255,.05); color: var(--sol-muted); font-weight: 600; }
+    .domain-chev { width: 18px; height: 18px; color: var(--sol-dim); transition: transform .2s; flex-shrink: 0; }
+    .domain-grp.collapsed .domain-chev { transform: rotate(-90deg); }
+    .domain-grp.collapsed .domain-body { display: none; }
+
+    /* domain KPI bar */
+    .domain-kpi-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+      margin-bottom: 14px; padding: 10px 12px; border-radius: 8px;
+      background: rgba(0,200,149,.04); border: 1px solid rgba(0,200,149,.12);
+    }
+    .domain-kpi-item { text-align: center; }
+    .domain-kpi-val { font-size: 16px; font-weight: 800; color: var(--sol-green); }
+    .domain-kpi-val.amber { color: #f59e0b; }
+    .domain-kpi-val.blue { color: #38bdf8; }
+    .domain-kpi-lbl { font-size: 9px; color: var(--sol-dim); margin-top: 1px; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+
+    /* ---- role labels ---- */
+    .role-sec { margin-bottom: 14px; }
+    .role-lbl {
+      font-size: 10px; font-weight: 700; color: var(--sol-dim); letter-spacing: .08em;
+      text-transform: uppercase; margin-bottom: 6px; padding-left: 2px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .role-line { flex: 1; height: 1px; background: var(--sol-border); }
+
+    /* ---- grid ---- */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; }
+    .grid.compact { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+
+    /* ---- agent card ---- */
+    .agent-card {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px;
+      padding: 14px 16px; cursor: default; transition: all .15s;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .agent-card:hover { background: var(--sol-card-hov); border-color: var(--sol-border-l); }
+    .agent-card.head {
+      border-left: 3px solid; background: linear-gradient(135deg, var(--sol-card) 0%, rgba(0,200,149,.03) 100%);
+    }
+    .agent-card.head.databricks { border-left-color: var(--databricks); }
+    .agent-card.head.salesforce { border-left-color: var(--salesforce); }
+    .agent-card.head.mistral    { border-left-color: var(--mistral); }
+    .agent-card.head.claude     { border-left-color: var(--claude); }
+    .agent-card.orchestrator {
+      border: 1px solid var(--sol-green-20);
+      background: linear-gradient(135deg, rgba(0,200,149,.06), var(--sol-card));
+      grid-column: 1 / -1;
+    }
+    .card-top { display: flex; align-items: center; gap: 10px; }
+    .card-av {
+      width: 32px; height: 32px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0; color: #fff;
+    }
+    .card-av.databricks { background: var(--databricks); }
+    .card-av.salesforce { background: var(--salesforce); }
+    .card-av.mistral    { background: var(--mistral); }
+    .card-av.claude     { background: var(--claude); color: #1a1a1a; }
+    .card-av.green      { background: var(--sol-green); }
+    .card-tit { flex: 1; min-width: 0; }
+    .card-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-id { font-size: 9px; color: var(--sol-dim); font-family: 'SF Mono', 'Fira Code', monospace; }
+    .card-desc {
+      font-size: 11px; color: var(--sol-muted); line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 3px; }
+    .tag { font-size: 9px; padding: 2px 5px; border-radius: 3px; font-weight: 600; }
+    .tag.p { text-transform: uppercase; letter-spacing: .03em; }
+    .tag.p.databricks { background: var(--databricks-bg); color: var(--databricks); }
+    .tag.p.salesforce { background: var(--salesforce-bg); color: var(--salesforce); }
+    .tag.p.mistral    { background: var(--mistral-bg); color: var(--mistral); }
+    .tag.p.claude     { background: var(--claude-bg); color: var(--claude); }
+    .tag.p.green      { background: var(--sol-green-bg); color: var(--sol-green); }
+    .tag.domain { background: rgba(255,255,255,.04); color: var(--sol-muted); text-transform: uppercase; letter-spacing: .03em; }
+    .tag.facing-customer { background: var(--sol-green-bg); color: var(--sol-green); border: 1px solid var(--sol-green-20); }
+    .tag.facing-internal { background: rgba(255,255,255,.04); color: var(--sol-dim); }
+
+    /* ---- compact specialist card ---- */
+    .agent-card-compact {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 8px;
+      padding: 10px 12px; cursor: default; transition: all .15s;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .agent-card-compact:hover { background: var(--sol-card-hov); border-color: var(--sol-border-l); }
+    .agent-card-compact .card-av { width: 28px; height: 28px; border-radius: 6px; font-size: 9px; }
+    .agent-card-compact .compact-info { flex: 1; min-width: 0; }
+    .agent-card-compact .compact-name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .agent-card-compact .compact-meta { font-size: 9px; color: var(--sol-dim); display: flex; gap: 6px; align-items: center; }
+    .agent-card-compact .compact-kpi { font-size: 10px; font-weight: 700; white-space: nowrap; margin-left: auto; }
+    .agent-card-compact .compact-kpi.green { color: #00c895; }
+    .agent-card-compact .compact-kpi.amber { color: #f59e0b; }
+    .agent-card-compact .compact-kpi.red   { color: #ef4444; }
+
+    /* show-more button */
+    .show-more-btn {
+      display: block; width: 100%; padding: 8px; margin-top: 8px;
+      background: rgba(0,200,149,.06); border: 1px dashed var(--sol-green-20);
+      border-radius: 8px; color: var(--sol-green); font-size: 11px; font-weight: 600;
+      cursor: pointer; text-align: center; font-family: inherit; transition: all .15s;
+    }
+    .show-more-btn:hover { background: rgba(0,200,149,.12); border-color: var(--sol-green-40); }
+
+    /* ================================================================
+       KPI metrics strip — 2 rows x 4 cols
+       ================================================================ */
+    .kpi-strip {
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px 8px;
+      margin-top: 4px; padding: 8px 10px; border-radius: 6px;
+      background: rgba(0,200,149,.04); border: 1px solid rgba(0,200,149,.10);
+    }
+    .kpi-cell { text-align: center; }
+    .kpi-cell-val { font-size: 11px; font-weight: 800; line-height: 1.1; color: var(--sol-text); }
+    .kpi-cell-val.green  { color: #00c895; }
+    .kpi-cell-val.amber  { color: #f59e0b; }
+    .kpi-cell-val.blue   { color: #38bdf8; }
+    .kpi-cell-val.red    { color: #ef4444; }
+    .kpi-cell-val.teal   { color: #2dd4bf; }
+    .kpi-cell-lbl { font-size: 7px; color: var(--sol-dim); text-transform: uppercase; letter-spacing: .04em; font-weight: 600; margin-top: 1px; }
+    .kpi-bar-track { height: 3px; border-radius: 2px; background: rgba(255,255,255,.06); margin-top: 2px; overflow: hidden; }
+    .kpi-bar-fill { height: 100%; border-radius: 2px; transition: width .4s; }
+    .kpi-bar-fill.g { background: #00c895; }
+    .kpi-bar-fill.a { background: #f59e0b; }
+    .kpi-bar-fill.r { background: #ef4444; }
+
+    /* ---- search ---- */
+    .toolbar { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+    .search-box { flex: 1; min-width: 220px; position: relative; }
+    .search-box input {
+      width: 100%; padding: 9px 12px 9px 36px; border-radius: 8px;
+      border: 1px solid var(--sol-border); background: var(--sol-card);
+      color: var(--sol-text); font-size: 12px; outline: none; transition: all .15s; font-family: inherit;
+    }
+    .search-box input::placeholder { color: var(--sol-dim); }
+    .search-box input:focus { border-color: var(--sol-green); box-shadow: 0 0 0 2px var(--sol-green-20); }
+    .search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--sol-dim); }
+    .rmeta { font-size: 11px; color: var(--sol-dim); white-space: nowrap; font-weight: 500; }
+
+    /* ---- empty ---- */
+    .empty { text-align: center; padding: 60px 20px; color: var(--sol-muted); }
+    .empty h3 { margin: 0 0 6px; color: var(--sol-text); font-size: 15px; }
+    .empty p { margin: 0; font-size: 12px; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,200,149,.15); border-radius: 3px; }
+
+    @media (max-width: 1100px) { .hero-stats { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 900px) { .sidebar { width: 200px; } .hero-stats { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .sidebar { display: none; } .hero-stats { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo-block">
+      <span class="logo-text">solace.</span>
+    </div>
+    <div class="logo-sep"></div>
+    <div class="title-block">
+      <h1>BNP Paribas &mdash; Agent Mesh</h1>
+      <span class="sub">Connecter, Gouverner et Superviser</span>
+    </div>
+    <div class="topbar-right">
+      <span class="live-badge"><span class="dot"></span> 200 agents live</span>
+      <a href="agents.html" class="active">Agents</a>
+      <a href="governance.html">Governance</a>
+      <a href="workflows.html">Workflows</a>
+      <a href="cost.html">Cost</a>
+      <a href="observability.html">Observability</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// Topology builder — 200 agents for BNP Paribas
+// ================================================================
+const SPECIALIST_TEMPLATES = {
+  cib: [
+    {suffix: 'structuring', name: 'Product Structuring Agent', platform: 'databricks', facing: 'internal', desc: 'Structure les produits dérivés et obligations structurées. Analyse de pricing en temps réel.'},
+    {suffix: 'market_data', name: 'Market Data Insights', platform: 'databricks', facing: 'internal', desc: 'Requêtes en langage naturel sur les données de marché. Portfolio analytics.'},
+    {suffix: 'trade_exec', name: 'Trade Execution Agent', platform: 'mistral', facing: 'internal', desc: 'Exécution optimale des ordres. Analyse pré/post-trade et best execution.'},
+    {suffix: 'research', name: 'Research Summariser', platform: 'claude', facing: 'internal', desc: 'Synthèse de la recherche sell-side/buy-side. Génération de notes d\'investissement.'},
+    {suffix: 'pricing', name: 'Pricing Engine Agent', platform: 'databricks', facing: 'internal', desc: 'Moteur de pricing temps réel pour dérivés et produits structurés.'},
+    {suffix: 'risk_calc', name: 'Risk Calculator', platform: 'databricks', facing: 'internal', desc: 'Calcul VaR, Greeks et sensibilités de portefeuille.'},
+    {suffix: 'settlement', name: 'Settlement Agent', platform: 'mistral', facing: 'internal', desc: 'Réconciliation et règlement-livraison post-trade automatisé.'},
+    {suffix: 'reporting', name: 'CIB Reporting Agent', platform: 'claude', facing: 'internal', desc: 'Rapports de performance et analytics CIB automatisés.'},
+  ],
+  retail: [
+    {suffix: 'onboarding', name: 'Customer Onboarding Agent', platform: 'salesforce', facing: 'customer', desc: 'Parcours d\'ouverture de compte digitalisé. Vérification documentaire automatisée.'},
+    {suffix: 'mortgage', name: 'Mortgage Pre-Approval Agent', platform: 'salesforce', facing: 'customer', desc: 'Pré-approbation hypothécaire en temps réel. Scoring et simulation de mensualités.'},
+    {suffix: 'sentiment', name: 'Customer Sentiment Agent', platform: 'mistral', facing: 'internal', desc: 'Analyse des enquêtes NPS et avis post-rendez-vous. Détection de l\'insatisfaction.'},
+    {suffix: 'advisor', name: 'Advisor Copilot', platform: 'claude', facing: 'internal', desc: 'Copilote pour les conseillers bancaires. Recommandations produit et aide à la vente.'},
+    {suffix: 'upsell', name: 'Upsell Recommender', platform: 'salesforce', facing: 'customer', desc: 'Recommandations de produits complémentaires basées sur le profil client.'},
+    {suffix: 'billing', name: 'Billing Query Agent', platform: 'salesforce', facing: 'customer', desc: 'Résolution automatisée des requêtes facturation et relevés.'},
+    {suffix: 'nps', name: 'NPS Analyser', platform: 'mistral', facing: 'internal', desc: 'Analyse NPS multi-canal et détection des signaux faibles.'},
+    {suffix: 'scheduler', name: 'Appointment Scheduler', platform: 'salesforce', facing: 'customer', desc: 'Planification intelligente de rendez-vous en agence et visio.'},
+  ],
+  risk: [
+    {suffix: 'kyc', name: 'KYC/AML Agent', platform: 'mistral', facing: 'internal', desc: 'Vérification KYC automatisée. Screening sanctions et PEP. Alertes AML.'},
+    {suffix: 'credit', name: 'Credit Risk Scorer', platform: 'databricks', facing: 'internal', desc: 'Scoring de risque de crédit en temps réel. Modèles IRBA et stress tests.'},
+    {suffix: 'regulatory', name: 'Regulatory Reporting Agent', platform: 'mistral', facing: 'internal', desc: 'Génération automatique des rapports ACPR, ECB, DORA. Conformité MiFID II.'},
+    {suffix: 'fraud', name: 'Fraud Detection Agent', platform: 'databricks', facing: 'internal', desc: 'Détection de fraude en temps réel. Analyse comportementale et alertes.'},
+    {suffix: 'stress', name: 'Stress Test Agent', platform: 'databricks', facing: 'internal', desc: 'Simulation de scénarios de stress réglementaires et ad-hoc.'},
+    {suffix: 'sanctions', name: 'Sanctions Screening Agent', platform: 'mistral', facing: 'internal', desc: 'Screening continu des listes de sanctions internationales.'},
+    {suffix: 'model_val', name: 'Model Validation Agent', platform: 'databricks', facing: 'internal', desc: 'Validation indépendante des modèles de risque et backtesting.'},
+    {suffix: 'alert', name: 'Alert Triage Agent', platform: 'claude', facing: 'internal', desc: 'Triage intelligent des alertes de risque et priorisation.'},
+  ],
+  it: [
+    {suffix: 'security', name: 'Security Incident Agent', platform: 'claude', facing: 'internal', desc: 'Réponse aux incidents de sécurité. Triage automatique et remédiation.'},
+    {suffix: 'infra', name: 'Infrastructure Monitor', platform: 'databricks', facing: 'internal', desc: 'Supervision des infrastructures cloud et on-prem. Alertes et auto-scaling.'},
+    {suffix: 'copilot', name: 'Internal Copilot', platform: 'claude', facing: 'internal', desc: 'Assistant IA pour les équipes internes. Recherche documentaire et Q&A.'},
+    {suffix: 'deployment', name: 'Deployment Agent', platform: 'mistral', facing: 'internal', desc: 'CI/CD des agents. Déploiement Kubernetes et rollback automatique.'},
+    {suffix: 'backup', name: 'Backup & Recovery Agent', platform: 'databricks', facing: 'internal', desc: 'Gestion des sauvegardes et reprise après incident automatisée.'},
+    {suffix: 'access', name: 'Access Management Agent', platform: 'claude', facing: 'internal', desc: 'Gestion des accès, provisioning et revue des droits.'},
+    {suffix: 'cost_opt', name: 'Cost Optimisation Agent', platform: 'databricks', facing: 'internal', desc: 'Optimisation des coûts cloud et recommandations FinOps.'},
+    {suffix: 'doc', name: 'Documentation Agent', platform: 'claude', facing: 'internal', desc: 'Génération et mise à jour automatique de la documentation technique.'},
+  ],
+};
+
+const DOMAIN_LABELS = { cib: 'Corporate & Investment Banking', retail: 'Retail Banking', risk: 'Risk & Compliance', it: 'IT & Operations' };
+
+function buildTopology() {
+  const agents = [];
+
+  // 1) Orchestrator
+  agents.push({ id: 'orchestrator', name: 'Orchestrateur Multi-Agents', domain: 'group', platform: 'mistral', type: 'orchestrator', facing: 'internal', desc: 'Coordonne les workflows multi-domaines à travers CIB, Retail, Risk et IT.' });
+
+  // 2) Domain Heads
+  agents.push({ id: 'head_cib', name: 'Head of CIB Agents', domain: 'cib', platform: 'databricks', type: 'head', facing: 'internal', desc: 'Pilote les agents de banque d\'investissement — structuration, pricing, exécution.' });
+  agents.push({ id: 'head_retail', name: 'Head of Retail Banking', domain: 'retail', platform: 'salesforce', type: 'head', facing: 'customer', desc: 'Supervise les agents client — onboarding, prêts, satisfaction.' });
+  agents.push({ id: 'head_risk', name: 'Head of Risk & Compliance', domain: 'risk', platform: 'mistral', type: 'head', facing: 'internal', desc: 'Gouverne la conformité réglementaire, KYC/AML, et le risque de crédit.' });
+  agents.push({ id: 'head_it', name: 'Head of IT & Ops', domain: 'it', platform: 'claude', type: 'head', facing: 'internal', desc: 'Gère l\'infrastructure, la sécurité et les copilotes internes.' });
+
+  // 3) Generate 195 specialists (~49 per domain, last domain gets remainder)
+  const domains = ['cib', 'retail', 'risk', 'it'];
+  let specId = 1;
+  for (const domain of domains) {
+    const templates = SPECIALIST_TEMPLATES[domain];
+    const quota = (domain === 'it') ? (195 - specId + 1) : 49; // last domain takes remainder
+    for (let i = 0; i < quota; i++) {
+      if (specId > 195) break;
+      const template = templates[i % templates.length];
+      const instanceNum = Math.floor(i / templates.length) + 1;
+      const num = String(specId).padStart(3, '0');
+      agents.push({
+        id: `spec_${domain}_${num}`,
+        name: `${template.name}${instanceNum > 1 ? ' #' + instanceNum : ''}`,
+        domain: domain,
+        platform: template.platform,
+        type: 'specialist',
+        facing: template.facing,
+        desc: `${template.desc}${instanceNum > 1 ? ' (Instance ' + instanceNum + ')' : ''}`,
+      });
+      specId++;
+    }
+  }
+
+  return agents;
+}
+
+const AGENTS = buildTopology();
+
+const DOMAIN_META = {
+  group:  { label: 'Orchestration Groupe', icon: 'GRP', desc: 'Coordination multi-domaines' },
+  cib:    { label: 'Corporate & Investment Banking', icon: 'CIB', desc: 'Structuration, Pricing, Execution, Research' },
+  retail: { label: 'Retail Banking', icon: 'RET', desc: 'Onboarding, Prêts, Satisfaction, Conseil' },
+  risk:   { label: 'Risk & Compliance', icon: 'RSK', desc: 'KYC/AML, Crédit, Réglementation, Fraude' },
+  it:     { label: 'IT & Operations', icon: 'IT', desc: 'Sécurité, Infrastructure, Copilotes, CI/CD' },
+};
+
+const PLATFORM_LABELS = {
+  databricks: 'Databricks',
+  salesforce: 'Salesforce',
+  mistral:    'Mistral',
+  claude:     'Claude',
+};
+
+// ================================================================
+// Deterministic KPI generator
+// ================================================================
+function seededRand(seed) {
+  let s = seed;
+  return () => { s = (s * 16807 + 0) % 2147483647; return (s - 1) / 2147483646; };
+}
+
+function kpisForAgent(agent) {
+  let h = 0;
+  for (let i = 0; i < agent.id.length; i++) h = ((h << 5) - h + agent.id.charCodeAt(i)) | 0;
+  const rng = seededRand(Math.abs(h) + 1);
+
+  let costMin, costMax;
+  if (agent.type === 'orchestrator') { costMin = 2000; costMax = 4000; }
+  else if (agent.type === 'head')    { costMin = 800;  costMax = 1500; }
+  else                               { costMin = 50;   costMax = 400; }
+
+  return {
+    successRate:       +(88 + rng() * 12).toFixed(1),
+    costPerMonth:      Math.round(costMin + rng() * (costMax - costMin)),
+    avgLatency:        Math.round(80 + rng() * 400),
+    escalationRate:    +(1 + rng() * 12).toFixed(1),
+    groundingAccuracy: +(85 + rng() * 15).toFixed(1),
+    securityViolations: Math.floor(rng() * 3),
+    dependencies:      2 + Math.floor(rng() * 6),
+    feedbackScore:     +(3.5 + rng() * 1.5).toFixed(1),
+  };
+}
+
+// Pre-compute KPIs
+for (const a of AGENTS) a.kpis = kpisForAgent(a);
+
+// ================================================================
+// State
+// ================================================================
+let filterDomain = 'all';
+let filterPlatform = 'all';
+let filterFacing = 'all';
+let searchTerm = '';
+const expandedSpecialists = {}; // track which domains have "show all" toggled
+
+// ================================================================
+// Helpers
+// ================================================================
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function ini(name) { return name.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+function fmt(n) { return n.toLocaleString('fr-FR'); }
+
+function filtered() {
+  return AGENTS.filter(a => {
+    if (filterDomain !== 'all' && a.domain !== filterDomain) return false;
+    if (filterPlatform !== 'all' && a.platform !== filterPlatform) return false;
+    if (filterFacing !== 'all' && a.facing !== filterFacing) return false;
+    if (searchTerm) {
+      const t = searchTerm.toLowerCase();
+      if (!a.name.toLowerCase().includes(t) && !a.id.toLowerCase().includes(t) && !a.desc.toLowerCase().includes(t)) return false;
+    }
+    return true;
+  });
+}
+
+// ================================================================
+// Render sidebar
+// ================================================================
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  const agents = filtered();
+
+  // Compute averages for KPI panel
+  const avg = { successRate: 0, costPerMonth: 0, avgLatency: 0, escalationRate: 0, groundingAccuracy: 0, securityViolations: 0, dependencies: 0, feedbackScore: 0 };
+  const n = agents.length || 1;
+  for (const a of agents) {
+    for (const k of Object.keys(avg)) avg[k] += a.kpis[k];
+  }
+  for (const k of Object.keys(avg)) avg[k] = avg[k] / n;
+
+  let html = '';
+  html += '<div class="sb-hdr"><h3>Filtres</h3></div>';
+  html += '<div class="sb-body">';
+
+  // Domain filter
+  html += '<div class="sb-sec">Domaine</div>';
+  const domainOpts = [
+    { key: 'all', label: 'Tous les domaines', color: '#00c895' },
+    { key: 'cib', label: 'CIB', color: 'var(--databricks)' },
+    { key: 'retail', label: 'Retail Banking', color: 'var(--salesforce)' },
+    { key: 'risk', label: 'Risk & Compliance', color: 'var(--mistral)' },
+    { key: 'it', label: 'IT & Ops', color: 'var(--claude)' },
+  ];
+  for (const o of domainOpts) {
+    const cnt = o.key === 'all' ? AGENTS.length : AGENTS.filter(a => a.domain === o.key).length;
+    html += `<button class="sb-btn${filterDomain===o.key?' active':''}" onclick="setDomain('${o.key}')">
+      <span class="sb-dot" style="background:${o.color}"></span>
+      ${o.label}
+      <span class="sb-count">${cnt}</span>
+    </button>`;
+  }
+
+  // Platform filter
+  html += '<div class="sb-sec">Plateforme</div>';
+  const platOpts = [
+    { key: 'all', label: 'Toutes', color: '#00c895' },
+    { key: 'databricks', label: 'Databricks', color: 'var(--databricks)' },
+    { key: 'salesforce', label: 'Salesforce', color: 'var(--salesforce)' },
+    { key: 'mistral', label: 'Mistral', color: 'var(--mistral)' },
+    { key: 'claude', label: 'Claude', color: 'var(--claude)' },
+  ];
+  for (const o of platOpts) {
+    const cnt = o.key === 'all' ? AGENTS.length : AGENTS.filter(a => a.platform === o.key).length;
+    html += `<button class="sb-btn${filterPlatform===o.key?' active':''}" onclick="setPlatform('${o.key}')">
+      <span class="sb-dot" style="background:${o.color}"></span>
+      ${o.label}
+      <span class="sb-count">${cnt}</span>
+    </button>`;
+  }
+
+  // Facing filter
+  html += '<div class="sb-sec">Exposition</div>';
+  const facingOpts = [
+    { key: 'all', label: 'Tous', color: '#00c895' },
+    { key: 'customer', label: 'Customer-Facing', color: 'var(--sol-green)' },
+    { key: 'internal', label: 'Internal', color: 'var(--sol-dim)' },
+  ];
+  for (const o of facingOpts) {
+    const cnt = o.key === 'all' ? AGENTS.length : AGENTS.filter(a => a.facing === o.key).length;
+    html += `<button class="sb-btn${filterFacing===o.key?' active':''}" onclick="setFacing('${o.key}')">
+      <span class="sb-dot" style="background:${o.color}"></span>
+      ${o.label}
+      <span class="sb-count">${cnt}</span>
+    </button>`;
+  }
+
+  // KPI Summary
+  html += `<div class="sb-kpi-summary" style="margin-top:12px">
+    <div class="sb-kpi-title">KPI Moyennes (${agents.length} agents)</div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Succès</span><span class="sb-kpi-val">${avg.successRate.toFixed(1)}%</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Coût / mois</span><span class="sb-kpi-val amber">€${fmt(Math.round(avg.costPerMonth))}</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Latence moy.</span><span class="sb-kpi-val blue">${Math.round(avg.avgLatency)} ms</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Escalade</span><span class="sb-kpi-val">${avg.escalationRate.toFixed(1)}%</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Grounding</span><span class="sb-kpi-val">${avg.groundingAccuracy.toFixed(1)}%</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Violations sécu.</span><span class="sb-kpi-val" style="color:#ef4444">${avg.securityViolations.toFixed(1)}</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Dépendances</span><span class="sb-kpi-val blue">${avg.dependencies.toFixed(1)}</span></div>
+    <div class="sb-kpi-row"><span class="sb-kpi-label">Feedback</span><span class="sb-kpi-val">${avg.feedbackScore.toFixed(1)} / 5</span></div>
+  </div>`;
+
+  html += '</div>';
+  sb.innerHTML = html;
+}
+
+// ================================================================
+// Render full agent card (orchestrator + heads)
+// ================================================================
+function renderCard(a) {
+  const k = a.kpis;
+  const platClass = a.type === 'orchestrator' ? 'green' : a.platform;
+  const facingTag = a.facing === 'customer'
+    ? '<span class="tag facing-customer">Customer-Facing</span>'
+    : '<span class="tag facing-internal">Internal</span>';
+  const domainLabel = DOMAIN_META[a.domain]?.label || a.domain;
+
+  const cardClass = a.type === 'orchestrator' ? 'agent-card orchestrator' :
+                    a.type === 'head' ? `agent-card head ${a.platform}` : 'agent-card';
+
+  // KPI coloring helpers
+  const successCls = k.successRate >= 95 ? 'green' : k.successRate >= 90 ? 'amber' : 'red';
+  const latencyCls = k.avgLatency <= 200 ? 'green' : k.avgLatency <= 350 ? 'amber' : 'red';
+  const escalCls = k.escalationRate <= 5 ? 'green' : k.escalationRate <= 9 ? 'amber' : 'red';
+  const groundCls = k.groundingAccuracy >= 95 ? 'green' : k.groundingAccuracy >= 90 ? 'amber' : 'red';
+  const secCls = k.securityViolations === 0 ? 'green' : 'red';
+  const fbCls = k.feedbackScore >= 4.5 ? 'green' : k.feedbackScore >= 4.0 ? 'amber' : 'red';
+
+  return `<div class="${cardClass}">
+    <div class="card-top">
+      <div class="card-av ${platClass}">${ini(a.name)}</div>
+      <div class="card-tit">
+        <div class="card-name">${esc(a.name)}</div>
+        <div class="card-id">${a.id}</div>
+      </div>
+    </div>
+    <div class="card-tags">
+      <span class="tag p ${platClass}">${PLATFORM_LABELS[a.platform] || 'Mesh'}</span>
+      <span class="tag domain">${esc(domainLabel)}</span>
+      ${facingTag}
+    </div>
+    <div class="card-desc">${esc(a.desc)}</div>
+    <div class="kpi-strip">
+      <div class="kpi-cell">
+        <div class="kpi-cell-val ${successCls}">${k.successRate}%</div>
+        <div class="kpi-cell-lbl">Succès</div>
+        <div class="kpi-bar-track"><div class="kpi-bar-fill ${successCls === 'green' ? 'g' : successCls === 'amber' ? 'a' : 'r'}" style="width:${k.successRate}%"></div></div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-cell-val amber">€${fmt(k.costPerMonth)}</div>
+        <div class="kpi-cell-lbl">Coût/mois</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-cell-val ${latencyCls}">${k.avgLatency} ms</div>
+        <div class="kpi-cell-lbl">Latence</div>
+        <div class="kpi-bar-track"><div class="kpi-bar-fill ${latencyCls === 'green' ? 'g' : latencyCls === 'amber' ? 'a' : 'r'}" style="width:${Math.min(100, k.avgLatency / 5)}%"></div></div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-cell-val ${escalCls}">${k.escalationRate}%</div>
+        <div class="kpi-cell-lbl">Escalade</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-cell-val ${groundCls}">${k.groundingAccuracy}%</div>
+        <div class="kpi-cell-lbl">Grounding</div>
+        <div class="kpi-bar-track"><div class="kpi-bar-fill ${groundCls === 'green' ? 'g' : groundCls === 'amber' ? 'a' : 'r'}" style="width:${k.groundingAccuracy}%"></div></div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-cell-val ${secCls}">${k.securityViolations}</div>
+        <div class="kpi-cell-lbl">Sécurité</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-cell-val blue">${k.dependencies}</div>
+        <div class="kpi-cell-lbl">Dépend.</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-cell-val ${fbCls}">${k.feedbackScore}</div>
+        <div class="kpi-cell-lbl">Feedback</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ================================================================
+// Render compact specialist card
+// ================================================================
+function renderCompactCard(a) {
+  const k = a.kpis;
+  const platClass = a.platform;
+  const successCls = k.successRate >= 95 ? 'green' : k.successRate >= 90 ? 'amber' : 'red';
+  const platLabel = PLATFORM_LABELS[a.platform] || a.platform;
+  const facingLabel = a.facing === 'customer' ? 'Client' : 'Interne';
+
+  return `<div class="agent-card-compact">
+    <div class="card-av ${platClass}">${ini(a.name)}</div>
+    <div class="compact-info">
+      <div class="compact-name">${esc(a.name)}</div>
+      <div class="compact-meta"><span>${platLabel}</span><span>${facingLabel}</span><span>${a.id}</span></div>
+    </div>
+    <div class="compact-kpi ${successCls}">${k.successRate}%</div>
+  </div>`;
+}
+
+// ================================================================
+// Render content
+// ================================================================
+const SPECIALISTS_PER_PAGE = 20;
+
+function renderContent() {
+  const content = document.getElementById('content');
+  const agents = filtered();
+
+  // Platform & facing counts across ALL agents (unfiltered) for hero stats
+  const allDb = AGENTS.filter(a => a.platform === 'databricks').length;
+  const allSf = AGENTS.filter(a => a.platform === 'salesforce').length;
+  const allMi = AGENTS.filter(a => a.platform === 'mistral').length;
+  const allCl = AGENTS.filter(a => a.platform === 'claude').length;
+
+  // Counts on filtered set
+  const totalAgents = agents.length;
+  const domainSet = new Set(agents.map(a => a.domain).filter(d => d !== 'group'));
+  const platSet = new Set(agents.map(a => a.platform));
+  const customerFacing = agents.filter(a => a.facing === 'customer').length;
+  const internalFacing = agents.filter(a => a.facing === 'internal').length;
+
+  let html = '';
+
+  // Hero stats
+  html += '<div class="hero-stats">';
+  html += `<div class="stat-card c-green"><div class="stat-val">${totalAgents}</div><div class="stat-lbl">Total Agents</div><div class="stat-sub">1 orchestrateur + 4 heads + 195 spécialistes</div></div>`;
+  html += `<div class="stat-card c-databricks"><div class="stat-val">${domainSet.size || 4}</div><div class="stat-lbl">Domaines</div><div class="stat-sub">CIB, Retail, Risk, IT</div></div>`;
+  html += `<div class="stat-card c-salesforce"><div class="stat-val">${platSet.size}</div><div class="stat-lbl">Plateformes</div><div class="stat-sub">DB ${allDb} / SF ${allSf} / Mi ${allMi} / Cl ${allCl}</div></div>`;
+  html += `<div class="stat-card c-mistral"><div class="stat-val">${customerFacing}</div><div class="stat-lbl">Customer-Facing</div><div class="stat-sub">Agents exposés au client</div></div>`;
+  html += `<div class="stat-card c-claude"><div class="stat-val">${internalFacing}</div><div class="stat-lbl">Internal</div><div class="stat-sub">Agents internes</div></div>`;
+  html += '</div>';
+
+  // Search toolbar
+  html += `<div class="toolbar">
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher un agent par nom, ID ou description..." value="${esc(searchTerm)}" oninput="setSearch(this.value)" />
+    </div>
+    <span class="rmeta">${agents.length} agent${agents.length > 1 ? 's' : ''} affiché${agents.length > 1 ? 's' : ''}</span>
+  </div>`;
+
+  if (agents.length === 0) {
+    html += '<div class="empty"><h3>Aucun agent trouvé</h3><p>Modifiez les filtres ou la recherche.</p></div>';
+    content.innerHTML = html;
+    return;
+  }
+
+  // Group by domain, then by role
+  const domainOrder = ['group', 'cib', 'retail', 'risk', 'it'];
+  const roleOrder = ['orchestrator', 'head', 'specialist'];
+  const roleFrench = { orchestrator: 'Orchestrateur', head: 'Responsable de Domaine', specialist: 'Agent Spécialiste' };
+
+  for (const domain of domainOrder) {
+    const domainAgents = agents.filter(a => a.domain === domain);
+    if (domainAgents.length === 0) continue;
+
+    const meta = DOMAIN_META[domain];
+    const platforms = [...new Set(domainAgents.map(a => a.platform))];
+
+    // Domain KPI averages
+    const davg = { successRate: 0, costPerMonth: 0, avgLatency: 0, feedbackScore: 0 };
+    for (const a of domainAgents) {
+      davg.successRate += a.kpis.successRate;
+      davg.costPerMonth += a.kpis.costPerMonth;
+      davg.avgLatency += a.kpis.avgLatency;
+      davg.feedbackScore += a.kpis.feedbackScore;
+    }
+    const dn = domainAgents.length;
+    davg.successRate /= dn; davg.costPerMonth /= dn; davg.avgLatency /= dn; davg.feedbackScore /= dn;
+
+    html += `<div class="domain-grp" id="grp-${domain}">`;
+    html += `<div class="domain-hdr" onclick="toggleDomain('${domain}')">`;
+    html += `<div class="domain-icon ${domain}">${meta.icon}</div>`;
+    html += `<div class="domain-info"><div class="domain-title">${esc(meta.label)}</div><div class="domain-sub">${esc(meta.desc)}</div></div>`;
+    html += '<div class="domain-badges">';
+    for (const p of platforms) {
+      html += `<span class="domain-badge ${p}">${PLATFORM_LABELS[p]}</span>`;
+    }
+    html += '</div>';
+    html += `<span class="domain-cnt">${domainAgents.length} agent${domainAgents.length > 1 ? 's' : ''}</span>`;
+    html += `<svg class="domain-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>`;
+    html += '</div>';
+
+    html += '<div class="domain-body">';
+
+    // Domain KPI bar
+    html += '<div class="domain-kpi-bar">';
+    html += `<div class="domain-kpi-item"><div class="domain-kpi-val">${davg.successRate.toFixed(1)}%</div><div class="domain-kpi-lbl">Succès Moyen</div></div>`;
+    html += `<div class="domain-kpi-item"><div class="domain-kpi-val amber">€${fmt(Math.round(davg.costPerMonth))}</div><div class="domain-kpi-lbl">Coût Moyen/Mois</div></div>`;
+    html += `<div class="domain-kpi-item"><div class="domain-kpi-val blue">${Math.round(davg.avgLatency)} ms</div><div class="domain-kpi-lbl">Latence Moyenne</div></div>`;
+    html += `<div class="domain-kpi-item"><div class="domain-kpi-val">${davg.feedbackScore.toFixed(1)} / 5</div><div class="domain-kpi-lbl">Feedback Moyen</div></div>`;
+    html += '</div>';
+
+    for (const role of roleOrder) {
+      const roleAgents = domainAgents.filter(a => a.type === role);
+      if (roleAgents.length === 0) continue;
+
+      const isSpecialist = role === 'specialist';
+      const isExpanded = !!expandedSpecialists[domain] || !!searchTerm;
+      const limit = (isSpecialist && !isExpanded) ? SPECIALISTS_PER_PAGE : roleAgents.length;
+      const visible = roleAgents.slice(0, limit);
+      const remaining = roleAgents.length - limit;
+
+      html += '<div class="role-sec">';
+      html += `<div class="role-lbl">${roleFrench[role]}${isSpecialist ? ' (' + roleAgents.length + ')' : ''} <span class="role-line"></span></div>`;
+
+      if (isSpecialist) {
+        // Use compact grid for specialists
+        html += '<div class="grid compact">';
+        for (const a of visible) {
+          html += renderCompactCard(a);
+        }
+        html += '</div>';
+        if (remaining > 0) {
+          html += `<button class="show-more-btn" onclick="toggleShowMore('${domain}')">Afficher ${remaining} agents supplémentaires</button>`;
+        } else if (isExpanded && roleAgents.length > SPECIALISTS_PER_PAGE && !searchTerm) {
+          html += `<button class="show-more-btn" onclick="toggleShowMore('${domain}')">Replier</button>`;
+        }
+      } else {
+        // Full cards for orchestrator & heads
+        html += '<div class="grid">';
+        for (const a of visible) {
+          html += renderCard(a);
+        }
+        html += '</div>';
+      }
+
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+  }
+
+  content.innerHTML = html;
+}
+
+// ================================================================
+// Filter handlers
+// ================================================================
+function setDomain(d)   { filterDomain = d; render(); }
+function setPlatform(p) { filterPlatform = p; render(); }
+function setFacing(f)   { filterFacing = f; render(); }
+function setSearch(s)   { searchTerm = s; render(); }
+function toggleDomain(d) {
+  const el = document.getElementById('grp-' + d);
+  if (el) el.classList.toggle('collapsed');
+}
+function toggleShowMore(domain) {
+  expandedSpecialists[domain] = !expandedSpecialists[domain];
+  renderContent();
+}
+
+function render() {
+  renderSidebar();
+  renderContent();
+}
+
+// ================================================================
+// Init
+// ================================================================
+render();
+</script>
+</body>
+</html>

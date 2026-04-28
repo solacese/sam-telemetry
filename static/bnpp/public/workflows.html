@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Bank &mdash; Workflow Replay Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    :root {
+      --sol-bg:       #021b2f;
+      --sol-surface:  #01374e;
+      --sol-surface2: #014968;
+      --sol-header:   #03223b;
+      --sol-border:   #0a4060;
+      --sol-border-l: #0d5579;
+      --sol-green:    #00c895;
+      --sol-green-bg: rgba(0,200,149,.10);
+      --sol-green-20: rgba(0,200,149,.20);
+      --sol-green-40: rgba(0,200,149,.40);
+      --sol-text:     #e6eff2;
+      --sol-muted:    #b1b9c0;
+      --sol-dim:      #536574;
+      --sol-card:     #012e45;
+      --sol-card-hov: #013a56;
+      --databricks:    #ff3621;
+      --databricks-bg: rgba(255,54,33,.12);
+      --salesforce:    #00a1e0;
+      --salesforce-bg: rgba(0,161,224,.12);
+      --mistral:       #f97316;
+      --mistral-bg:    rgba(249,115,22,.12);
+      --claude:        #d4a574;
+      --claude-bg:     rgba(212,165,116,.12);
+      --roi-green:  #00c895;
+      --roi-amber:  #f59e0b;
+      --roi-red:    #ef4444;
+      --roi-blue:   #38bdf8;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--sol-bg); color: var(--sol-text); font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--sol-green); text-decoration: none; }
+
+    /* ---- layout ---- */
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    /* ---- topbar ---- */
+    .topbar {
+      background: var(--sol-header); border-bottom: 1px solid var(--sol-border);
+      padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+      position: relative;
+    }
+    .topbar::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 10%, var(--sol-green) 50%, transparent 90%);
+      opacity: .6;
+    }
+    .logo-block { display: flex; align-items: center; gap: 10px; }
+    .logo-text { font-size: 14px; font-weight: 700; color: var(--sol-green); letter-spacing: .02em; }
+    .logo-sep { width: 1px; height: 24px; background: var(--sol-border-l); margin: 0 6px; }
+    .title-block h1 { font-size: 15px; font-weight: 700; color: var(--sol-text); }
+    .title-block .sub { font-size: 10px; color: var(--sol-dim); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+    .topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .topbar-right a {
+      font-size: 12px; color: var(--sol-muted); padding: 5px 10px; border-radius: 6px;
+      transition: all .12s; font-weight: 500; border: 1px solid transparent;
+    }
+    .topbar-right a:hover { color: var(--sol-green); border-color: var(--sol-border); background: rgba(0,200,149,.05); }
+    .topbar-right a.active { color: var(--sol-green); border-color: var(--sol-green); background: var(--sol-green-bg); font-weight: 600; }
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 14px; font-size: 11px; font-weight: 600;
+      background: var(--sol-green-bg); border: 1px solid var(--sol-green-20); color: var(--sol-green);
+    }
+    .live-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sol-green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.3; } }
+
+    .main { display: flex; flex: 1; min-height: 0; }
+
+    /* ---- sidebar ---- */
+    .sidebar {
+      width: 260px; flex-shrink: 0; background: var(--sol-surface);
+      border-right: 1px solid var(--sol-border); display: flex; flex-direction: column; overflow-y: auto;
+    }
+    .sb-hdr { padding: 14px 16px 10px; border-bottom: 1px solid var(--sol-border); }
+    .sb-hdr h3 { font-size: 10px; font-weight: 700; color: var(--sol-dim); letter-spacing: .1em; text-transform: uppercase; }
+    .sb-body { flex: 1; padding: 6px 0; overflow-y: auto; }
+    .sb-sec { padding: 12px 16px 4px; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sol-dim); }
+    .sb-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border: none; background: none;
+      color: var(--sol-muted); font-size: 12px; font-weight: 500;
+      cursor: pointer; width: 100%; text-align: left; transition: all .12s; position: relative;
+      font-family: inherit;
+    }
+    .sb-btn:hover { background: rgba(0,200,149,.04); color: var(--sol-text); }
+    .sb-btn.active { background: var(--sol-surface2); color: var(--sol-green); font-weight: 600; }
+    .sb-btn.active::before {
+      content: ''; position: absolute; left: 0; top: 3px; bottom: 3px; width: 3px;
+      background: var(--sol-green); border-radius: 0 2px 2px 0;
+    }
+    .sb-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .sb-count {
+      margin-left: auto; font-size: 10px; color: var(--sol-dim);
+      background: rgba(255,255,255,.04); padding: 1px 6px; border-radius: 8px; font-weight: 600;
+    }
+    .sb-btn.active .sb-count { color: var(--sol-green); background: var(--sol-green-bg); }
+    .sb-plat { font-size: 8px; padding: 1px 5px; border-radius: 3px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    .sb-plat.databricks  { background: var(--databricks-bg); color: var(--databricks); }
+    .sb-plat.salesforce   { background: var(--salesforce-bg); color: var(--salesforce); }
+    .sb-plat.mistral      { background: var(--mistral-bg); color: var(--mistral); }
+    .sb-plat.claude       { background: var(--claude-bg); color: var(--claude); }
+
+    .sb-step-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 16px 6px 20px; border: none; background: none;
+      color: var(--sol-dim); font-size: 11px; font-weight: 500;
+      cursor: pointer; width: 100%; text-align: left; transition: all .12s;
+      font-family: inherit;
+    }
+    .sb-step-btn:hover { background: rgba(0,200,149,.04); color: var(--sol-text); }
+    .sb-step-btn.active { color: var(--sol-green); background: rgba(0,200,149,.06); }
+    .sb-step-btn.completed { color: var(--sol-muted); }
+    .sb-step-num {
+      width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; border: 1.5px solid var(--sol-border);
+      flex-shrink: 0; transition: all .2s;
+    }
+    .sb-step-btn.active .sb-step-num { border-color: var(--sol-green); background: var(--sol-green-bg); color: var(--sol-green); }
+    .sb-step-btn.completed .sb-step-num { border-color: var(--sol-green); background: var(--sol-green); color: #fff; }
+    .sb-step-action { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+
+    .sb-stats {
+      margin: 8px 12px; padding: 12px; border-radius: 8px;
+      background: rgba(0,200,149,.06); border: 1px solid var(--sol-green-20);
+    }
+    .sb-stats-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; }
+    .sb-stats-label { font-size: 10px; color: var(--sol-muted); }
+    .sb-stats-val { font-size: 12px; font-weight: 700; color: var(--sol-green); }
+
+    /* ---- content ---- */
+    .content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+
+    /* ---- hero stats ---- */
+    .hero-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
+    .stat-card {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px;
+      padding: 14px 16px; position: relative; overflow: hidden;
+    }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+    .stat-card.c-green::before     { background: var(--sol-green); }
+    .stat-card.c-databricks::before { background: var(--databricks); }
+    .stat-card.c-salesforce::before { background: var(--salesforce); }
+    .stat-card.c-mistral::before    { background: var(--mistral); }
+    .stat-card.c-claude::before     { background: var(--claude); }
+    .stat-card.c-roi::before        { background: linear-gradient(90deg, var(--sol-green), var(--roi-blue)); }
+    .stat-val { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -.5px; }
+    .stat-lbl { font-size: 10px; color: var(--sol-muted); margin-top: 3px; font-weight: 500; }
+    .stat-sub { font-size: 9px; color: var(--sol-dim); margin-top: 2px; }
+
+    /* ---- controls ---- */
+    .controls {
+      display: flex; gap: 8px; margin-bottom: 16px; align-items: center;
+    }
+    .ctrl-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 7px; border: 1px solid var(--sol-border);
+      background: var(--sol-card); color: var(--sol-muted); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all .15s; font-family: inherit;
+    }
+    .ctrl-btn:hover { border-color: var(--sol-border-l); color: var(--sol-text); background: var(--sol-card-hov); }
+    .ctrl-btn.primary { border-color: var(--sol-green); color: var(--sol-green); background: var(--sol-green-bg); }
+    .ctrl-btn.primary:hover { background: var(--sol-green-20); }
+    .ctrl-btn.active-speed { border-color: var(--roi-blue); color: var(--roi-blue); background: rgba(56,189,248,.08); }
+    .ctrl-btn svg { width: 14px; height: 14px; }
+    .ctrl-sep { width: 1px; height: 24px; background: var(--sol-border); margin: 0 4px; }
+    .ctrl-label { font-size: 10px; color: var(--sol-dim); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-right: 2px; }
+
+    /* ---- swim-lane ---- */
+    .swimlane-container {
+      position: relative; border: 1px solid var(--sol-border); border-radius: 10px;
+      background: var(--sol-card); overflow: hidden; margin-bottom: 20px;
+    }
+    .swimlane-header {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      border-bottom: 1px solid var(--sol-border); background: var(--sol-header);
+    }
+    .lane-hdr {
+      padding: 12px 10px; text-align: center; position: relative;
+      border-right: 1px solid var(--sol-border);
+    }
+    .lane-hdr:last-child { border-right: none; }
+    .lane-hdr::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .lane-hdr.c-green::before      { background: var(--sol-green); }
+    .lane-hdr.c-databricks::before  { background: var(--databricks); }
+    .lane-hdr.c-salesforce::before  { background: var(--salesforce); }
+    .lane-hdr.c-mistral::before     { background: var(--mistral); }
+    .lane-hdr.c-claude::before      { background: var(--claude); }
+    .lane-hdr-name { font-size: 12px; font-weight: 700; color: var(--sol-text); }
+    .lane-hdr-badge {
+      display: inline-block; font-size: 8px; padding: 1px 6px; border-radius: 3px;
+      font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-top: 3px;
+    }
+    .lane-hdr-badge.databricks  { background: var(--databricks-bg); color: var(--databricks); }
+    .lane-hdr-badge.salesforce  { background: var(--salesforce-bg); color: var(--salesforce); }
+    .lane-hdr-badge.mistral     { background: var(--mistral-bg); color: var(--mistral); }
+    .lane-hdr-badge.claude      { background: var(--claude-bg); color: var(--claude); }
+    .lane-hdr-badge.green       { background: var(--sol-green-bg); color: var(--sol-green); }
+
+    .swimlane-body {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      min-height: 520px; position: relative;
+    }
+    .lane {
+      border-right: 1px solid rgba(10,64,96,.5); position: relative;
+      padding: 12px 8px; display: flex; flex-direction: column; gap: 10px;
+      min-height: 520px;
+    }
+    .lane:last-child { border-right: none; }
+    .lane:nth-child(odd) { background: rgba(255,255,255,.008); }
+
+    /* ---- step cards ---- */
+    .step-card {
+      background: var(--sol-surface); border: 1px solid var(--sol-border); border-radius: 8px;
+      padding: 10px; cursor: pointer; transition: all .2s;
+      animation: stepAppear .4s ease-out both;
+      position: relative;
+    }
+    .step-card:hover { border-color: var(--sol-border-l); background: var(--sol-surface2); }
+    .step-card.active-step {
+      border-color: var(--sol-green);
+      box-shadow: 0 0 12px rgba(0,200,149,.25), 0 0 24px rgba(0,200,149,.10);
+      animation: stepAppear .4s ease-out both, glowPulse 2s ease-in-out infinite;
+    }
+    .step-card.completed-step { opacity: .65; }
+    .step-card.completed-step:hover { opacity: .85; }
+
+    @keyframes stepAppear {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 12px rgba(0,200,149,.25), 0 0 24px rgba(0,200,149,.10); }
+      50%      { box-shadow: 0 0 18px rgba(0,200,149,.40), 0 0 36px rgba(0,200,149,.18); }
+    }
+
+    .step-num-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 50%; font-size: 10px; font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .step-num-badge.databricks  { background: var(--databricks-bg); color: var(--databricks); border: 1px solid rgba(255,54,33,.25); }
+    .step-num-badge.salesforce  { background: var(--salesforce-bg); color: var(--salesforce); border: 1px solid rgba(0,161,224,.25); }
+    .step-num-badge.mistral     { background: var(--mistral-bg); color: var(--mistral); border: 1px solid rgba(249,115,22,.25); }
+    .step-num-badge.claude      { background: var(--claude-bg); color: var(--claude); border: 1px solid rgba(212,165,116,.25); }
+    .step-num-badge.green       { background: var(--sol-green-bg); color: var(--sol-green); border: 1px solid var(--sol-green-20); }
+
+    .step-action { font-size: 11px; font-weight: 500; color: var(--sol-text); line-height: 1.35; margin-bottom: 6px; }
+    .step-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+    .step-tag {
+      font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600;
+    }
+    .step-tag.cost { background: rgba(0,200,149,.08); color: var(--sol-green); border: 1px solid rgba(0,200,149,.15); }
+    .step-tag.latency { background: rgba(56,189,248,.08); color: var(--roi-blue); border: 1px solid rgba(56,189,248,.15); }
+    .step-tag.plat { text-transform: uppercase; letter-spacing: .04em; }
+    .step-tag.plat.databricks  { background: var(--databricks-bg); color: var(--databricks); }
+    .step-tag.plat.salesforce  { background: var(--salesforce-bg); color: var(--salesforce); }
+    .step-tag.plat.mistral     { background: var(--mistral-bg); color: var(--mistral); }
+    .step-tag.plat.claude      { background: var(--claude-bg); color: var(--claude); }
+
+    /* ---- connector lines ---- */
+    .connector-layer {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 5;
+    }
+    .connector-layer svg { width: 100%; height: 100%; }
+    .connector-line {
+      stroke-width: 2; fill: none; opacity: .6;
+      stroke-dasharray: 6 3;
+    }
+    .connector-line.active-conn { opacity: 1; stroke-dasharray: none; stroke-width: 2.5; }
+    .connector-dot { r: 4; opacity: .8; }
+
+    /* ---- step detail panel ---- */
+    .detail-panel {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px;
+      padding: 20px; margin-bottom: 20px; position: relative; overflow: hidden;
+    }
+    .detail-panel::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--sol-green), var(--roi-blue));
+    }
+    .detail-title { font-size: 13px; font-weight: 700; color: var(--sol-green); margin-bottom: 12px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .detail-field-label { font-size: 9px; font-weight: 700; color: var(--sol-dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
+    .detail-field-val { font-size: 13px; font-weight: 500; color: var(--sol-text); }
+    .detail-field-val .badge {
+      display: inline-block; font-size: 9px; padding: 2px 7px; border-radius: 4px;
+      font-weight: 700; letter-spacing: .03em; text-transform: uppercase; vertical-align: middle;
+      margin-left: 6px;
+    }
+    .detail-field-val .badge.databricks  { background: var(--databricks-bg); color: var(--databricks); }
+    .detail-field-val .badge.salesforce  { background: var(--salesforce-bg); color: var(--salesforce); }
+    .detail-field-val .badge.mistral     { background: var(--mistral-bg); color: var(--mistral); }
+    .detail-field-val .badge.claude      { background: var(--claude-bg); color: var(--claude); }
+    .detail-field-val .badge.green       { background: var(--sol-green-bg); color: var(--sol-green); }
+    .detail-field-val .badge.domain {
+      background: rgba(255,255,255,.05); color: var(--sol-muted); border: 1px solid var(--sol-border);
+    }
+    .detail-full { grid-column: 1 / -1; }
+    .detail-msg {
+      font-size: 12px; color: var(--sol-muted); font-style: italic;
+      padding: 8px 12px; border-radius: 6px; background: rgba(255,255,255,.03);
+      border-left: 3px solid var(--sol-green);
+    }
+    .detail-transition {
+      display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600;
+    }
+    .detail-transition .arrow { color: var(--sol-dim); }
+    .detail-empty {
+      text-align: center; padding: 30px; color: var(--sol-dim); font-size: 13px;
+    }
+
+    /* ---- aggregate bar ---- */
+    .agg-bar {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px;
+      padding: 16px 20px; margin-bottom: 20px;
+    }
+    .agg-title { font-size: 10px; font-weight: 700; color: var(--sol-dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+    .agg-timeline {
+      display: flex; height: 28px; border-radius: 6px; overflow: hidden; margin-bottom: 12px;
+      border: 1px solid var(--sol-border);
+    }
+    .agg-seg {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700; color: rgba(255,255,255,.8);
+      letter-spacing: .04em; text-transform: uppercase; transition: all .3s;
+      min-width: 20px; position: relative; overflow: hidden;
+    }
+    .agg-seg.databricks  { background: var(--databricks); }
+    .agg-seg.salesforce   { background: var(--salesforce); }
+    .agg-seg.mistral      { background: var(--mistral); }
+    .agg-seg.claude       { background: var(--claude); }
+    .agg-seg.green        { background: var(--sol-green); }
+    .agg-meta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .agg-item { display: flex; align-items: center; gap: 6px; }
+    .agg-item-label { font-size: 10px; color: var(--sol-dim); font-weight: 600; }
+    .agg-item-val { font-size: 13px; font-weight: 700; color: var(--sol-text); }
+    .agg-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+    .agg-badge {
+      font-size: 9px; padding: 2px 8px; border-radius: 4px; font-weight: 700;
+      letter-spacing: .03em; text-transform: uppercase;
+    }
+    .agg-badge.databricks  { background: var(--databricks-bg); color: var(--databricks); }
+    .agg-badge.salesforce  { background: var(--salesforce-bg); color: var(--salesforce); }
+    .agg-badge.mistral     { background: var(--mistral-bg); color: var(--mistral); }
+    .agg-badge.claude      { background: var(--claude-bg); color: var(--claude); }
+    .agg-badge.domain { background: rgba(255,255,255,.05); color: var(--sol-muted); border: 1px solid var(--sol-border); }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--sol-border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--sol-border-l); }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ---- topbar ---- -->
+  <div class="topbar">
+    <div class="logo-block">
+      <span class="logo-text">solace.</span>
+      <span class="logo-sep"></span>
+    </div>
+    <div class="title-block">
+      <h1>Your Bank &mdash; Workflow Replay</h1>
+      <div class="sub">Orchestration Multi-Cloud &amp; Multi-Agents</div>
+    </div>
+    <div class="topbar-right">
+      <span class="live-badge"><span class="dot"></span> <span id="live-count">0</span> agents live</span>
+      <a href="agents.html">Agents</a>
+      <a href="governance.html">Governance</a>
+      <a href="workflows.html" class="active">Workflows</a>
+      <a href="observability.html">Observabilit&eacute;</a>
+      <a href="cost.html">Co&ucirc;ts</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- ---- sidebar ---- -->
+    <div class="sidebar">
+      <div class="sb-hdr"><h3>Workflow Replay</h3></div>
+      <div class="sb-body">
+        <div class="sb-sec">Sc&eacute;narios</div>
+        <div id="sbScenarios"></div>
+
+        <div class="sb-sec" style="margin-top:8px">Navigateur d'&eacute;tapes</div>
+        <div id="sbSteps"></div>
+
+        <div class="sb-sec" style="margin-top:8px">Statistiques</div>
+        <div id="sbStats"></div>
+      </div>
+    </div>
+
+    <!-- ---- content ---- -->
+    <div class="content">
+      <div class="hero-stats" id="heroStats"></div>
+      <div class="controls" id="controls"></div>
+      <div class="swimlane-container" id="swimlane"></div>
+      <div class="detail-panel" id="detailPanel"></div>
+      <div class="agg-bar" id="aggBar"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   Domain / Lane Configuration — 5 columns
+   ================================================================ */
+const LANES = [
+  { id: 'orchestrator', label: 'Orchestrateur',          platform: 'mistral', platformLabel: 'Mistral', colorCls: 'c-green',      badgeCls: 'green' },
+  { id: 'cib',          label: 'CIB',                    platform: 'databricks', platformLabel: 'Databricks', colorCls: 'c-databricks', badgeCls: 'databricks' },
+  { id: 'retail',       label: 'Banque de Détail',  platform: 'salesforce',  platformLabel: 'Salesforce', colorCls: 'c-salesforce', badgeCls: 'salesforce' },
+  { id: 'risk',         label: 'Risques & Conformité', platform: 'mistral', platformLabel: 'Mistral', colorCls: 'c-mistral',    badgeCls: 'mistral' },
+  { id: 'it',           label: 'IT & Ops',               platform: 'claude',  platformLabel: 'Claude',  colorCls: 'c-claude',     badgeCls: 'claude' },
+];
+
+/* Agent-to-lane mapping */
+const AGENT_LANE = {
+  orchestrator:      'orchestrator',
+  head_retail:       'retail',
+  retail_onboarding: 'retail',
+  retail_mortgage:   'retail',
+  retail_advisor:    'retail',
+  retail_sentiment:  'retail',
+  head_risk:         'risk',
+  risk_kyc:          'risk',
+  risk_credit:       'risk',
+  risk_regulatory:   'risk',
+  risk_fraud:        'risk',
+  head_it:           'it',
+  head_cib:          'cib',
+  cib_structuring:   'cib',
+  cib_market_data:   'cib',
+  cib_trade_exec:    'cib',
+  cib_research:      'cib',
+};
+
+const AGENT_LABELS = {
+  orchestrator:      'Orchestrateur',
+  head_retail:       'Head Retail Banking',
+  retail_onboarding: 'Agent Onboarding',
+  retail_mortgage:   'Agent Prêt Hypothécaire',
+  retail_advisor:    'Agent Conseiller',
+  retail_sentiment:  'Agent Sentiment',
+  head_risk:         'Head Risques',
+  risk_kyc:          'Agent KYC/AML',
+  risk_credit:       'Agent Crédit',
+  risk_regulatory:   'Agent Réglementaire',
+  risk_fraud:        'Agent Anti-Fraude',
+  head_it:           'Head IT & Ops',
+  head_cib:          'Head CIB',
+  cib_structuring:   'Agent Structuration',
+  cib_market_data:   'Agent Marchés',
+  cib_trade_exec:    'Agent Exécution',
+  cib_research:      'Agent Recherche',
+};
+
+const DOMAIN_LABELS = {
+  orchestrator: 'Orchestrateur',
+  cib:    'CIB',
+  retail: 'Banque de Détail',
+  risk:   'Risques & Conformité',
+  it:     'IT & Ops',
+};
+
+/* ================================================================
+   Scenario Data — 4 workflows
+   ================================================================ */
+const scenarios = [
+  {
+    name: 'KYC/AML Corporate Onboarding',
+    desc: 'Onboarding corporate — 4 domaines, 4 plateformes',
+    steps: [
+      { step:1, from:'orchestrator', to:'head_retail', action:'Initier onboarding corporate — collecter les documents', platform:'mistral', toPlatform:'salesforce', cost:0.08, latency:220 },
+      { step:2, from:'head_retail', to:'retail_onboarding', action:'Vérification documentaire — extraire les données KYB', platform:'salesforce', toPlatform:'salesforce', cost:0.12, latency:350 },
+      { step:3, from:'orchestrator', to:'head_risk', action:'Lancer screening KYC/AML', platform:'mistral', toPlatform:'mistral', cost:0.15, latency:480 },
+      { step:4, from:'head_risk', to:'risk_kyc', action:'Screening sanctions, PEP et médias défavorables', platform:'mistral', toPlatform:'mistral', cost:0.18, latency:520 },
+      { step:5, from:'head_risk', to:'risk_credit', action:'Scoring de risque de crédit initial', platform:'mistral', toPlatform:'databricks', cost:0.14, latency:410 },
+      { step:6, from:'orchestrator', to:'head_it', action:'Provisionner les accès systèmes', platform:'mistral', toPlatform:'claude', cost:0.06, latency:180 },
+      { step:7, from:'orchestrator', to:'head_retail', action:'Finaliser et notifier le client', platform:'mistral', toPlatform:'salesforce', cost:0.05, latency:150 },
+    ]
+  },
+  {
+    name: 'Pré-Approbation Hypothécaire',
+    desc: 'Parcours prêt immobilier — scoring IRBA & MiFID II',
+    steps: [
+      { step:1, from:'orchestrator', to:'retail_mortgage', action:'Réception demande de prêt hypothécaire', platform:'mistral', toPlatform:'salesforce', cost:0.10, latency:260 },
+      { step:2, from:'retail_mortgage', to:'risk_credit', action:'Calcul du scoring IRBA', platform:'salesforce', toPlatform:'databricks', cost:0.16, latency:380 },
+      { step:3, from:'risk_credit', to:'risk_regulatory', action:'Vérification conformité MiFID II', platform:'databricks', toPlatform:'mistral', cost:0.08, latency:290 },
+      { step:4, from:'orchestrator', to:'risk_fraud', action:'Analyse anti-fraude du dossier', platform:'mistral', toPlatform:'databricks', cost:0.12, latency:340 },
+      { step:5, from:'orchestrator', to:'retail_advisor', action:'Préparer la recommandation conseiller', platform:'mistral', toPlatform:'claude', cost:0.09, latency:310 },
+      { step:6, from:'retail_mortgage', to:'retail_onboarding', action:'Envoyer offre de prêt personnalisée', platform:'salesforce', toPlatform:'salesforce', cost:0.05, latency:180 },
+    ]
+  },
+  {
+    name: 'Customer Sentiment Recovery',
+    desc: 'Récupération client insatisfait — détection & action',
+    steps: [
+      { step:1, from:'orchestrator', to:'retail_sentiment', action:'Détecter avis négatif post-rendez-vous', platform:'mistral', toPlatform:'mistral', cost:0.06, latency:150 },
+      { step:2, from:'retail_sentiment', to:'retail_advisor', action:'Résumer le contexte et l\'historique client', platform:'mistral', toPlatform:'claude', cost:0.10, latency:280 },
+      { step:3, from:'orchestrator', to:'head_retail', action:'Créer ticket de suivi et assigner', platform:'mistral', toPlatform:'salesforce', cost:0.08, latency:220 },
+      { step:4, from:'head_retail', to:'retail_onboarding', action:'Proposer un geste commercial', platform:'salesforce', toPlatform:'salesforce', cost:0.05, latency:160 },
+      { step:5, from:'orchestrator', to:'head_it', action:'Logger l\'incident et mettre à jour le CRM', platform:'mistral', toPlatform:'claude', cost:0.04, latency:120 },
+    ]
+  },
+  {
+    name: 'CIB Product Structuring',
+    desc: 'Structuration produit dérivé — pricing & best execution',
+    steps: [
+      { step:1, from:'orchestrator', to:'head_cib', action:'Demande de structuration produit dérivé', platform:'mistral', toPlatform:'databricks', cost:0.12, latency:280 },
+      { step:2, from:'head_cib', to:'cib_structuring', action:'Modélisation et pricing du produit', platform:'databricks', toPlatform:'databricks', cost:0.22, latency:520 },
+      { step:3, from:'head_cib', to:'cib_market_data', action:'Analyse des données de marché sous-jacentes', platform:'databricks', toPlatform:'databricks', cost:0.18, latency:440 },
+      { step:4, from:'orchestrator', to:'risk_regulatory', action:'Validation conformité MiFID II et EMIR', platform:'mistral', toPlatform:'mistral', cost:0.10, latency:320 },
+      { step:5, from:'cib_structuring', to:'cib_trade_exec', action:'Préparer l\'exécution — best execution check', platform:'databricks', toPlatform:'mistral', cost:0.14, latency:380 },
+      { step:6, from:'orchestrator', to:'cib_research', action:'Générer la note de synthèse pour le client', platform:'mistral', toPlatform:'claude', cost:0.08, latency:240 },
+    ]
+  }
+];
+
+/* ================================================================
+   State
+   ================================================================ */
+let activeScenarioIdx = 0;
+let currentStep = 0;
+let playing = false;
+let speed = 1500;
+let timer = null;
+
+function activeWorkflow() { return scenarios[activeScenarioIdx].steps; }
+
+/* ================================================================
+   Computed Stats
+   ================================================================ */
+function scenarioStats(s) {
+  const cost = s.steps.reduce((a, b) => a + b.cost, 0);
+  const latency = s.steps.reduce((a, b) => a + b.latency, 0);
+  const platforms = [...new Set(s.steps.flatMap(st => [st.platform, st.toPlatform]))];
+  const domains = [...new Set(s.steps.flatMap(st => [AGENT_LANE[st.from], AGENT_LANE[st.to]]))];
+  return { cost, latency, platforms, domains, count: s.steps.length };
+}
+
+function globalStats() {
+  const avgSteps = scenarios.reduce((a, s) => a + s.steps.length, 0) / scenarios.length;
+  const avgCost = scenarios.reduce((a, s) => a + scenarioStats(s).cost, 0) / scenarios.length;
+  const avgLatency = scenarios.reduce((a, s) => a + scenarioStats(s).latency, 0) / scenarios.length;
+  const allPlat = new Set();
+  scenarios.forEach(s => scenarioStats(s).platforms.forEach(p => allPlat.add(p)));
+  return { avgSteps, avgCost, avgLatency, platformCount: allPlat.size };
+}
+
+/* ================================================================
+   Platform helpers
+   ================================================================ */
+function platformColor(p) {
+  switch(p) {
+    case 'databricks': return '#ff3621';
+    case 'salesforce':  return '#00a1e0';
+    case 'mistral':     return '#f97316';
+    case 'claude':      return '#d4a574';
+    default:            return '#00c895';
+  }
+}
+function platformBadgeCls(p) {
+  if (['databricks','salesforce','mistral','claude'].includes(p)) return p;
+  return 'green';
+}
+function platformLabel(p) {
+  const map = { databricks:'Databricks', salesforce:'Salesforce', mistral:'Mistral', claude:'Claude' };
+  return map[p] || p;
+}
+function laneForAgent(agent) {
+  return AGENT_LANE[agent] || 'orchestrator';
+}
+
+/* ================================================================
+   Render: Hero Stats
+   ================================================================ */
+function renderHeroStats() {
+  const g = globalStats();
+  document.getElementById('heroStats').innerHTML = `
+    <div class="stat-card c-green">
+      <div class="stat-val">4</div>
+      <div class="stat-lbl">Workflows</div>
+      <div class="stat-sub">Scénarios d'orchestration multi-domaines</div>
+    </div>
+    <div class="stat-card c-salesforce">
+      <div class="stat-val">${g.avgSteps.toFixed(0)}</div>
+      <div class="stat-lbl">Étapes Moyennes</div>
+      <div class="stat-sub">Hops agent-à-agent par workflow</div>
+    </div>
+    <div class="stat-card c-databricks">
+      <div class="stat-val">${g.platformCount}</div>
+      <div class="stat-lbl">Plateformes Touchées</div>
+      <div class="stat-sub">Databricks · Salesforce · Mistral · Claude</div>
+    </div>
+    <div class="stat-card c-mistral">
+      <div class="stat-val">€${g.avgCost.toFixed(2)}</div>
+      <div class="stat-lbl">Coût Moyen</div>
+      <div class="stat-sub">Par exécution de workflow</div>
+    </div>
+    <div class="stat-card c-roi">
+      <div class="stat-val">${(g.avgLatency / 1000).toFixed(1)}s</div>
+      <div class="stat-lbl">Latence Moyenne E2E</div>
+      <div class="stat-sub">Somme des latences étapes</div>
+    </div>
+  `;
+}
+
+/* ================================================================
+   Render: Controls
+   ================================================================ */
+function renderControls() {
+  const playIcon = playing
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="6,4 20,12 6,20"/></svg>';
+
+  document.getElementById('controls').innerHTML = `
+    <button class="ctrl-btn primary" onclick="togglePlay()">${playIcon} ${playing ? 'Pause' : 'Lecture'}</button>
+    <button class="ctrl-btn" onclick="reset()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      Réinitialiser
+    </button>
+    <span class="ctrl-sep"></span>
+    <span class="ctrl-label">Vitesse</span>
+    <button class="ctrl-btn ${speed===1500?'active-speed':''}" onclick="setSpeed(1500)">1x</button>
+    <button class="ctrl-btn ${speed===750?'active-speed':''}" onclick="setSpeed(750)">2x</button>
+    <button class="ctrl-btn ${speed===375?'active-speed':''}" onclick="setSpeed(375)">4x</button>
+    <span class="ctrl-sep"></span>
+    <span style="font-size:11px;color:var(--sol-dim);font-weight:500;">Étape ${currentStep} sur ${activeWorkflow().length}</span>
+  `;
+}
+
+/* ================================================================
+   Render: Swim-lane
+   ================================================================ */
+function renderSwimlane() {
+  const steps = activeWorkflow();
+  const shown = steps.slice(0, currentStep);
+
+  /* Bucket steps into lanes based on the "to" agent */
+  const laneBuckets = {};
+  LANES.forEach(l => laneBuckets[l.id] = []);
+
+  shown.forEach((s, i) => {
+    const laneId = laneForAgent(s.to);
+    laneBuckets[laneId].push({ ...s, globalIdx: i });
+  });
+
+  /* Header */
+  let headerHtml = '<div class="swimlane-header">';
+  LANES.forEach(l => {
+    headerHtml += `<div class="lane-hdr ${l.colorCls}">
+      <div class="lane-hdr-name">${l.label}</div>
+      <div><span class="lane-hdr-badge ${l.badgeCls}">${l.platformLabel}</span></div>
+    </div>`;
+  });
+  headerHtml += '</div>';
+
+  /* Body */
+  let bodyHtml = '<div class="swimlane-body" id="swimlaneBody">';
+  LANES.forEach(l => {
+    bodyHtml += `<div class="lane" data-lane="${l.id}">`;
+    laneBuckets[l.id].forEach(s => {
+      const isActive = s.globalIdx === currentStep - 1;
+      const isCompleted = s.globalIdx < currentStep - 1;
+      const cls = isActive ? 'active-step' : (isCompleted ? 'completed-step' : '');
+      const platBCls = platformBadgeCls(s.toPlatform);
+      const truncAction = s.action.length > 44 ? s.action.slice(0, 42) + '…' : s.action;
+
+      bodyHtml += `<div class="step-card ${cls}" data-step-idx="${s.globalIdx}" onclick="jumpToStep(${s.globalIdx + 1})">
+        <div class="step-num-badge ${platBCls}">${s.step}</div>
+        <div class="step-action">${truncAction}</div>
+        <div class="step-meta">
+          <span class="step-tag cost">€${s.cost.toFixed(2)}</span>
+          <span class="step-tag latency">${s.latency}ms</span>
+          <span class="step-tag plat ${platBCls}">${platformLabel(s.toPlatform)}</span>
+        </div>
+      </div>`;
+    });
+    bodyHtml += '</div>';
+  });
+
+  /* Connector SVG layer */
+  bodyHtml += '<svg class="connector-layer" id="connectorSvg"></svg>';
+  bodyHtml += '</div>';
+
+  document.getElementById('swimlane').innerHTML = headerHtml + bodyHtml;
+  requestAnimationFrame(() => requestAnimationFrame(drawConnectors));
+}
+
+function drawConnectors() {
+  const svg = document.getElementById('connectorSvg');
+  if (!svg) return;
+  const body = document.getElementById('swimlaneBody');
+  if (!body) return;
+
+  const bodyRect = body.getBoundingClientRect();
+  svg.setAttribute('viewBox', `0 0 ${bodyRect.width} ${bodyRect.height}`);
+  svg.style.width = bodyRect.width + 'px';
+  svg.style.height = bodyRect.height + 'px';
+
+  let lines = '';
+  const cards = body.querySelectorAll('.step-card');
+  const cardArr = Array.from(cards);
+
+  /* Sort by globalIdx so connectors follow step order */
+  cardArr.sort((a, b) => parseInt(a.dataset.stepIdx) - parseInt(b.dataset.stepIdx));
+
+  for (let i = 1; i < cardArr.length; i++) {
+    const prev = cardArr[i - 1];
+    const curr = cardArr[i];
+    const prevRect = prev.getBoundingClientRect();
+    const currRect = curr.getBoundingClientRect();
+
+    const x1 = prevRect.left + prevRect.width / 2 - bodyRect.left;
+    const y1 = prevRect.bottom - bodyRect.top;
+    const x2 = currRect.left + currRect.width / 2 - bodyRect.left;
+    const y2 = currRect.top - bodyRect.top;
+
+    const isActive = parseInt(curr.dataset.stepIdx) === currentStep - 1;
+    const step = activeWorkflow()[parseInt(curr.dataset.stepIdx)];
+    const color = platformColor(step ? step.toPlatform : 'mistral');
+    const cls = isActive ? 'connector-line active-conn' : 'connector-line';
+
+    const midY = (y1 + y2) / 2;
+    lines += `<path class="${cls}" d="M${x1},${y1} C${x1},${midY} ${x2},${midY} ${x2},${y2}" stroke="${color}" />`;
+
+    if (isActive) {
+      lines += `<circle class="connector-dot" cx="${x2}" cy="${y2}" fill="${color}" r="4"/>`;
+    }
+  }
+  svg.innerHTML = lines;
+}
+
+/* ================================================================
+   Render: Step Detail Panel
+   ================================================================ */
+function renderStepDetail() {
+  const panel = document.getElementById('detailPanel');
+  if (currentStep === 0) {
+    panel.innerHTML = '<div class="detail-empty">Appuyez sur <strong>Lecture</strong> ou cliquez sur une étape pour l\'inspecter.</div>';
+    return;
+  }
+  const s = activeWorkflow()[currentStep - 1];
+  const total = activeWorkflow().length;
+  const fromLane = laneForAgent(s.from);
+  const toLane = laneForAgent(s.to);
+  const fromPlatBadge = `<span class="badge ${platformBadgeCls(s.platform)}">${platformLabel(s.platform)}</span>`;
+  const toPlatBadge = `<span class="badge ${platformBadgeCls(s.toPlatform)}">${platformLabel(s.toPlatform)}</span>`;
+  const fromDomBadge = `<span class="badge domain">${DOMAIN_LABELS[fromLane] || fromLane}</span>`;
+  const toDomBadge = `<span class="badge domain">${DOMAIN_LABELS[toLane] || toLane}</span>`;
+
+  const isCross = s.platform !== s.toPlatform;
+  const transitionHtml = isCross
+    ? `<div class="detail-transition">
+        <span class="badge ${platformBadgeCls(s.platform)}">${platformLabel(s.platform)}</span>
+        <span class="arrow">&rarr;</span>
+        <span class="badge ${platformBadgeCls(s.toPlatform)}">${platformLabel(s.toPlatform)}</span>
+        <span style="font-size:10px;color:var(--roi-amber);margin-left:4px;font-weight:600;">Transition cross-platform</span>
+       </div>`
+    : `<span style="font-size:12px;color:var(--sol-dim);">Même plateforme (${platformLabel(s.toPlatform)})</span>`;
+
+  panel.innerHTML = `
+    <div class="detail-title">Étape ${s.step} sur ${total}</div>
+    <div class="detail-grid">
+      <div class="detail-field">
+        <div class="detail-field-label">De</div>
+        <div class="detail-field-val">${AGENT_LABELS[s.from] || s.from} ${fromDomBadge} ${fromPlatBadge}</div>
+      </div>
+      <div class="detail-field">
+        <div class="detail-field-label">Vers</div>
+        <div class="detail-field-val">${AGENT_LABELS[s.to] || s.to} ${toDomBadge} ${toPlatBadge}</div>
+      </div>
+      <div class="detail-field detail-full">
+        <div class="detail-field-label">Action</div>
+        <div class="detail-field-val">${s.action}</div>
+      </div>
+      <div class="detail-field">
+        <div class="detail-field-label">Coût Token</div>
+        <div class="detail-field-val" style="color:var(--sol-green);font-weight:700;">€${s.cost.toFixed(2)}</div>
+      </div>
+      <div class="detail-field">
+        <div class="detail-field-label">Latence</div>
+        <div class="detail-field-val" style="color:var(--roi-blue);font-weight:700;">${s.latency}ms</div>
+      </div>
+      <div class="detail-field detail-full">
+        <div class="detail-field-label">Transition Plateforme</div>
+        <div class="detail-field-val">${transitionHtml}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ================================================================
+   Render: Aggregate Stats Bar
+   ================================================================ */
+function renderAggBar() {
+  const steps = activeWorkflow();
+  const shown = steps.slice(0, currentStep);
+  const totalLatency = shown.reduce((a, s) => a + s.latency, 0);
+  const totalCost = shown.reduce((a, s) => a + s.cost, 0);
+  const fullLatency = steps.reduce((a, s) => a + s.latency, 0);
+  const platforms = [...new Set(shown.flatMap(s => [s.platform, s.toPlatform]))];
+  const domains = [...new Set(shown.flatMap(s => [laneForAgent(s.from), laneForAgent(s.to)]))];
+
+  /* Timeline segments coloured by toPlatform */
+  let segHtml = '';
+  if (shown.length > 0) {
+    shown.forEach(s => {
+      const pct = (s.latency / fullLatency) * 100;
+      const cls = platformBadgeCls(s.toPlatform);
+      segHtml += `<div class="agg-seg ${cls}" style="width:${pct}%">${s.step}</div>`;
+    });
+  } else {
+    segHtml = '<div class="agg-seg" style="width:100%;background:var(--sol-border);color:var(--sol-dim);">Aucune étape</div>';
+  }
+
+  const platBadges = platforms.map(p =>
+    `<span class="agg-badge ${platformBadgeCls(p)}">${platformLabel(p)}</span>`
+  ).join('');
+
+  const domBadges = domains.map(d =>
+    `<span class="agg-badge domain">${DOMAIN_LABELS[d] || d}</span>`
+  ).join('');
+
+  document.getElementById('aggBar').innerHTML = `
+    <div class="agg-title">Timeline Workflow &mdash; Distribution de Latence</div>
+    <div class="agg-timeline">${segHtml}</div>
+    <div class="agg-meta">
+      <div class="agg-item">
+        <span class="agg-item-label">Coût Total</span>
+        <span class="agg-item-val" style="color:var(--sol-green)">€${totalCost.toFixed(2)}</span>
+      </div>
+      <div class="agg-item">
+        <span class="agg-item-label">Latence Totale</span>
+        <span class="agg-item-val" style="color:var(--roi-blue)">${totalLatency}ms</span>
+      </div>
+      <div class="agg-item">
+        <span class="agg-item-label">Plateformes</span>
+        <div class="agg-badges">${platBadges || '<span style="color:var(--sol-dim);font-size:11px;">—</span>'}</div>
+      </div>
+      <div class="agg-item">
+        <span class="agg-item-label">Domaines</span>
+        <div class="agg-badges">${domBadges || '<span style="color:var(--sol-dim);font-size:11px;">—</span>'}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ================================================================
+   Render: Sidebar
+   ================================================================ */
+function renderSidebar() {
+  /* Scenario buttons */
+  const scenHtml = scenarios.map((s, i) => {
+    const active = i === activeScenarioIdx ? 'active' : '';
+    const stats = scenarioStats(s);
+    return `<button class="sb-btn ${active}" onclick="selectScenario(${i})">
+      <span class="sb-dot" style="background:${i===activeScenarioIdx?'var(--sol-green)':'var(--sol-dim)'}"></span>
+      <span style="flex:1;overflow:hidden">
+        <span style="display:block;font-size:12px;">${s.name}</span>
+        <span style="display:block;font-size:9px;color:var(--sol-dim);margin-top:1px;">${s.desc}</span>
+      </span>
+      <span class="sb-count">${stats.count}</span>
+    </button>`;
+  }).join('');
+  document.getElementById('sbScenarios').innerHTML = scenHtml;
+
+  /* Step navigator */
+  const steps = activeWorkflow();
+  const stepsHtml = steps.map((s, i) => {
+    const num = i + 1;
+    let cls = '';
+    if (num === currentStep) cls = 'active';
+    else if (num < currentStep) cls = 'completed';
+    const truncAction = s.action.length > 32 ? s.action.slice(0, 30) + '…' : s.action;
+    return `<button class="sb-step-btn ${cls}" onclick="jumpToStep(${num})">
+      <span class="sb-step-num">${num}</span>
+      <span class="sb-step-action">${truncAction}</span>
+    </button>`;
+  }).join('');
+  document.getElementById('sbSteps').innerHTML = stepsHtml;
+
+  /* Workflow stats */
+  const s = scenarios[activeScenarioIdx];
+  const st = scenarioStats(s);
+  const platBadges = st.platforms.map(p =>
+    `<span class="sb-plat ${platformBadgeCls(p)}" style="margin-right:3px;">${platformLabel(p)}</span>`
+  ).join('');
+  document.getElementById('sbStats').innerHTML = `
+    <div class="sb-stats">
+      <div class="sb-stats-row"><span class="sb-stats-label">Étapes</span><span class="sb-stats-val">${st.count}</span></div>
+      <div class="sb-stats-row"><span class="sb-stats-label">Coût Total</span><span class="sb-stats-val">€${st.cost.toFixed(2)}</span></div>
+      <div class="sb-stats-row"><span class="sb-stats-label">Latence Totale</span><span class="sb-stats-val">${st.latency}ms</span></div>
+      <div class="sb-stats-row"><span class="sb-stats-label">Plateformes</span><span class="sb-stats-val">${platBadges}</span></div>
+      <div class="sb-stats-row"><span class="sb-stats-label">Domaines</span><span class="sb-stats-val">${st.domains.length}</span></div>
+    </div>
+  `;
+}
+
+/* ================================================================
+   Playback Controls
+   ================================================================ */
+function togglePlay() {
+  if (playing) { pause(); }
+  else { play(); }
+}
+
+function play() {
+  if (currentStep >= activeWorkflow().length) {
+    currentStep = 0;
+  }
+  playing = true;
+  renderControls();
+  timer = setInterval(() => {
+    if (currentStep < activeWorkflow().length) {
+      currentStep++;
+      renderAll();
+    } else {
+      pause();
+    }
+  }, speed);
+}
+
+function pause() {
+  playing = false;
+  clearInterval(timer);
+  timer = null;
+  renderControls();
+}
+
+function reset() {
+  pause();
+  currentStep = 0;
+  renderAll();
+}
+
+function setSpeed(s) {
+  speed = s;
+  if (playing) {
+    clearInterval(timer);
+    timer = setInterval(() => {
+      if (currentStep < activeWorkflow().length) {
+        currentStep++;
+        renderAll();
+      } else {
+        pause();
+      }
+    }, speed);
+  }
+  renderControls();
+}
+
+function selectScenario(idx) {
+  pause();
+  activeScenarioIdx = idx;
+  currentStep = 0;
+  renderAll();
+}
+
+function jumpToStep(n) {
+  pause();
+  currentStep = n;
+  renderAll();
+}
+
+/* ================================================================
+   Master Render
+   ================================================================ */
+function renderAll() {
+  renderControls();
+  renderSwimlane();
+  renderStepDetail();
+  renderAggBar();
+  renderSidebar();
+}
+
+/* ================================================================
+   Health Polling
+   ================================================================ */
+function pollHealth() {
+  fetch('http://127.0.0.1:9100/health', { signal: AbortSignal.timeout(3000) })
+    .then(r => r.json())
+    .then(d => {
+      const el = document.getElementById('live-count');
+      if (el) el.textContent = d.active_agents || 0;
+    })
+    .catch(() => {});
+}
+
+/* ================================================================
+   Init
+   ================================================================ */
+renderHeroStats();
+renderAll();
+pollHealth();
+setInterval(pollHealth, 5000);
+
+window.addEventListener('resize', () => requestAnimationFrame(drawConnectors));
+</script>
+</body>
+</html>

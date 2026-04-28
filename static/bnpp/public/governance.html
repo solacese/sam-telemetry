@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Bank &mdash; Gouvernance &amp; Conformit&eacute;</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    :root {
+      --sol-bg:       #021b2f;
+      --sol-surface:  #01374e;
+      --sol-surface2: #014968;
+      --sol-header:   #03223b;
+      --sol-border:   #0a4060;
+      --sol-border-l: #0d5579;
+      --sol-green:    #00c895;
+      --sol-green-bg: rgba(0,200,149,.10);
+      --sol-green-20: rgba(0,200,149,.20);
+      --sol-green-40: rgba(0,200,149,.40);
+      --sol-text:     #e6eff2;
+      --sol-muted:    #b1b9c0;
+      --sol-dim:      #536574;
+      --sol-card:     #012e45;
+      --sol-card-hov: #013a56;
+      --databricks:    #ff3621; --databricks-bg: rgba(255,54,33,.12);
+      --salesforce:    #00a1e0; --salesforce-bg: rgba(0,161,224,.12);
+      --mistral:       #f97316; --mistral-bg:    rgba(249,115,22,.12);
+      --claude:        #d4a574; --claude-bg:     rgba(212,165,116,.12);
+      --roi-green: #00c895;
+      --roi-amber: #f59e0b;
+      --roi-red:   #ef4444;
+      --roi-blue:  #38bdf8;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--sol-bg); color: var(--sol-text); font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--sol-green); text-decoration: none; }
+
+    /* ---- layout ---- */
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    /* ---- topbar ---- */
+    .topbar {
+      background: var(--sol-header); border-bottom: 1px solid var(--sol-border);
+      padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+      position: relative; z-index: 10;
+    }
+    .topbar::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 10%, var(--sol-green) 50%, transparent 90%);
+      opacity: .6;
+    }
+    .logo-block { display: flex; align-items: center; gap: 10px; }
+    .logo-text { font-size: 14px; font-weight: 700; color: var(--sol-green); letter-spacing: .02em; }
+    .logo-sep { width: 1px; height: 24px; background: var(--sol-border-l); margin: 0 6px; }
+    .title-block h1 { font-size: 15px; font-weight: 700; color: var(--sol-text); }
+    .title-block .sub { font-size: 10px; color: var(--sol-dim); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+    .topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .topbar-right a {
+      font-size: 12px; color: var(--sol-muted); padding: 5px 10px; border-radius: 6px;
+      transition: all .12s; font-weight: 500; border: 1px solid transparent;
+    }
+    .topbar-right a:hover { color: var(--sol-green); border-color: var(--sol-border); background: rgba(0,200,149,.05); }
+    .topbar-right a.active { color: var(--sol-green); border-color: var(--sol-green); background: var(--sol-green-bg); font-weight: 600; }
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 14px; font-size: 11px; font-weight: 600;
+      background: var(--sol-green-bg); border: 1px solid var(--sol-green-20); color: var(--sol-green);
+    }
+    .live-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sol-green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.3; } }
+
+    .main { display: flex; flex: 1; min-height: 0; }
+
+    /* ---- sidebar ---- */
+    .sidebar {
+      width: 250px; flex-shrink: 0; background: var(--sol-surface);
+      border-right: 1px solid var(--sol-border); display: flex; flex-direction: column; overflow-y: auto;
+    }
+    .sb-hdr { padding: 14px 16px 10px; border-bottom: 1px solid var(--sol-border); }
+    .sb-hdr h3 { font-size: 10px; font-weight: 700; color: var(--sol-dim); letter-spacing: .1em; text-transform: uppercase; }
+    .sb-body { flex: 1; padding: 6px 0; overflow-y: auto; }
+    .sb-sec { padding: 12px 16px 4px; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sol-dim); }
+    .sb-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border: none; background: none;
+      color: var(--sol-muted); font-size: 12px; font-weight: 500;
+      cursor: pointer; width: 100%; text-align: left; transition: all .12s; position: relative;
+      font-family: inherit;
+    }
+    .sb-btn:hover { background: rgba(0,200,149,.04); color: var(--sol-text); }
+    .sb-btn.active { background: var(--sol-surface2); color: var(--sol-green); font-weight: 600; }
+    .sb-btn.active::before {
+      content: ''; position: absolute; left: 0; top: 3px; bottom: 3px; width: 3px;
+      background: var(--sol-green); border-radius: 0 2px 2px 0;
+    }
+    .sb-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .sb-count {
+      margin-left: auto; font-size: 10px; color: var(--sol-dim);
+      background: rgba(255,255,255,.04); padding: 1px 6px; border-radius: 8px; font-weight: 600;
+    }
+    .sb-btn.active .sb-count { color: var(--sol-green); background: var(--sol-green-bg); }
+
+    .sb-mini-panel {
+      margin: 8px 12px; padding: 12px; border-radius: 8px;
+      background: var(--sol-card); border: 1px solid var(--sol-border);
+    }
+    .sb-mini-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--sol-dim); margin-bottom: 8px; }
+    .sb-mini-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; }
+    .sb-mini-label { font-size: 11px; color: var(--sol-muted); }
+    .sb-mini-val { font-size: 11px; font-weight: 700; }
+    .sb-mini-val.ok { color: var(--sol-green); }
+    .sb-mini-val.warn { color: var(--roi-amber); }
+    .sb-mini-val.crit { color: var(--roi-red); }
+
+    /* ---- content ---- */
+    .content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+
+    /* ---- hero stats ---- */
+    .hero-stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 20px; }
+    .stat-card {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px;
+      padding: 14px 16px; position: relative; overflow: hidden;
+    }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+    .stat-card.c-green::before  { background: var(--sol-green); }
+    .stat-card.c-red::before    { background: var(--roi-red); }
+    .stat-card.c-amber::before  { background: var(--roi-amber); }
+    .stat-card.c-blue::before   { background: var(--roi-blue); }
+    .stat-val { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -.5px; }
+    .stat-lbl { font-size: 10px; color: var(--sol-muted); margin-top: 3px; font-weight: 500; }
+    .stat-sub { font-size: 9px; color: var(--sol-dim); margin-top: 2px; }
+
+    /* ---- two column ---- */
+    .two-col { display: grid; grid-template-columns: 60fr 40fr; gap: 16px; margin-bottom: 24px; }
+
+    /* ---- section headers ---- */
+    .sec-hdr {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    }
+    .sec-hdr h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--sol-text); white-space: nowrap; }
+    .sec-line { flex: 1; height: 1px; background: var(--sol-border); }
+    .sec-badge {
+      font-size: 9px; padding: 2px 8px; border-radius: 10px; font-weight: 700;
+      background: var(--sol-green-bg); color: var(--sol-green); border: 1px solid var(--sol-green-20);
+      white-space: nowrap;
+    }
+
+    /* ---- violation feed ---- */
+    .feed { display: flex; flex-direction: column; gap: 8px; max-height: 520px; overflow-y: auto; }
+    .v-card {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 8px;
+      padding: 12px 14px; animation: fadeSlideIn .4s ease-out;
+      transition: background .12s;
+    }
+    .v-card:hover { background: var(--sol-card-hov); }
+    @keyframes fadeSlideIn {
+      0% { opacity: 0; transform: translateY(-8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .v-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+    .sev-badge {
+      font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+    .sev-high     { background: rgba(245,158,11,.15); color: var(--roi-amber); border: 1px solid rgba(245,158,11,.25); }
+    .sev-medium   { background: rgba(56,189,248,.10); color: var(--roi-blue); border: 1px solid rgba(56,189,248,.2); }
+    .sev-low      { background: var(--sol-green-bg); color: var(--sol-green); border: 1px solid var(--sol-green-20); }
+    .sev-critical { background: rgba(239,68,68,.25); color: #ff6b6b; border: 1px solid rgba(239,68,68,.4); }
+    .v-ts { font-size: 10px; color: var(--sol-dim); font-family: 'SF Mono', 'Fira Code', monospace; }
+    .v-agent { font-size: 10px; color: var(--roi-blue); font-weight: 600; font-family: 'SF Mono', 'Fira Code', monospace; }
+    .v-type-badge {
+      font-size: 8px; padding: 1px 6px; border-radius: 3px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .04em;
+      background: rgba(255,255,255,.05); color: var(--sol-dim); border: 1px solid var(--sol-border);
+    }
+    .v-detail { font-size: 11px; color: var(--sol-muted); line-height: 1.5; }
+
+    /* ---- access matrix ---- */
+    .matrix-wrap { margin-bottom: 24px; }
+    .matrix-table {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px; overflow: hidden;
+    }
+    .matrix-table th, .matrix-table td {
+      padding: 12px 16px; text-align: center; font-size: 12px;
+      border-bottom: 1px solid var(--sol-border); border-right: 1px solid var(--sol-border);
+    }
+    .matrix-table th:last-child, .matrix-table td:last-child { border-right: none; }
+    .matrix-table tr:last-child td { border-bottom: none; }
+    .matrix-table thead th {
+      background: var(--sol-header); color: var(--sol-muted); font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .matrix-table tbody th {
+      background: var(--sol-header); color: var(--sol-muted); font-size: 10px; font-weight: 700;
+      text-align: left; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap;
+    }
+    .matrix-table td { font-weight: 700; position: relative; }
+    .matrix-table td.diag { background: rgba(0,0,0,.2); color: var(--sol-dim); font-weight: 500; font-style: italic; font-size: 10px; }
+    .matrix-table td.flagged { background: rgba(239,68,68,.08); }
+    .matrix-table td .flag-icon {
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--roi-red);
+      margin-left: 4px; vertical-align: middle; animation: pulse 2s infinite;
+    }
+
+    /* ---- regulatory cards ---- */
+    .reg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 24px; }
+    .reg-card {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px;
+      padding: 14px 16px; display: flex; flex-direction: column; gap: 6px;
+      transition: border-color .12s;
+    }
+    .reg-card:hover { border-color: var(--sol-border-l); }
+    .reg-name { font-size: 13px; font-weight: 700; color: var(--sol-text); }
+    .reg-full { font-size: 9px; color: var(--sol-dim); font-weight: 500; }
+    .reg-status {
+      font-size: 9px; padding: 3px 8px; border-radius: 4px; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 4px; width: fit-content;
+    }
+    .reg-status.conforme { background: var(--sol-green-bg); color: var(--sol-green); border: 1px solid var(--sol-green-20); }
+    .reg-status.encours { background: rgba(245,158,11,.12); color: var(--roi-amber); border: 1px solid rgba(245,158,11,.2); }
+    .reg-status.na { background: rgba(255,255,255,.04); color: var(--sol-dim); border: 1px solid var(--sol-border); }
+    .reg-status .s-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .reg-status.conforme .s-dot { background: var(--sol-green); }
+    .reg-status.encours .s-dot { background: var(--roi-amber); }
+    .reg-status.na .s-dot { background: var(--sol-dim); }
+    .reg-meta { font-size: 10px; color: var(--sol-dim); }
+    .reg-bar-wrap { height: 4px; border-radius: 2px; background: rgba(255,255,255,.06); margin-top: 2px; overflow: hidden; }
+    .reg-bar-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+    .reg-bar-fill.green { background: var(--sol-green); }
+    .reg-bar-fill.amber { background: var(--roi-amber); }
+    .reg-pct { font-size: 10px; font-weight: 700; margin-top: 1px; }
+
+    /* ---- residency cards ---- */
+    .residency-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
+    .residency-card {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px;
+      padding: 14px 16px; display: flex; flex-direction: column; gap: 6px;
+      transition: border-color .12s;
+    }
+    .residency-card:hover { border-color: var(--sol-border-l); }
+    .rc-name { font-size: 13px; font-weight: 700; }
+    .rc-plat {
+      font-size: 8px; padding: 2px 6px; border-radius: 3px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .04em; display: inline-block;
+    }
+    .rc-plat.databricks  { background: var(--databricks-bg); color: var(--databricks); }
+    .rc-plat.salesforce   { background: var(--salesforce-bg); color: var(--salesforce); }
+    .rc-plat.mistral      { background: var(--mistral-bg); color: var(--mistral); }
+    .rc-plat.claude       { background: var(--claude-bg); color: var(--claude); }
+    .rc-region { font-size: 11px; color: var(--sol-muted); font-weight: 500; }
+    .rc-badge {
+      font-size: 9px; padding: 3px 8px; border-radius: 4px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 4px; width: fit-content;
+    }
+    .rc-badge.ok {
+      background: var(--sol-green-bg); color: var(--sol-green); border: 1px solid var(--sol-green-20);
+    }
+    .rc-badge.sovereign {
+      background: rgba(249,115,22,.10); color: var(--mistral); border: 1px solid rgba(249,115,22,.20);
+    }
+    .rc-badge .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .rc-classification {
+      font-size: 9px; padding: 3px 8px; border-radius: 4px; font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase;
+      background: rgba(56,189,248,.10); color: var(--roi-blue); border: 1px solid rgba(56,189,248,.2);
+      width: fit-content;
+    }
+    .rc-retention { font-size: 10px; color: var(--sol-dim); margin-top: 2px; }
+
+    /* ---- policy table ---- */
+    .policy-table-wrap { margin-bottom: 24px; }
+    .policy-table {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px; overflow: hidden;
+    }
+    .policy-table th {
+      background: var(--sol-header); color: var(--sol-muted); font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em; text-align: left;
+      padding: 10px 14px; border-bottom: 1px solid var(--sol-border); border-right: 1px solid var(--sol-border);
+    }
+    .policy-table th:last-child { border-right: none; }
+    .policy-table td {
+      padding: 10px 14px; font-size: 12px; color: var(--sol-text);
+      border-bottom: 1px solid var(--sol-border); border-right: 1px solid var(--sol-border);
+    }
+    .policy-table td:last-child { border-right: none; }
+    .policy-table tr:last-child td { border-bottom: none; }
+    .policy-table tr:hover td { background: rgba(0,200,149,.03); }
+    .policy-table .domain-tags { display: flex; gap: 3px; flex-wrap: wrap; }
+    .domain-tag {
+      font-size: 8px; padding: 1px 6px; border-radius: 3px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .04em;
+      background: rgba(255,255,255,.05); color: var(--sol-dim); border: 1px solid var(--sol-border);
+    }
+    .type-tag {
+      font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 600;
+      background: rgba(56,189,248,.08); color: var(--roi-blue); border: 1px solid rgba(56,189,248,.15);
+    }
+    .status-active {
+      font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 700;
+      background: var(--sol-green-bg); color: var(--sol-green); border: 1px solid var(--sol-green-20);
+    }
+    .viol-count { font-weight: 700; font-size: 13px; }
+    .viol-count.zero { color: var(--sol-green); }
+    .viol-count.warn { color: var(--roi-amber); }
+    .viol-count.crit { color: var(--roi-red); }
+
+    /* ---- timeline chart ---- */
+    .timeline-panel {
+      background: var(--sol-card); border: 1px solid var(--sol-border); border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .timeline-title { font-size: 12px; font-weight: 700; margin-bottom: 14px; color: var(--sol-text); }
+    .chart-area { display: flex; align-items: flex-end; gap: 3px; height: 80px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+    .bar-stack { display: flex; flex-direction: column-reverse; width: 100%; border-radius: 2px 2px 0 0; overflow: hidden; }
+    .bar-seg { width: 100%; min-height: 0; transition: height .3s; }
+    .bar-seg.s-low    { background: var(--sol-green); opacity: .7; }
+    .bar-seg.s-medium { background: var(--roi-blue); opacity: .8; }
+    .bar-seg.s-high   { background: var(--roi-amber); opacity: .85; }
+    .bar-seg.s-critical { background: var(--roi-red); opacity: .9; }
+    .x-label { font-size: 8px; color: var(--sol-dim); margin-top: 4px; font-weight: 600; }
+    .chart-legend { display: flex; gap: 12px; margin-top: 12px; justify-content: center; }
+    .chart-legend-item { display: flex; align-items: center; gap: 5px; font-size: 9px; color: var(--sol-muted); }
+    .chart-legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+    /* ---- scrollbar ---- */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,200,149,.15); border-radius: 3px; }
+
+    /* ---- responsive ---- */
+    @media (max-width: 1400px) { .hero-stats { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1100px) { .two-col { grid-template-columns: 1fr; } .residency-row { grid-template-columns: repeat(2, 1fr); } .reg-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px) { .sidebar { width: 200px; } .hero-stats { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .sidebar { display: none; } .hero-stats { grid-template-columns: 1fr 1fr; } .residency-row { grid-template-columns: 1fr; } .reg-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ═══════════════════════ TOPBAR ═══════════════════════ -->
+  <div class="topbar">
+    <div class="logo-block"><span class="logo-text">solace.</span></div>
+    <div class="logo-sep"></div>
+    <div class="title-block">
+      <h1>Your Bank &mdash; Gouvernance &amp; Conformit&eacute;</h1>
+      <span class="sub">Politiques, Audit et R&eacute;sidence des Donn&eacute;es</span>
+    </div>
+    <div class="topbar-right">
+      <span class="live-badge"><span class="dot"></span> <span id="live-count">4</span> agents actifs</span>
+      <a href="agents.html">Agents</a>
+      <a href="mesh.html">Mesh Map</a>
+      <a href="governance.html" class="active">Gouvernance</a>
+      <a href="observability.html">Observabilit&eacute;</a>
+      <a href="cost.html">Co&ucirc;ts</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+    <div class="sidebar">
+      <div class="sb-hdr"><h3>Filtres Gouvernance</h3></div>
+      <div class="sb-body">
+
+        <div class="sb-sec">S&eacute;v&eacute;rit&eacute;</div>
+        <button class="sb-btn" data-sev="critical">
+          <span class="sb-dot" style="background:var(--roi-red);"></span> Critical
+          <span class="sb-count" id="sev-critical">1</span>
+        </button>
+        <button class="sb-btn" data-sev="high">
+          <span class="sb-dot" style="background:var(--roi-amber);"></span> High
+          <span class="sb-count" id="sev-high">2</span>
+        </button>
+        <button class="sb-btn" data-sev="medium">
+          <span class="sb-dot" style="background:var(--roi-blue);"></span> Medium
+          <span class="sb-count" id="sev-medium">3</span>
+        </button>
+        <button class="sb-btn" data-sev="low">
+          <span class="sb-dot" style="background:var(--sol-green);"></span> Low
+          <span class="sb-count" id="sev-low">1</span>
+        </button>
+
+        <div class="sb-sec">Domaine</div>
+        <button class="sb-btn active" data-domain="all">
+          <span class="sb-dot" style="background:var(--sol-green);"></span> Tous les domaines
+        </button>
+        <button class="sb-btn" data-domain="cib">
+          <span class="sb-dot" style="background:var(--databricks);"></span> CIB
+        </button>
+        <button class="sb-btn" data-domain="retail">
+          <span class="sb-dot" style="background:var(--salesforce);"></span> Retail Banking
+        </button>
+        <button class="sb-btn" data-domain="risk">
+          <span class="sb-dot" style="background:var(--mistral);"></span> Risk &amp; Compliance
+        </button>
+        <button class="sb-btn" data-domain="it">
+          <span class="sb-dot" style="background:var(--claude);"></span> IT &amp; Operations
+        </button>
+
+        <div class="sb-sec">R&eacute;glementation</div>
+        <button class="sb-btn active" data-reg="all">
+          <span class="sb-dot" style="background:var(--sol-green);"></span> Toutes
+        </button>
+        <button class="sb-btn" data-reg="acpr">
+          <span class="sb-dot" style="background:var(--roi-blue);"></span> Financial Regulator
+        </button>
+        <button class="sb-btn" data-reg="dora">
+          <span class="sb-dot" style="background:var(--roi-blue);"></span> DORA
+        </button>
+        <button class="sb-btn" data-reg="rgpd">
+          <span class="sb-dot" style="background:var(--roi-blue);"></span> RGPD
+        </button>
+        <button class="sb-btn" data-reg="mifid">
+          <span class="sb-dot" style="background:var(--roi-blue);"></span> MiFID II
+        </button>
+
+        <div class="sb-sec">Conformit&eacute;</div>
+        <div class="sb-mini-panel">
+          <div class="sb-mini-title">R&eacute;sum&eacute; Conformit&eacute;</div>
+          <div class="sb-mini-row">
+            <span class="sb-mini-label">RGPD</span>
+            <span class="sb-mini-val ok">99.8%</span>
+          </div>
+          <div class="sb-mini-row">
+            <span class="sb-mini-label">DORA</span>
+            <span class="sb-mini-val ok">100%</span>
+          </div>
+          <div class="sb-mini-row">
+            <span class="sb-mini-label">MiFID II</span>
+            <span class="sb-mini-val ok">98.5%</span>
+          </div>
+          <div class="sb-mini-row">
+            <span class="sb-mini-label">EU AI Act</span>
+            <span class="sb-mini-val warn">94.2%</span>
+          </div>
+          <div class="sb-mini-row">
+            <span class="sb-mini-label">Violations (30j)</span>
+            <span class="sb-mini-val crit">3</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════ CONTENT ═══════════════════════ -->
+    <div class="content">
+
+      <!-- HERO STATS -->
+      <div class="hero-stats">
+        <div class="stat-card c-red">
+          <div class="stat-val" style="color:var(--roi-red);">3</div>
+          <div class="stat-lbl">Violations de Politique</div>
+          <div class="stat-sub">Derni&egrave;res 24h</div>
+        </div>
+        <div class="stat-card c-green">
+          <div class="stat-val" style="color:var(--sol-green);">28</div>
+          <div class="stat-lbl">Politiques Actives</div>
+          <div class="stat-sub">Appliqu&eacute;es en temps r&eacute;el</div>
+        </div>
+        <div class="stat-card c-green">
+          <div class="stat-val" style="color:var(--sol-green);">99.8%</div>
+          <div class="stat-lbl">Score RGPD</div>
+          <div class="stat-sub">R&egrave;glement G&eacute;n&eacute;ral sur la Protection des Donn&eacute;es</div>
+        </div>
+        <div class="stat-card c-green">
+          <div class="stat-val" style="color:var(--sol-green);">100%</div>
+          <div class="stat-lbl">Conformit&eacute; DORA</div>
+          <div class="stat-sub">Digital Operational Resilience Act</div>
+        </div>
+        <div class="stat-card c-blue">
+          <div class="stat-val" style="color:var(--roi-blue);">1,247</div>
+          <div class="stat-lbl">Acc&egrave;s Cross-Domain</div>
+          <div class="stat-sub">Derni&egrave;res 24h</div>
+        </div>
+        <div class="stat-card c-amber">
+          <div class="stat-val" style="color:var(--roi-amber);">0.8s</div>
+          <div class="stat-lbl">D&eacute;lai Moyen de D&eacute;tection</div>
+          <div class="stat-sub">Mean Time to Flag</div>
+        </div>
+      </div>
+
+      <!-- TWO COLUMN: VIOLATION FEED + MATRIX / TIMELINE -->
+      <div class="two-col">
+
+        <!-- LEFT: VIOLATION FEED -->
+        <div>
+          <div class="sec-hdr">
+            <h2>Fil des Violations</h2>
+            <div class="sec-line"></div>
+            <span class="sec-badge" id="feed-count">7 alertes</span>
+          </div>
+          <div class="feed" id="violation-feed"></div>
+        </div>
+
+        <!-- RIGHT: MATRIX + TIMELINE -->
+        <div>
+          <div class="sec-hdr">
+            <h2>Matrice d'Acc&egrave;s Inter-Domaines</h2>
+            <div class="sec-line"></div>
+            <span class="sec-badge">4 domaines</span>
+          </div>
+          <div class="matrix-wrap">
+            <table class="matrix-table" id="access-matrix"></table>
+          </div>
+
+          <div class="sec-hdr" style="margin-top:16px;">
+            <h2>Timeline Violations</h2>
+            <div class="sec-line"></div>
+            <span class="sec-badge">24h</span>
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-title">Violations par Heure (Derni&egrave;res 24h)</div>
+            <div class="chart-area" id="timeline-chart"></div>
+            <div class="chart-legend">
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--roi-red);"></span> Critical</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--roi-amber);"></span> High</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--roi-blue);"></span> Medium</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--sol-green);"></span> Low</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- REGULATORY COMPLIANCE PANEL -->
+      <div>
+        <div class="sec-hdr">
+          <h2>Conformit&eacute; R&eacute;glementaire</h2>
+          <div class="sec-line"></div>
+          <span class="sec-badge">7 r&eacute;glementations</span>
+        </div>
+        <div class="reg-grid" id="reg-grid"></div>
+      </div>
+
+      <!-- DATA RESIDENCY -->
+      <div>
+        <div class="sec-hdr">
+          <h2>R&eacute;sidence des Donn&eacute;es</h2>
+          <div class="sec-line"></div>
+          <span class="sec-badge">EU Compliant</span>
+        </div>
+        <div class="residency-row" id="residency-cards"></div>
+      </div>
+
+      <!-- POLICY RULES TABLE -->
+      <div class="policy-table-wrap">
+        <div class="sec-hdr">
+          <h2>R&egrave;gles de Politique</h2>
+          <div class="sec-line"></div>
+          <span class="sec-badge">10 r&egrave;gles actives</span>
+        </div>
+        <table class="policy-table" id="policy-table"></table>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+(function() {
+  'use strict';
+
+  // ═══════════════════════ DOMAINS ═══════════════════════
+  const DOMAINS = ['cib', 'retail', 'risk', 'it'];
+  const DOMAIN_LABELS = {
+    cib: 'CIB',
+    retail: 'Retail Banking',
+    risk: 'Risk & Compliance',
+    it: 'IT & Operations'
+  };
+  const DOMAIN_COLORS = {
+    cib: 'var(--databricks)',
+    retail: 'var(--salesforce)',
+    risk: 'var(--mistral)',
+    it: 'var(--claude)'
+  };
+
+  // ═══════════════════════ SEEDED RNG ═══════════════════════
+  function seededRng(seed) {
+    let s = seed;
+    return function() {
+      s = (s * 1103515245 + 12345) & 0x7fffffff;
+      return s / 0x7fffffff;
+    };
+  }
+
+  // ═══════════════════════ VIOLATIONS DATA ═══════════════════════
+  const VIOLATIONS = [
+    {
+      severity: 'critical',
+      agent: 'risk_kyc',
+      domain: 'risk',
+      type: 'Data Residency',
+      detail: 'Agent risk_kyc a transmis des données PII hors zone EU — transfert détecté vers us-east-1 (AWS Virginia). Blocage immédiat appliqué.',
+      time: '14:23:07'
+    },
+    {
+      severity: 'high',
+      agent: 'retail_mortgage',
+      domain: 'retail',
+      type: 'Data Wall',
+      detail: 'Agent retail_mortgage a tenté d\'accéder aux données CIB sans habilitation — muraille de Chine CIB–Retail violée. Accès refusé.',
+      time: '13:47:52'
+    },
+    {
+      severity: 'high',
+      agent: 'it_copilot',
+      domain: 'it',
+      type: 'Access Control',
+      detail: 'Agent it_copilot a accédé au référentiel RH sans accréditation — scope "hr_data_read" non autorisé pour ce principal.',
+      time: '12:15:33'
+    },
+    {
+      severity: 'medium',
+      agent: 'cib_trade_exec',
+      domain: 'cib',
+      type: 'Cost Policy',
+      detail: 'Agent cib_trade_exec a dépassé le seuil de tokens autorisé (15k tokens sur un max de 20k) — requête de pricing structuré.',
+      time: '11:58:14'
+    },
+    {
+      severity: 'medium',
+      agent: 'retail_sentiment',
+      domain: 'retail',
+      type: 'Data Retention',
+      detail: 'Agent retail_sentiment a stocké des données client en mémoire au-delà de la durée autorisée (72h) — cache local non purgé.',
+      time: '10:34:29'
+    },
+    {
+      severity: 'medium',
+      agent: 'cib_research_analyst',
+      domain: 'cib',
+      type: 'Rate Limit',
+      detail: 'Agent cib_research_analyst a dépassé le rate limiting (142 req/min vs. 100 autorisées) — throttling activé.',
+      time: '09:22:01'
+    },
+    {
+      severity: 'low',
+      agent: 'retail_onboarding',
+      domain: 'retail',
+      type: 'Audit',
+      detail: 'Agent retail_onboarding — enregistrement d\'audit incomplet pour la session #RB-20260428-1847. Complément demandé.',
+      time: '08:45:16'
+    }
+  ];
+
+  // ═══════════════════════ BUILD VIOLATION FEED ═══════════════════════
+  function buildFeed() {
+    const feed = document.getElementById('violation-feed');
+    let html = '';
+    VIOLATIONS.forEach(function(v) {
+      html += '<div class="v-card" data-domain="' + v.domain + '" data-sev="' + v.severity + '">'
+        + '<div class="v-top">'
+        + '<span class="sev-badge sev-' + v.severity + '">' + v.severity + '</span>'
+        + '<span class="v-ts">' + v.time + '</span>'
+        + '<span class="v-agent">' + v.agent + '</span>'
+        + '<span class="v-type-badge">' + v.type + '</span>'
+        + '</div>'
+        + '<div class="v-detail">' + v.detail + '</div>'
+        + '</div>';
+    });
+    feed.innerHTML = html;
+  }
+
+  // ═══════════════════════ ACCESS MATRIX ═══════════════════════
+  function buildMatrix() {
+    const el = document.getElementById('access-matrix');
+    const rng = seededRng(20260428);
+
+    // Generate seeded data 20-300 range
+    const data = [];
+    for (let r = 0; r < 4; r++) {
+      const row = [];
+      for (let c = 0; c < 4; c++) {
+        if (r === c) {
+          row.push(-1);
+        } else {
+          row.push(Math.floor(rng() * 280) + 20);
+        }
+      }
+      data.push(row);
+    }
+
+    // Flagged: CIB <-> Retail (indices 0,1)
+    const flagged = [[0,1],[1,0]];
+    function isFlagged(r, c) {
+      return flagged.some(function(f) { return f[0] === r && f[1] === c; });
+    }
+
+    let html = '<thead><tr><th></th>';
+    DOMAINS.forEach(function(d) { html += '<th>' + DOMAIN_LABELS[d] + '</th>'; });
+    html += '</tr></thead><tbody>';
+
+    for (let r = 0; r < 4; r++) {
+      html += '<tr><th>' + DOMAIN_LABELS[DOMAINS[r]] + '</th>';
+      for (let c = 0; c < 4; c++) {
+        if (r === c) {
+          html += '<td class="diag">interne</td>';
+        } else {
+          var v = data[r][c];
+          var flag = isFlagged(r, c);
+          var cls = flag ? ' flagged' : '';
+          var color = flag
+            ? 'var(--roi-red)'
+            : 'rgba(0,200,149,' + (0.3 + Math.min(v / 300, 1) * 0.7).toFixed(2) + ')';
+          var flagHtml = flag ? ' <span class="flag-icon" title="Chinese Wall"></span>' : '';
+          html += '<td class="' + cls + '" style="color:' + color + '">' + v + flagHtml + '</td>';
+        }
+      }
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    el.innerHTML = html;
+  }
+
+  // ═══════════════════════ TIMELINE CHART ═══════════════════════
+  function buildTimeline() {
+    var el = document.getElementById('timeline-chart');
+    var rng = seededRng(42);
+    var html = '';
+    for (var h = 0; h < 24; h++) {
+      var low = Math.floor(rng() * 3);
+      var med = Math.floor(rng() * 2);
+      var high = Math.floor(rng() * 2);
+      var crit = (h === 14) ? 1 : 0;
+      var maxH = 60;
+      var scale = maxH / 8;
+      var lH = Math.round(low * scale);
+      var mH = Math.round(med * scale);
+      var hH = Math.round(high * scale);
+      var cH = Math.round(crit * scale);
+      var showLabel = (h === 0 || h === 6 || h === 12 || h === 18 || h === 23);
+      html += '<div class="bar-col">'
+        + '<div class="bar-stack" style="height:' + (lH + mH + hH + cH) + 'px">'
+        + '<div class="bar-seg s-critical" style="height:' + cH + 'px"></div>'
+        + '<div class="bar-seg s-high" style="height:' + hH + 'px"></div>'
+        + '<div class="bar-seg s-medium" style="height:' + mH + 'px"></div>'
+        + '<div class="bar-seg s-low" style="height:' + lH + 'px"></div>'
+        + '</div>'
+        + '<div class="x-label">' + (showLabel ? String(h).padStart(2, '0') : '') + '</div>'
+        + '</div>';
+    }
+    el.innerHTML = html;
+  }
+
+  // ═══════════════════════ REGULATORY COMPLIANCE ═══════════════════════
+  var REGULATIONS = [
+    { code: 'Financial Regulator', full: 'Autorité de Contrôle Prudentiel et de Résolution', status: 'conforme', label: 'Conforme', lastAudit: '2026-03-15', nextReview: '2026-09-15', pct: 100 },
+    { code: 'Securities Authority', full: 'Autorité des Marchés Financiers', status: 'conforme', label: 'Conforme', lastAudit: '2026-02-28', nextReview: '2026-08-28', pct: 99 },
+    { code: 'ECB', full: 'European Central Bank — SSM', status: 'conforme', label: 'Conforme', lastAudit: '2026-01-20', nextReview: '2026-07-20', pct: 100 },
+    { code: 'DORA', full: 'Digital Operational Resilience Act', status: 'conforme', label: 'Conforme', lastAudit: '2026-04-01', nextReview: '2026-10-01', pct: 100 },
+    { code: 'MiFID II', full: 'Markets in Financial Instruments Directive', status: 'conforme', label: 'Conforme', lastAudit: '2026-03-22', nextReview: '2026-09-22', pct: 98.5 },
+    { code: 'RGPD', full: 'Règlement Général sur la Protection des Données', status: 'conforme', label: 'Conforme', lastAudit: '2026-04-10', nextReview: '2026-10-10', pct: 99.8 },
+    { code: 'EU AI Act', full: 'Règlement européen sur l\'intelligence artificielle', status: 'encours', label: 'En cours', lastAudit: '2026-04-15', nextReview: '2026-07-01', pct: 94.2 }
+  ];
+
+  function buildRegulatory() {
+    var el = document.getElementById('reg-grid');
+    var html = '';
+    REGULATIONS.forEach(function(reg) {
+      var barClass = reg.pct >= 98 ? 'green' : 'amber';
+      var pctColor = reg.pct >= 98 ? 'var(--sol-green)' : 'var(--roi-amber)';
+      html += '<div class="reg-card">'
+        + '<div class="reg-name">' + reg.code + '</div>'
+        + '<div class="reg-full">' + reg.full + '</div>'
+        + '<div><span class="reg-status ' + reg.status + '"><span class="s-dot"></span> ' + reg.label + '</span></div>'
+        + '<div class="reg-meta">Dernier audit : ' + reg.lastAudit + '</div>'
+        + '<div class="reg-meta">Prochaine revue : ' + reg.nextReview + '</div>'
+        + '<div class="reg-bar-wrap"><div class="reg-bar-fill ' + barClass + '" style="width:' + reg.pct + '%"></div></div>'
+        + '<div class="reg-pct" style="color:' + pctColor + '">' + reg.pct + '%</div>'
+        + '</div>';
+    });
+    el.innerHTML = html;
+  }
+
+  // ═══════════════════════ DATA RESIDENCY ═══════════════════════
+  var PLATFORMS = [
+    {
+      name: 'Databricks',
+      platform: 'databricks',
+      region: 'EU (Frankfurt, eu-central-1)',
+      badges: ['RGPD'],
+      classification: 'Confidentiel C2',
+      retention: 'Rétention : 90 jours, purge automatique'
+    },
+    {
+      name: 'Salesforce',
+      platform: 'salesforce',
+      region: 'EU (Paris, eu-west-3)',
+      badges: ['RGPD'],
+      classification: 'Interne C1',
+      retention: 'Rétention : 365 jours, archivage long terme'
+    },
+    {
+      name: 'Mistral',
+      platform: 'mistral',
+      region: 'France (Paris, sovereign cloud)',
+      badges: ['RGPD', 'Souveraineté'],
+      classification: 'Confidentiel C2',
+      retention: 'Rétention : 30 jours, cloud souverain'
+    },
+    {
+      name: 'Claude',
+      platform: 'claude',
+      region: 'EU (Frankfurt)',
+      badges: ['RGPD'],
+      classification: 'Confidentiel C2',
+      retention: 'Rétention : 72h, aucune persistance'
+    }
+  ];
+
+  function buildResidency() {
+    var el = document.getElementById('residency-cards');
+    var html = '';
+    PLATFORMS.forEach(function(p) {
+      var badgesHtml = '';
+      p.badges.forEach(function(b) {
+        if (b === 'Souveraineté') {
+          badgesHtml += '<span class="rc-badge sovereign"><span class="badge-dot"></span> ' + b + '</span> ';
+        } else {
+          badgesHtml += '<span class="rc-badge ok"><span class="badge-dot"></span> ' + b + '</span> ';
+        }
+      });
+      html += '<div class="residency-card">'
+        + '<div class="rc-name">' + p.name + '</div>'
+        + '<div><span class="rc-plat ' + p.platform + '">' + p.platform.toUpperCase() + '</span></div>'
+        + '<div class="rc-region">' + p.region + '</div>'
+        + '<div>' + badgesHtml + '</div>'
+        + '<div><span class="rc-classification">' + p.classification + '</span></div>'
+        + '<div class="rc-retention">' + p.retention + '</div>'
+        + '</div>';
+    });
+    el.innerHTML = html;
+  }
+
+  // ═══════════════════════ POLICY TABLE ═══════════════════════
+  var POLICIES = [
+    { name: 'Chinese Wall CIB–Retail', domains: ['CIB', 'Retail'], type: 'Data Wall', status: 'Actif', violations: 2 },
+    { name: 'Token Budget par Agent (max 20k/req)', domains: ['All'], type: 'Cost', status: 'Actif', violations: 5 },
+    { name: 'Résidence EU des données PII', domains: ['All'], type: 'Data Residency', status: 'Actif', violations: 1 },
+    { name: 'Habilitation multi-domaine', domains: ['All'], type: 'Access Control', status: 'Actif', violations: 3 },
+    { name: 'Rétention données client (max 72h)', domains: ['Retail'], type: 'Data Retention', status: 'Actif', violations: 1 },
+    { name: 'Audit trail obligatoire', domains: ['All'], type: 'Audit', status: 'Actif', violations: 0 },
+    { name: 'Human-in-the-loop > €50k', domains: ['CIB', 'Retail'], type: 'HITL', status: 'Actif', violations: 0 },
+    { name: 'Modèle souverain pour PII', domains: ['Risk', 'Retail'], type: 'Sovereignty', status: 'Actif', violations: 0 },
+    { name: 'Rate limiting (100 req/min)', domains: ['All'], type: 'Rate Limit', status: 'Actif', violations: 4 },
+    { name: 'Logging de toutes les décisions', domains: ['All'], type: 'Audit', status: 'Actif', violations: 0 }
+  ];
+
+  function buildPolicyTable() {
+    var el = document.getElementById('policy-table');
+    var html = '<thead><tr>'
+      + '<th>Politique</th>'
+      + '<th>Domaine</th>'
+      + '<th>Type</th>'
+      + '<th>Statut</th>'
+      + '<th>Violations (30j)</th>'
+      + '</tr></thead><tbody>';
+    POLICIES.forEach(function(p) {
+      var domainTags = p.domains.map(function(d) { return '<span class="domain-tag">' + d + '</span>'; }).join('');
+      var violClass = p.violations === 0 ? 'zero' : (p.violations >= 3 ? 'crit' : 'warn');
+      html += '<tr>'
+        + '<td style="font-weight:600;">' + p.name + '</td>'
+        + '<td><div class="domain-tags">' + domainTags + '</div></td>'
+        + '<td><span class="type-tag">' + p.type + '</span></td>'
+        + '<td><span class="status-active">' + p.status + '</span></td>'
+        + '<td><span class="viol-count ' + violClass + '">' + p.violations + '</span></td>'
+        + '</tr>';
+    });
+    html += '</tbody>';
+    el.innerHTML = html;
+  }
+
+  // ═══════════════════════ SIDEBAR FILTERS ═══════════════════════
+  // Domain filter
+  document.querySelectorAll('.sb-btn[data-domain]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.sb-btn[data-domain]').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      var domain = this.dataset.domain;
+      document.querySelectorAll('#violation-feed .v-card').forEach(function(card) {
+        if (domain === 'all' || card.dataset.domain === domain) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      updateFeedCount();
+    });
+  });
+
+  // Severity filter
+  document.querySelectorAll('.sb-btn[data-sev]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var wasActive = this.classList.contains('active');
+      document.querySelectorAll('.sb-btn[data-sev]').forEach(function(b) { b.classList.remove('active'); });
+      if (!wasActive) {
+        this.classList.add('active');
+      }
+      var activeSev = document.querySelector('.sb-btn[data-sev].active');
+      var sevFilter = activeSev ? activeSev.dataset.sev : null;
+      document.querySelectorAll('#violation-feed .v-card').forEach(function(card) {
+        if (!sevFilter || card.dataset.sev === sevFilter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      updateFeedCount();
+    });
+  });
+
+  function updateFeedCount() {
+    var visible = document.querySelectorAll('#violation-feed .v-card:not([style*="display: none"])').length;
+    document.getElementById('feed-count').textContent = visible + ' alerte' + (visible !== 1 ? 's' : '');
+  }
+
+  // ═══════════════════════ INIT ═══════════════════════
+  buildFeed();
+  buildMatrix();
+  buildTimeline();
+  buildRegulatory();
+  buildResidency();
+  buildPolicyTable();
+
+})();
+</script>
+</body>
+</html>
