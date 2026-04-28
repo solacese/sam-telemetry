@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Mesh Command Centre</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    :root { --bg: #021b2f; --surface: #01374e; --green: #00c895; --text: #e6eff2; --muted: #b1b9c0; --dim: #536574; --border: #0a4060; --card: #012e45; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif}
+    .page{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center}
+    .logo{font-size:18px;font-weight:700;color:var(--green);margin-bottom:8px;letter-spacing:.02em}
+    h1{font-size:32px;font-weight:800;margin-bottom:8px}
+    .sub{font-size:14px;color:var(--muted);margin-bottom:40px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;max-width:800px;width:100%}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px 20px;text-decoration:none;color:var(--text);transition:all .15s;display:flex;flex-direction:column;gap:6px}
+    .card:hover{border-color:var(--green);transform:translateY(-2px);background:#013a56}
+    .card h2{font-size:16px;font-weight:700;color:var(--green)}
+    .card p{font-size:12px;color:var(--muted);line-height:1.5}
+    .badge{font-size:10px;color:var(--dim);margin-top:auto;padding-top:8px}
+    .footer{margin-top:40px;font-size:11px;color:var(--dim)}
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="logo">solace.</div>
+  <h1>Agent Mesh Command Centre</h1>
+  <p class="sub">200 agents &middot; 4 domains &middot; 4 platforms &middot; 8 KPIs</p>
+  <div class="grid">
+    <a href="agents.html" class="card">
+      <h2>Agent Inventory</h2>
+      <p>200 agents across Databricks, Salesforce, Mistral &amp; Claude with per-agent KPIs</p>
+      <span class="badge">200 agents &middot; 8 KPIs each</span>
+    </a>
+    <a href="governance.html" class="card">
+      <h2>Governance &amp; Compliance</h2>
+      <p>Cross-domain policies, regulatory compliance (DORA, GDPR, MiFID II), data residency</p>
+      <span class="badge">28 policies &middot; 7 regulations</span>
+    </a>
+    <a href="workflows.html" class="card">
+      <h2>Workflow Replay</h2>
+      <p>Animated multi-agent orchestration across 4 workflow scenarios with swim-lane diagrams</p>
+      <span class="badge">4 scenarios &middot; 24 steps</span>
+    </a>
+    <a href="cost.html" class="card">
+      <h2>Cost Analysis &amp; ROI</h2>
+      <p>With vs without Solace comparison, utilisation analysis, waste detection, payback period</p>
+      <span class="badge">71% savings &middot; 1.8 month payback</span>
+    </a>
+    <a href="observability.html" class="card">
+      <h2>Observability &amp; KPIs</h2>
+      <p>8 key metrics: success rate, cost, latency, escalations, grounding, security, deps, feedback</p>
+      <span class="badge">Real-time &middot; per-domain breakdown</span>
+    </a>
+  </div>
+  <div class="footer">Powered by Solace Agent Mesh &middot; Event-Driven Multi-Agent Orchestration</div>
+</div>
+</body>
+</html>
