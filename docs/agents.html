@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Bank &mdash; Agent Mesh Dashboard</title>
+  <title>Your Bank  -  Agent Mesh Dashboard</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -268,7 +268,7 @@
     .show-more-btn:hover { background: rgba(0,200,149,.12); border-color: var(--sol-green-40); }
 
     /* ================================================================
-       KPI metrics strip — 2 rows x 4 cols
+       KPI metrics strip  -  2 rows x 4 cols
        ================================================================ */
     .kpi-strip {
       display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px 8px;
@@ -325,11 +325,11 @@
     </div>
     <div class="logo-sep"></div>
     <div class="title-block">
-      <h1>Your Bank &mdash; Agent Mesh</h1>
+      <h1>Your Bank  -  Agent Mesh</h1>
       <span class="sub">Connect, Govern and Supervise</span>
     </div>
     <div class="topbar-right">
-      <span class="live-badge"><span class="dot"></span> 200 agents live</span>
+      <span class="live-badge"><span class="dot"></span> 2,000 agents live</span>
       <a href="agents.html" class="active">Agents</a>
       <a href="governance.html">Governance</a>
       <a href="workflows.html">Workflows</a>
@@ -345,7 +345,7 @@
 
 <script>
 // ================================================================
-// Topology builder — 200 agents for Your Bank
+// Topology builder  -  200 agents for Your Bank
 // ================================================================
 const SPECIALIST_TEMPLATES = {
   cib: [
@@ -404,17 +404,20 @@ function buildTopology() {
   agents.push({ id: 'head_risk', name: 'Head of Risk & Compliance', domain: 'risk', platform: 'mistral', type: 'head', facing: 'internal', desc: 'Governs regulatory compliance, KYC/AML and credit risk.' });
   agents.push({ id: 'head_it', name: 'Head of IT & Ops', domain: 'it', platform: 'claude', type: 'head', facing: 'internal', desc: 'Manages infrastructure, security and internal copilots.' });
 
-  // 3) Generate 195 specialists (~49 per domain, last domain gets remainder)
+  // 3) Generate 1995 specialists (~499 per domain, last domain gets remainder)
   const domains = ['cib', 'retail', 'risk', 'it'];
+  const SPEC_TOTAL = 1995;
+  const PER_DOMAIN = Math.floor(SPEC_TOTAL / domains.length);
   let specId = 1;
-  for (const domain of domains) {
+  for (let di = 0; di < domains.length; di++) {
+    const domain = domains[di];
     const templates = SPECIALIST_TEMPLATES[domain];
-    const quota = (domain === 'it') ? (195 - specId + 1) : 49; // last domain takes remainder
+    const quota = (di === domains.length - 1) ? (SPEC_TOTAL - specId + 1) : PER_DOMAIN;
     for (let i = 0; i < quota; i++) {
-      if (specId > 195) break;
+      if (specId > SPEC_TOTAL) break;
       const template = templates[i % templates.length];
       const instanceNum = Math.floor(i / templates.length) + 1;
-      const num = String(specId).padStart(3, '0');
+      const num = String(specId).padStart(4, '0');
       agents.push({
         id: `spec_${domain}_${num}`,
         name: `${template.name}${instanceNum > 1 ? ' #' + instanceNum : ''}`,
@@ -422,7 +425,7 @@ function buildTopology() {
         platform: template.platform,
         type: 'specialist',
         facing: template.facing,
-        desc: `${template.desc}${instanceNum > 1 ? ' (Instance ' + instanceNum + ')' : ''}`,
+        desc: template.desc,
       });
       specId++;
     }
@@ -720,7 +723,7 @@ function renderContent() {
 
   // Hero stats
   html += '<div class="hero-stats">';
-  html += `<div class="stat-card c-green"><div class="stat-val">${totalAgents}</div><div class="stat-lbl">Total Agents</div><div class="stat-sub">1 orchestrator + 4 heads + 195 specialists</div></div>`;
+  html += `<div class="stat-card c-green"><div class="stat-val">${totalAgents}</div><div class="stat-lbl">Total Agents</div><div class="stat-sub">1 orchestrator + 4 heads + 1,995 specialists</div></div>`;
   html += `<div class="stat-card c-databricks"><div class="stat-val">${domainSet.size || 4}</div><div class="stat-lbl">Domains</div><div class="stat-sub">CIB, Retail, Risk, IT</div></div>`;
   html += `<div class="stat-card c-salesforce"><div class="stat-val">${platSet.size}</div><div class="stat-lbl">Platforms</div><div class="stat-sub">DB ${allDb} / SF ${allSf} / Mi ${allMi} / Cl ${allCl}</div></div>`;
   html += `<div class="stat-card c-mistral"><div class="stat-val">${customerFacing}</div><div class="stat-lbl">Customer-Facing</div><div class="stat-sub">Client-exposed agents</div></div>`;

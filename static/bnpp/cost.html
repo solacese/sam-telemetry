@@ -362,7 +362,7 @@
       <span class="sub">Financial Impact and Platform Comparison</span>
     </div>
     <div class="topbar-right">
-      <span class="live-badge"><span class="dot"></span> 200 agents live</span>
+      <span class="live-badge"><span class="dot"></span> 2,000 agents live</span>
       <a href="agents.html">Agents</a>
       <a href="governance.html">Governance</a>
       <a href="workflows.html">Workflows</a>
@@ -373,7 +373,7 @@
   <div class="main">
     <div class="sidebar" id="sidebar"></div>
     <div class="content" id="content">
-      <div class="loading"><div class="spinner"></div>Computing cost analysis for 200 agents...</div>
+      <div class="loading"><div class="spinner"></div>Computing cost analysis for 2,000 agents...</div>
     </div>
   </div>
 </div>
@@ -397,7 +397,7 @@
   }
 
   // ================================================================
-  // BNP Paribas Agent Topology — 200 agents
+  // BNP Paribas Agent Topology — 2,000 agents
   // ================================================================
   const DOMAINS = {
     cib:    { label: 'CIB', full: 'Corporate & Investment Banking', platform: 'databricks', color: 'var(--databricks)' },
@@ -463,6 +463,36 @@
   SPEC_DEFS.forEach(s => {
     AGENTS.push({ ...s, role: 'specialist' });
   });
+
+  // Scale to 2,000 agents: generate additional specialists per domain
+  const domainKeys = ['cib', 'retail', 'risk', 'it_ops'];
+  const domainPlatforms = { cib: 'databricks', retail: 'salesforce', risk: 'mistral', it_ops: 'claude' };
+  const domainTypes = {
+    cib: ['Trade Analytics','Market Risk','Prime Services','Compliance','Structuring','Execution','Research','Settlement'],
+    retail: ['CRM','Credit Scoring','Onboarding','Support','Mortgage','Upsell','Payments','Scheduling'],
+    risk: ['Modeling','Anti-Fraud','AML','Stress Test','Sanctions','Regulatory','Validation','Monitoring'],
+    it_ops: ['Incidents','Deployment','Monitoring','Security','Backup','Access','Cost Opt','Documentation'],
+  };
+  let extraId = 100;
+  const targetTotal = 2000;
+  const remaining = targetTotal - AGENTS.length;
+  const perDomain = Math.floor(remaining / 4);
+  for (const dk of domainKeys) {
+    const types = domainTypes[dk];
+    const plat = domainPlatforms[dk];
+    for (let i = 0; i < perDomain; i++) {
+      const t = types[i % types.length];
+      const inst = Math.floor(i / types.length) + 1;
+      AGENTS.push({
+        id: `bnpp_${dk}_${String(extraId++).padStart(4,'0')}`,
+        name: `${t} #${inst}`,
+        domain: dk,
+        platform: plat,
+        role: 'specialist',
+        agentType: t,
+      });
+    }
+  }
 
   // ================================================================
   // Generate cost data per agent (seeded)
@@ -581,7 +611,7 @@
 
     // ---- Hero Stats ----
     h += '<div class="hero-stats">';
-    h += '<div class="stat-card c-amber"><div class="stat-val" style="color:var(--roi-amber)">' + fmtEUR(totalCost) + '</div><div class="stat-lbl">Monthly Cost</div><div class="stat-sub">200 agents</div></div>';
+    h += '<div class="stat-card c-amber"><div class="stat-val" style="color:var(--roi-amber)">' + fmtEUR(totalCost) + '</div><div class="stat-lbl">Monthly Cost</div><div class="stat-sub">2,000 agents</div></div>';
     h += '<div class="stat-card c-blue"><div class="stat-val" style="color:var(--roi-blue)">' + fmtK(totalExec) + '</div><div class="stat-lbl">Executions/Month</div><div class="stat-sub">all domains</div></div>';
     h += '<div class="stat-card c-roi"><div class="stat-val" style="color:var(--sol-text)">€' + avgCostPerExec.toFixed(2) + '</div><div class="stat-lbl">Avg. Cost/Execution</div><div class="stat-sub">entire platform</div></div>';
     h += '<div class="stat-card c-green"><div class="stat-val" style="color:var(--sol-green)">' + fmtEUR(savings) + '</div><div class="stat-lbl">Savings vs Silos</div><div class="stat-sub">~' + fmtEUR(savings * 12) + '/yr</div></div>';
@@ -609,7 +639,7 @@
     h += '<div class="comp-side with">';
     h += '<div class="comp-title green"><span class="icon">&#x2713;</span> With Solace</div>';
     h += '<div class="comp-line"><div><div class="comp-line-desc">Solace Agent Mesh Platform</div><div class="comp-line-detail">Unified event mesh + routing</div></div><div class="comp-line-cost green">' + fmtEURFull(solacePlatform) + '</div></div>';
-    h += '<div class="comp-line"><div><div class="comp-line-desc">Agent compute (200 agents)</div><div class="comp-line-detail">Databricks + Salesforce + Mistral + Claude</div></div><div class="comp-line-cost green">' + fmtEURFull(agentCompute) + '</div></div>';
+    h += '<div class="comp-line"><div><div class="comp-line-desc">Agent compute (2,000 agents)</div><div class="comp-line-detail">Databricks + Salesforce + Mistral + Claude</div></div><div class="comp-line-cost green">' + fmtEURFull(agentCompute) + '</div></div>';
     h += '<div class="comp-line"><div><div class="comp-line-desc">Unified governance</div><div class="comp-line-detail">Policy engine, audit, RBAC</div></div><div class="comp-line-cost included">Included</div></div>';
     h += '<div class="comp-line"><div><div class="comp-line-desc">Observability</div><div class="comp-line-detail">Metrics, tracing, cost tracking</div></div><div class="comp-line-cost included">Included</div></div>';
     h += '<div class="comp-total green"><span class="comp-total-label" style="color:var(--sol-green)">Total Monthly Cost</span><span class="comp-total-val green">' + fmtEURFull(avecTotal) + '</span></div>';

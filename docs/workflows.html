@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Bank &mdash; Workflow Replay Dashboard</title>
+  <title>Your Bank  -  Workflow Replay Dashboard</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -375,11 +375,11 @@
       <div class="logo-sep"></div>
     </div>
     <div class="title-block">
-      <h1>Your Bank &mdash; Workflow Replay</h1>
+      <h1>Your Bank  -  Workflow Replay</h1>
       <span class="sub">Multi-Platform Agent Orchestration</span>
     </div>
     <div class="topbar-right">
-      <span class="live-badge"><span class="dot"></span> 200 agents live</span>
+      <span class="live-badge"><span class="dot"></span> 2,000 agents live</span>
       <a href="agents.html">Agents</a>
       <a href="governance.html">Governance</a>
       <a href="workflows.html" class="active">Workflows</a>
@@ -417,7 +417,7 @@
 
 <script>
 /* ================================================================
-   Domain / Lane Configuration — 5 columns
+   Domain / Lane Configuration  -  5 columns
    ================================================================ */
 const LANES = [
   { id: 'orchestrator', label: 'Orchestrator',           platform: 'mistral', platformLabel: 'Mistral', colorCls: 'c-green',      badgeCls: 'green' },
@@ -477,15 +477,15 @@ const DOMAIN_LABELS = {
 };
 
 /* ================================================================
-   Scenario Data — 4 workflows
+   Scenario Data  -  4 workflows
    ================================================================ */
 const scenarios = [
   {
     name: 'KYC/AML Corporate Onboarding',
-    desc: 'Corporate onboarding — 4 domains, 4 platforms',
+    desc: 'Corporate onboarding  -  4 domains, 4 platforms',
     steps: [
-      { step:1, from:'orchestrator', to:'head_retail', action:'Initiate corporate onboarding — collect documents', platform:'mistral', toPlatform:'salesforce', cost:0.08, latency:220 },
-      { step:2, from:'head_retail', to:'retail_onboarding', action:'Document verification — extract KYB data', platform:'salesforce', toPlatform:'salesforce', cost:0.12, latency:350 },
+      { step:1, from:'orchestrator', to:'head_retail', action:'Initiate corporate onboarding  -  collect documents', platform:'mistral', toPlatform:'salesforce', cost:0.08, latency:220 },
+      { step:2, from:'head_retail', to:'retail_onboarding', action:'Document verification  -  extract KYB data', platform:'salesforce', toPlatform:'salesforce', cost:0.12, latency:350 },
       { step:3, from:'orchestrator', to:'head_risk', action:'Launch KYC/AML screening', platform:'mistral', toPlatform:'mistral', cost:0.15, latency:480 },
       { step:4, from:'head_risk', to:'risk_kyc', action:'Sanctions, PEP and adverse media screening', platform:'mistral', toPlatform:'mistral', cost:0.18, latency:520 },
       { step:5, from:'head_risk', to:'risk_credit', action:'Initial credit risk scoring', platform:'mistral', toPlatform:'databricks', cost:0.14, latency:410 },
@@ -495,7 +495,7 @@ const scenarios = [
   },
   {
     name: 'Mortgage Pre-Approval',
-    desc: 'Mortgage journey — IRBA scoring & MiFID II',
+    desc: 'Mortgage journey  -  IRBA scoring & MiFID II',
     steps: [
       { step:1, from:'orchestrator', to:'retail_mortgage', action:'Receive mortgage application', platform:'mistral', toPlatform:'salesforce', cost:0.10, latency:260 },
       { step:2, from:'retail_mortgage', to:'risk_credit', action:'Compute IRBA scoring', platform:'salesforce', toPlatform:'databricks', cost:0.16, latency:380 },
@@ -507,7 +507,7 @@ const scenarios = [
   },
   {
     name: 'Customer Sentiment Recovery',
-    desc: 'Dissatisfied customer recovery — detection & action',
+    desc: 'Dissatisfied customer recovery  -  detection & action',
     steps: [
       { step:1, from:'orchestrator', to:'retail_sentiment', action:'Detect negative post-meeting feedback', platform:'mistral', toPlatform:'mistral', cost:0.06, latency:150 },
       { step:2, from:'retail_sentiment', to:'retail_advisor', action:'Summarize client context and history', platform:'mistral', toPlatform:'claude', cost:0.10, latency:280 },
@@ -518,13 +518,13 @@ const scenarios = [
   },
   {
     name: 'CIB Product Structuring',
-    desc: 'Derivative product structuring — pricing & best execution',
+    desc: 'Derivative product structuring  -  pricing & best execution',
     steps: [
       { step:1, from:'orchestrator', to:'head_cib', action:'Request derivative product structuring', platform:'mistral', toPlatform:'databricks', cost:0.12, latency:280 },
       { step:2, from:'head_cib', to:'cib_structuring', action:'Product modeling and pricing', platform:'databricks', toPlatform:'databricks', cost:0.22, latency:520 },
       { step:3, from:'head_cib', to:'cib_market_data', action:'Underlying market data analysis', platform:'databricks', toPlatform:'databricks', cost:0.18, latency:440 },
       { step:4, from:'orchestrator', to:'risk_regulatory', action:'MiFID II and EMIR compliance validation', platform:'mistral', toPlatform:'mistral', cost:0.10, latency:320 },
-      { step:5, from:'cib_structuring', to:'cib_trade_exec', action:'Prepare execution — best execution check', platform:'databricks', toPlatform:'mistral', cost:0.14, latency:380 },
+      { step:5, from:'cib_structuring', to:'cib_trade_exec', action:'Prepare execution  -  best execution check', platform:'databricks', toPlatform:'mistral', cost:0.14, latency:380 },
       { step:6, from:'orchestrator', to:'cib_research', action:'Generate client summary note', platform:'mistral', toPlatform:'claude', cost:0.08, latency:240 },
     ]
   }
@@ -837,7 +837,7 @@ function renderAggBar() {
   ).join('');
 
   document.getElementById('aggBar').innerHTML = `
-    <div class="agg-title">Workflow Timeline &mdash; Latency Distribution</div>
+    <div class="agg-title">Workflow Timeline  -  Latency Distribution</div>
     <div class="agg-timeline">${segHtml}</div>
     <div class="agg-meta">
       <div class="agg-item">
@@ -850,11 +850,11 @@ function renderAggBar() {
       </div>
       <div class="agg-item">
         <span class="agg-item-label">Platforms</span>
-        <div class="agg-badges">${platBadges || '<span style="color:var(--sol-dim);font-size:11px;">—</span>'}</div>
+        <div class="agg-badges">${platBadges || '<span style="color:var(--sol-dim);font-size:11px;"> - </span>'}</div>
       </div>
       <div class="agg-item">
         <span class="agg-item-label">Domains</span>
-        <div class="agg-badges">${domBadges || '<span style="color:var(--sol-dim);font-size:11px;">—</span>'}</div>
+        <div class="agg-badges">${domBadges || '<span style="color:var(--sol-dim);font-size:11px;"> - </span>'}</div>
       </div>
     </div>
   `;

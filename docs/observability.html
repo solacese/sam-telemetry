@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Bank &mdash; Observability &amp; KPIs</title>
+  <title>Your Bank  -  Observability &amp; KPIs</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -302,11 +302,11 @@
     </div>
     <div class="logo-sep"></div>
     <div class="title-block">
-      <h1>Your Bank &mdash; Observability &amp; KPIs</h1>
+      <h1>Your Bank  -  Observability &amp; KPIs</h1>
       <span class="sub">Real-Time Monitoring &middot; 8 Key KPIs</span>
     </div>
     <div class="topbar-right">
-      <span class="live-badge"><span class="dot"></span> 200 agents live</span>
+      <span class="live-badge"><span class="dot"></span> 2,000 agents live</span>
       <a href="agents.html">Agents</a>
       <a href="governance.html">Governance</a>
       <a href="workflows.html">Workflows</a>
@@ -321,7 +321,7 @@
       <div class="sb-hdr"><h3>Filters &amp; Focus</h3></div>
       <div class="sb-body">
         <div class="sb-sec">Domains</div>
-        <button class="sb-btn active" data-filter="all"><span class="sb-dot" style="background:var(--sol-green)"></span> All Domains <span class="sb-count">200</span></button>
+        <button class="sb-btn active" data-filter="all"><span class="sb-dot" style="background:var(--sol-green)"></span> All Domains <span class="sb-count">2,000</span></button>
         <button class="sb-btn" data-filter="cib"><span class="sb-dot" style="background:#6366f1"></span> CIB <span class="sb-count">6</span></button>
         <button class="sb-btn" data-filter="retail"><span class="sb-dot" style="background:#06b6d4"></span> Retail Banking <span class="sb-count">6</span></button>
         <button class="sb-btn" data-filter="risk"><span class="sb-dot" style="background:#f43f5e"></span> Risk &amp; Compliance <span class="sb-count">5</span></button>
@@ -346,7 +346,7 @@
       </div>
 
       <div class="sb-stats">
-        <div class="sb-stats-row"><span class="sb-stats-label">Active Agents</span><span class="sb-stats-val">200</span></div>
+        <div class="sb-stats-row"><span class="sb-stats-label">Active Agents</span><span class="sb-stats-val">2,000</span></div>
         <div class="sb-stats-row"><span class="sb-stats-label">Global Uptime</span><span class="sb-stats-val">99.7%</span></div>
         <div class="sb-stats-row"><span class="sb-stats-label">Alerts (24h)</span><span class="sb-stats-val amber">4</span></div>
         <div class="sb-stats-row"><span class="sb-stats-label">Violations</span><span class="sb-stats-val red">3</span></div>
@@ -358,7 +358,7 @@
     <main class="content" id="content">
       <!-- HERO: 8 KPI Cards -->
       <div class="section-hdr" style="margin-top:0">
-        8 Key KPIs &mdash; Consolidated View
+        8 Key KPIs  -  Consolidated View
         <span class="badge">Slide 5</span>
         <span class="line"></span>
       </div>
@@ -367,7 +367,7 @@
       <!-- Agent Health Grid -->
       <div class="section-hdr">
         Agent Health
-        <span class="badge">200 Agents</span>
+        <span class="badge">2,000 Agents</span>
         <span class="line"></span>
       </div>
       <div class="agent-grid" id="agentGrid"></div>
@@ -418,7 +418,7 @@
 (function() {
   'use strict';
 
-  // ---- Agent Data (200 agents) ----
+  // ---- Agent Data (2000 agents) ----
   const TEMPLATES = {
     cib: [
       {name:'Product Structuring',platform:'databricks'},{name:'Pricing Engine',platform:'databricks'},
@@ -452,9 +452,9 @@
   let si = 1;
   DOMAINS.forEach(d => {
     const t = TEMPLATES[d];
-    for (let i = 0; i < 49 && si <= 195; i++, si++) {
+    for (let i = 0; i < 499 && si <= 1995; i++, si++) {
       const tmpl = t[i % t.length];
-      agents.push({id:`${d}_${String(si).padStart(3,'0')}`,name:`${tmpl.name} #${Math.ceil((i+1)/t.length)}`,domain:d,platform:tmpl.platform});
+      agents.push({id:`${d}_${String(si).padStart(4,'0')}`,name:`${tmpl.name} #${Math.ceil((i+1)/t.length)}`,domain:d,platform:tmpl.platform});
     }
   });
 
