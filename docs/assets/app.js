@@ -1,4 +1,4 @@
-import { snapshot } from './data.js';
+import { snapshot, modelCounts, DOMAIN_ORDER, PLATFORM_ORDER } from './data.js';
 
 const pages = [
   ['agents', 'Agents', 'agents.html'],
@@ -77,14 +77,19 @@ export function renderShell({ page, title, description, kicker = 'Agent Mesh ope
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="agents.html" aria-label="Agent Mesh Command Centre home">
+        <a class="brand" href="agents.html" aria-label="Solace Agent Inventory home">
           <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span><strong>Agent Mesh</strong><small>Command Centre</small></span>
+          <span><strong>Solace Agent Inventory</strong></span>
         </a>
         <button class="icon-button menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open navigation</span><span aria-hidden="true">☰</span></button>
         <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation">
           ${pages.map(([id, label, href]) => `<a data-nav-link href="${href}?view=${mode}" ${id === page ? 'aria-current="page"' : ''}>${label}</a>`).join('')}
         </nav>
+        <div class="header-facts" aria-label="Inventory summary">
+          <strong>${modelCounts.total}</strong><span>agents</span>
+          <i aria-hidden="true"></i><strong>${DOMAIN_ORDER.length}</strong><span>domains</span>
+          <i aria-hidden="true"></i><strong>${PLATFORM_ORDER.length}</strong><span>platforms</span>
+        </div>
         <div class="view-switch-wrap">
           <span class="view-switch-label">Presentation</span>
           <div class="segmented" aria-label="Presentation mode">
@@ -98,12 +103,11 @@ export function renderShell({ page, title, description, kicker = 'Agent Mesh ope
     <div class="snapshot-banner" role="note">
       <span class="snapshot-dot" aria-hidden="true"></span>
       <strong>${escapeHTML(snapshot.label)}</strong>
-      <span>${escapeHTML(snapshot.period)} · ${escapeHTML(snapshot.timezone)} · No live connection</span>
+      <span>${escapeHTML(snapshot.period)} · ${escapeHTML(snapshot.timezone)} · No live connection · ${escapeHTML(snapshot.id)}</span>
     </div>
     <main id="main-content" class="page-shell" tabindex="-1">
       <div class="page-hero">
         <div><p class="eyebrow">${escapeHTML(kicker)}</p><h1>${escapeHTML(title)}</h1><p>${escapeHTML(description)}</p></div>
-        <div class="snapshot-card"><span>Snapshot ID</span><strong>${escapeHTML(snapshot.id)}</strong><small>Captured ${new Date(snapshot.capturedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' })} UTC</small></div>
       </div>
       <div id="page-content"></div>
     </main>

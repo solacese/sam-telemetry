@@ -3,9 +3,9 @@ import { renderShell, escapeHTML, formatCurrency, formatDuration, statusBadge, s
 
 const mount = renderShell({
   page: 'agents',
-  title: 'Agent inventory',
-  description: `Explore the fixed ${modelCounts.total}-agent banking topology, its platform distribution and individual availability signals.`,
-  kicker: 'Topology and discovery'
+  title: 'Solace Agent Inventory',
+  description: `${modelCounts.total} banking agents across ${DOMAIN_ORDER.length} domains and ${PLATFORM_ORDER.length} platforms, with role, availability, latency and cost signals.`,
+  kicker: 'Inventory overview'
 });
 
 const state = { search: '', domains: new Set(), platforms: new Set(), roles: new Set(), audiences: new Set(), availability: new Set(), sort: 'name', direction: 1 };
